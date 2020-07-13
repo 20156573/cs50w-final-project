@@ -1,0 +1,23 @@
+[
+    {
+        "model": "motels.feedback", 
+        "pk": 1, 
+        "fields": {
+            "feedback": "Tôi đã cho thuê được nhà qua Timnhatro"
+        }
+    },
+    {
+        "model": "motels.feedback", 
+        "pk": 2, 
+        "fields": {
+            "feedback": "Tôi đã cho thuê được nhà qua các phương tiện khác"
+        }
+    },
+    {
+        "model": "motels.feedback", 
+        "pk": 3, 
+        "fields": {
+            "feedback": "Tôi không cho thuê nhà nữa"
+        }
+    }
+]

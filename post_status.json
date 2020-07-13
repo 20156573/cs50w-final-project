@@ -1,0 +1,34 @@
+[
+    {
+        "model": "motels.poststatus",
+        "pk": 1,
+        "fields": {
+            "status": "Bạn đã tạo một tin đăng và đang chờ duyệt",
+            "is_active": "False"
+        }
+    },
+    {
+        "model": "motels.poststatus",
+        "pk": 2,
+        "fields": {
+            "status": "Tin đăng của bạn đã được duyệt thành công",
+            "is_active": "True"
+        }
+    },
+    {
+        "model": "motels.poststatus",
+        "pk": 3,
+        "fields": {
+            "status": "Tin đăng của bạn chưa được duyệt",
+            "is_active": "False"
+        }
+    },
+    {
+        "model": "motels.poststatus",
+        "pk": 4,
+        "fields": {
+            "status": "Bạn đã hủy yêu cầu duyệt tin đăng thành công",
+            "is_active": "False"
+        }
+    }
+]

@@ -1,0 +1,41 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{% block title %}Tìm nhà trọ{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <script src="https://kit.fontawesome.com/5154b845b0.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="{% static 'motels/styles.css' %}">
+    </head>
+    <body class="register-body">
+        <div class="base-menu px-5">
+            <a class="base-menu-left" href="{% url 'index' %}"><i class="fas fa-house-user"></i></a>
+            <p class="">Đăng nhập</p>
+        </div>
+        <div class="register pb-5">
+            <div class="container px-0">
+                <div class="row">
+                    <div class="col-md-8 pt-5">
+                        <i class="fas fa-house-user register-icon d-flex justify-content-center w-200 my-4"></i>
+                        <p class="brand d-flex justify-content-center">Tìm nhà trọ</p>
+                        <h1 class="d-flex justify-content-center">Tìm nhà trọ của bạn</h1>
+                    </div>
+                    <div class="col-md-4 px-0 pt-5">
+                        <form class="px-4 py-5 shadow bg-white" action="{% url 'login' %}" method="POST" novalidate>
+                            <p class="form-head d-flex justify-content-center mb-5">Đăng nhập</p>
+                            {% load crispy_forms_tags %}
+                            {% csrf_token %}
+                            {{ form.email|as_crispy_field }}
+                            {{ form.password|as_crispy_field }}
+                            {{ form|as_crispy_errors }}
+                            <input type="submit" class="btn my-4" value="Đăng nhập"/>
+                            <div class="d-flex justify-content-center">Bạn chưa có tài khoản? <a href="{% url 'register' %}">Đăng ký tại đây.</a></div>   
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

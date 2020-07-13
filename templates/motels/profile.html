@@ -1,0 +1,128 @@
+{% extends 'motels/base.html' %}
+
+{% load static %}
+
+{% block body %}
+<div class="profile">
+    <div class="profile-grid-item">
+        <div class="box shadow-sm px-4 py-4">
+            <div>
+                <p class="full-name">{{ profile.get_full_name }}</p>
+                <p class="font-weight-light"><i class="far fa-calendar-alt"></i>  {{ profile.get_date_joined }}</p>
+            </div>
+            {% if user.is_authenticated and user.id == profile.id %}
+                <button id="profile-edit-Btn">Chỉnh sửa hồ sơ</button>
+            {% endif %}
+        </div>
+    </div>
+    <div class="grid-item"></div>
+</div>
+
+{% if form_edit_profile and user.is_authenticated and user.id == profile.id %}
+<div id="profile-edit-modal" class="modal">
+    <div class="modal-content shadow-lg">
+        <div class="modal-content-info">
+            <div class="row motel-row-header">
+                <div class="col-sm-8">
+                    <div class="modal-content-header my-3">Chỉnh sửa hồ sơ của bạn</div>
+                </div>
+                <div class="col-sm-4">
+                    <span class="close">&times;</span>
+                </div>
+            </div>
+            <div class="row motel-row-body pt-4 px-3">
+                <div class="col-sm-8 pr-4">
+                    <form action="{% url 'update_profile' user.id %}" method="POST" novalidate>
+                        {% load crispy_forms_tags %}
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group col-md-6 mb-0">
+                                {{ form_edit_profile.last_name|as_crispy_field }}
+                            </div>
+                            <div class="form-group col-md-6 mb-0">
+                                {{ form_edit_profile.first_name|as_crispy_field }}
+                            </div>
+                        </div>
+                        {{ form_edit_profile.address|as_crispy_field }}
+                        <input class="update-profile" type="submit" value="Lưu">
+                    </form>
+                </div>
+                <div class="col-sm-4">
+                    <img src="{{MEDIA_URL}}default.png" class="img-thumbnail mg-fluid rounded-circle" alt="Ảnh đại diện của bạn">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+    <h1>Không có form</h1>
+{% endif %}
+<script>
+
+function loadUpdateProfile() {
+    fetch(`/update_profile`,
+    {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+            
+        console.log('Success:', data);
+    })
+    .catch((error) => {
+    console.error('Error:', error);
+    });
+}
+
+function updateProfile(data){
+    fetch(`/update_profile`,
+    {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+    console.log('Success:', data);
+    })
+    .catch((error) => {
+    console.error('Error:', error);
+    });
+}
+document.addEventListener('DOMContentLoaded', () => {
+    let modal = document.getElementById("profile-edit-modal");
+    let btn = document.getElementById("profile-edit-Btn");
+    let span = document.getElementsByClassName("close")[0];
+    btn.onclick = function() {
+        modal.style.display = "block";
+        loadUpdateProfile();
+    }
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+})   
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('#update-profile').onclick = () => {
+        const last_name = document.querySelector('#id_last_name');
+        const first_name = document.querySelector('#id_first_name');
+        const data = { last_name: last_name, first_name: first_name }
+        updateProfile(data);
+    }
+
+
+})
+
+</script>
+    
+{% endblock %}

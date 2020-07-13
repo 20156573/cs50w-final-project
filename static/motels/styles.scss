@@ -1,0 +1,312 @@
+$body_bg: #fafafa;
+
+$base_menu_bg: #f6c90e;
+
+$white_color: white;
+
+$base_menu_color: #4b4b4b;
+
+$border_box: 3px; 
+
+$border_button: 7px;
+
+$button_color: #4aac44;
+
+$button_hover_color: #2Ebc4f;
+
+$border_input_color: #bdc3c7;
+
+$button_color_hover: #e9ebee;
+
+.base-body {
+    font-size: 15px;
+    line-height: 1;
+    background-color: $body_bg;
+}
+
+%inputsubmit {
+    
+    input[type=submit] {
+        color: $white_color;
+        border: none;
+        border-radius: $border_box;
+        background-color: $button_color;
+    }
+    input[type=submit]:hover {
+        background-color: $button_hover_color;
+    }
+}
+
+.base-menu {
+    line-height: 1;
+    font-weight: bold;
+    line-height: 1;
+    overflow: hidden;
+    background-color: $base_menu_bg;
+
+    %base-menu-a {
+        color: #ffffff;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        // font-size: 15px;
+    }
+    .base-menu-left {
+        @extend %base-menu-a;
+        // padding: 10px 12px;
+        float: left;
+    }
+
+    .base-menu-right {
+        @extend %base-menu-a;
+        float: right;
+    }
+
+    a:hover,  a.active {
+        color: $base_menu_color; 
+    }
+
+    .base-menu-avatar-mini{
+        width: inherit;
+        overflow: hidden;
+        margin-top: -4px;
+    }
+
+    .search-container{
+        float: left;
+        input[type=text] {
+            outline: none;
+            padding: 6px;
+            margin: 6px 0px 6px 10px;
+            border: none;
+            border-radius: $border_button 0px 0px $border_button;
+            width: 220px;
+            -webkit-transition: width .35s ease-in-out;
+            transition: width .35s ease-in-out;
+        }
+        input[type=text]:focus {
+            width: 400px;
+        }
+        // input.ui-autocomplete-input {
+        //     width: 250px;
+        // }
+        button {
+            border-radius: 0px $border_button $border_button 0px;
+            float: right;
+            padding: 9px 10px;
+            margin-top: 6px;
+            margin-bottom: 6px;
+            background: $white_color;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+
+            i {
+                color: $base_menu_bg;
+            }
+        }
+        button:hover {
+            background: $body_bg;
+            transition: 0.3s;   
+        }
+    }  
+}
+.register-body { 
+    .base-menu {
+        background-color: $white_color;
+        i {
+            color: $base_menu_bg;
+            font-size: 30px;
+        }
+        p {
+            color: $base_menu_color;
+            font-size: 20px;
+            margin-top: 23px;
+            margin-bottom: 0px;
+        }
+    }
+    .register {
+        background-color: $base_menu_bg;
+
+        .register-icon {
+            color: $white_color;
+            font-size: 150px;
+        }
+        .brand {
+            color: $white_color;
+            font-size: 60px;
+            font-family: fantasy;
+        }
+        form {
+            border-radius: 3%;
+            input {
+                border: 2px solid $border_input_color;
+            }
+            
+            @extend %inputsubmit;
+
+            input[type=submit] {
+                width: 100%;
+                height: 50px;
+                font-weight: bold;
+            }
+
+            .form-head {
+                font-size: 20px;
+                color: $base_menu_color;
+                font-weight: bold;
+            }
+        }
+        h1 {
+            color: $white_color;
+            font-size: 40px;
+        }
+    }
+}
+.profile {
+    color: $base_menu_color;
+    display: grid;
+    grid-template-columns: 380px auto;
+    padding: 0px;
+
+    .profile-grid-item {
+        // border: 1px solid rgba(0, 0, 0, 0.8);
+        padding: 15px 10px 15px 50px;
+
+        .box {
+            background-color: $white_color;
+            // margin-top: 0px;
+            border-radius: $border_box;
+            .full-name {
+                font-size: 19px;
+                font-weight: bold;
+            }
+
+            i {
+                opacity: 0.6;
+            }
+
+            button {
+                padding: 9px;
+                background-color: $white_color;
+                border: none;
+                border-radius: $border_button;
+                width: 100%;
+                background-color: #f5f6f7;
+                font-size: 14px;
+                cursor: pointer;
+            }
+            button:hover {
+                background-color: $button_color_hover;
+            }
+            button:focus {
+                
+                outline: none;
+            }
+        }
+    }
+}
+
+.modal {
+    display: none; 
+    position: fixed;
+    z-index: 1; 
+    padding-top: 100px; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.2); /* Black w/ opacity */
+
+    .modal-content {
+        background-color: $white_color;
+        margin: auto;
+        border-radius: $border_box;
+        display: block;
+        border: 1px solid $button_color_hover;
+        // width: 15%;
+        // height: 30%;
+        animation-name: grow;
+        animation-duration: 1.8s;
+        animation-fill-mode: forwards;
+        opacity: 0;
+    }
+    .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+    
+    .close:hover, .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .modal-content-info {
+        animation-name: grow-child;
+        animation-duration: 1.9s;
+        animation-fill-mode: forwards;
+        opacity: 0;
+
+        .motel-row-header {
+            background-color: $button_color_hover;
+            margin: 0;
+            border-radius: $border_box $border_box 0px 0px;
+
+            .modal-content-header {
+                font-weight: bold;
+            }
+
+        }
+        .motel-row-body {
+            input, select {
+                height: 32px;
+                padding: 0px 12px 0px 12px;
+                font-size: 14px;
+            }
+            @extend %inputsubmit;
+
+            
+        }
+    }
+
+}
+
+@keyframes grow {
+    0% {
+        opacity: 0;
+        width: 15%;
+        height: 15%;
+    }
+    20% {
+        opacity: 1;
+        width: 15%;
+        height: 15%;
+    }
+    40% {
+        opacity: 1;
+        width: 15%;
+        height: 15%;
+    }
+    
+    100% {
+        width: 50%;
+        height: 60%;
+        opacity: 1;
+    }
+}
+@keyframes grow-child {
+    0% {
+        opacity: 0;
+    }
+    99% {
+        opacity: 0.001;
+    }
+    100% {
+        opacity: 1;
+    }
+}

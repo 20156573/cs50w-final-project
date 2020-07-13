@@ -1,0 +1,252 @@
+.base-body {
+  font-size: 15px;
+  line-height: 1;
+  background-color: #fafafa;
+}
+
+.modal .modal-content-info .motel-row-body input[type=submit], .register-body .register form input[type=submit] {
+  color: white;
+  border: none;
+  border-radius: 3px;
+  background-color: #4aac44;
+}
+.modal .modal-content-info .motel-row-body input[type=submit]:hover, .register-body .register form input[type=submit]:hover {
+  background-color: #2Ebc4f;
+}
+
+.base-menu {
+  line-height: 1;
+  font-weight: bold;
+  line-height: 1;
+  overflow: hidden;
+  background-color: #f6c90e;
+}
+.base-menu .base-menu-right, .base-menu .base-menu-left {
+  color: #ffffff;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+.base-menu .base-menu-left {
+  float: left;
+}
+.base-menu .base-menu-right {
+  float: right;
+}
+.base-menu a:hover, .base-menu a.active {
+  color: #4b4b4b;
+}
+.base-menu .base-menu-avatar-mini {
+  width: inherit;
+  overflow: hidden;
+  margin-top: -4px;
+}
+.base-menu .search-container {
+  float: left;
+}
+.base-menu .search-container input[type=text] {
+  outline: none;
+  padding: 6px;
+  margin: 6px 0px 6px 10px;
+  border: none;
+  border-radius: 7px 0px 0px 7px;
+  width: 220px;
+  -webkit-transition: width 0.35s ease-in-out;
+  transition: width 0.35s ease-in-out;
+}
+.base-menu .search-container input[type=text]:focus {
+  width: 400px;
+}
+.base-menu .search-container button {
+  border-radius: 0px 7px 7px 0px;
+  float: right;
+  padding: 9px 10px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  background: white;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+}
+.base-menu .search-container button i {
+  color: #f6c90e;
+}
+.base-menu .search-container button:hover {
+  background: #fafafa;
+  transition: 0.3s;
+}
+
+.register-body .base-menu {
+  background-color: white;
+}
+.register-body .base-menu i {
+  color: #f6c90e;
+  font-size: 30px;
+}
+.register-body .base-menu p {
+  color: #4b4b4b;
+  font-size: 20px;
+  margin-top: 23px;
+  margin-bottom: 0px;
+}
+.register-body .register {
+  background-color: #f6c90e;
+}
+.register-body .register .register-icon {
+  color: white;
+  font-size: 150px;
+}
+.register-body .register .brand {
+  color: white;
+  font-size: 60px;
+  font-family: fantasy;
+}
+.register-body .register form {
+  border-radius: 3%;
+}
+.register-body .register form input {
+  border: 2px solid #bdc3c7;
+}
+.register-body .register form input[type=submit] {
+  width: 100%;
+  height: 50px;
+  font-weight: bold;
+}
+.register-body .register form .form-head {
+  font-size: 20px;
+  color: #4b4b4b;
+  font-weight: bold;
+}
+.register-body .register h1 {
+  color: white;
+  font-size: 40px;
+}
+
+.profile {
+  color: #4b4b4b;
+  display: grid;
+  grid-template-columns: 380px auto;
+  padding: 0px;
+}
+.profile .profile-grid-item {
+  padding: 15px 10px 15px 50px;
+}
+.profile .profile-grid-item .box {
+  background-color: white;
+  border-radius: 3px;
+}
+.profile .profile-grid-item .box .full-name {
+  font-size: 19px;
+  font-weight: bold;
+}
+.profile .profile-grid-item .box i {
+  opacity: 0.6;
+}
+.profile .profile-grid-item .box button {
+  padding: 9px;
+  background-color: white;
+  border: none;
+  border-radius: 7px;
+  width: 100%;
+  background-color: #f5f6f7;
+  font-size: 14px;
+  cursor: pointer;
+}
+.profile .profile-grid-item .box button:hover {
+  background-color: #e9ebee;
+}
+.profile .profile-grid-item .box button:focus {
+  outline: none;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: black;
+  background-color: rgba(0, 0, 0, 0.2);
+  /* Black w/ opacity */
+}
+.modal .modal-content {
+  background-color: white;
+  margin: auto;
+  border-radius: 3px;
+  display: block;
+  border: 1px solid #e9ebee;
+  animation-name: grow;
+  animation-duration: 1.8s;
+  animation-fill-mode: forwards;
+  opacity: 0;
+}
+.modal .close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.modal .close:hover, .modal .close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+.modal .modal-content-info {
+  animation-name: grow-child;
+  animation-duration: 1.9s;
+  animation-fill-mode: forwards;
+  opacity: 0;
+}
+.modal .modal-content-info .motel-row-header {
+  background-color: #e9ebee;
+  margin: 0;
+  border-radius: 3px 3px 0px 0px;
+}
+.modal .modal-content-info .motel-row-header .modal-content-header {
+  font-weight: bold;
+}
+.modal .modal-content-info .motel-row-body input, .modal .modal-content-info .motel-row-body select {
+  height: 32px;
+  padding: 0px 12px 0px 12px;
+  font-size: 14px;
+}
+
+@keyframes grow {
+  0% {
+    opacity: 0;
+    width: 15%;
+    height: 15%;
+  }
+  20% {
+    opacity: 1;
+    width: 15%;
+    height: 15%;
+  }
+  40% {
+    opacity: 1;
+    width: 15%;
+    height: 15%;
+  }
+  100% {
+    width: 50%;
+    height: 60%;
+    opacity: 1;
+  }
+}
+@keyframes grow-child {
+  0% {
+    opacity: 0;
+  }
+  99% {
+    opacity: 0.001;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/*# sourceMappingURL=styles.css.map */
