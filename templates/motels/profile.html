@@ -18,7 +18,7 @@
     <div class="grid-item"></div>
 </div>
 
-{% if form_edit_profile and user.is_authenticated and user.id == profile.id %}
+{% if user.is_authenticated and user.id == profile.id %}
 <div id="profile-edit-modal" class="modal">
     <div class="modal-content shadow-lg">
         <div class="modal-content-info">
@@ -31,21 +31,8 @@
                 </div>
             </div>
             <div class="row motel-row-body pt-4 px-3">
-                <div class="col-sm-8 pr-4">
-                    <form action="{% url 'update_profile' user.id %}" method="POST" novalidate>
-                        {% load crispy_forms_tags %}
-                        {% csrf_token %}
-                        <div class="form-row">
-                            <div class="form-group col-md-6 mb-0">
-                                {{ form_edit_profile.last_name|as_crispy_field }}
-                            </div>
-                            <div class="form-group col-md-6 mb-0">
-                                {{ form_edit_profile.first_name|as_crispy_field }}
-                            </div>
-                        </div>
-                        {{ form_edit_profile.address|as_crispy_field }}
-                        <input class="update-profile" type="submit" value="Lưu">
-                    </form>
+                <div class="col-sm-8 pr-4" id="motel-profile-form">
+                    <!-- Form sẽ nằm đây -->
                 </div>
                 <div class="col-sm-4">
                     <img src="{{MEDIA_URL}}default.png" class="img-thumbnail mg-fluid rounded-circle" alt="Ảnh đại diện của bạn">
@@ -59,48 +46,51 @@
 {% endif %}
 <script>
 
+
 function loadUpdateProfile() {
-    fetch(`/update_profile`,
-    {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
+    fetch(`update_profile`)
     .then(response => response.json())
     .then(data => {
-            
-        console.log('Success:', data);
+        const html = data['html_form']
+        document.querySelector('#motel-profile-form').innerHTML = html;
     })
     .catch((error) => {
-    console.error('Error:', error);
+        console.error('Error:', error);
     });
 }
 
-function updateProfile(data){
+function saveUpdateProfile(data) {
     fetch(`/update_profile`,
     {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: data.serialize()
     })
     .then(response => response.json())
     .then(data => {
-    console.log('Success:', data);
+        const html = data.html_form;
+        document.querySelector('#motel-profile-form').firstElementChild.remove()
+        document.querySelector('#motel-profile-form').innerHTML = html;
     })
     .catch((error) => {
-    console.error('Error:', error);
+        console.error('Error:', error);
     });
 }
+
 document.addEventListener('DOMContentLoaded', () => {
-    let modal = document.getElementById("profile-edit-modal");
-    let btn = document.getElementById("profile-edit-Btn");
+    let modal = document.querySelector("#profile-edit-modal");
+    let btn = document.querySelector("#profile-edit-Btn");
     let span = document.getElementsByClassName("close")[0];
+    let updateProBtn = document.querySelector('#updateProBtn')
     btn.onclick = function() {
-        modal.style.display = "block";
+        modal.style.display = "block"
         loadUpdateProfile();
+    }
+    updateProBtn.onclick = function () {
+        const data = document.querySelector('#motel-profile-form').innerHTML
+        saveUpdateProfile(data);
     }
     span.onclick = function() {
         modal.style.display = "none";
@@ -112,16 +102,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 })   
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelector('#update-profile').onclick = () => {
-        const last_name = document.querySelector('#id_last_name');
-        const first_name = document.querySelector('#id_first_name');
-        const data = { last_name: last_name, first_name: first_name }
-        updateProfile(data);
-    }
+
+// document.addEventListener('DOMContentLoaded', () => {
+//     document.querySelector('#update-profile').onclick = () => {
+//         const last_name = document.querySelector('#id_last_name');
+//         const first_name = document.querySelector('#id_first_name');
+//         const data = { last_name: last_name, first_name: first_name }
+//         updateProfile(data);
+//     }
 
 
-})
+// })
 
 </script>
     

@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core import serializers
+from django.template.loader import render_to_string
 # from django.shortcuts import HttpResponse
 from django.db import IntegrityError
 from django.shortcuts import HttpResponseRedirect, render, get_object_or_404
@@ -64,20 +65,15 @@ def logout_view(request):
     return HttpResponseRedirect(reverse("index"))
 
 def profile(request, user_id):
-    form_edit_profile = []
     try:
         user = User.objects.get(pk=user_id)
     except User.DoesNotExist:
         raise Http404("Người dùng này không tồn tại hoặc không còn hoạt động")
     posts = user.posts.all().order_by('-id')
-    if request.method == 'GET':
-        profile = get_object_or_404(User, pk=user_id)
-        form_edit_profile = UpdateProfileForm(instance=profile)
 
     context = {
         "profile": user,
-        "posts": posts,
-        "form_edit_profile": form_edit_profile
+        "posts": posts
     }
 
     return render(request, 'motels/profile.html', context)
@@ -85,10 +81,24 @@ def profile(request, user_id):
 @csrf_exempt
 @login_required
 def update_profile(request):
-    if request.method != "POST":
-        return JsonResponse({"error": "POST request required."}, status=400)
-    data = json.loads(request.body)
-    first_name = data.get("first_name")
-    last_name = data.get("last_name")
-    
-    return JsonResponse({"message": "Sửa thông tin thành công."}, status=201)
+    data = dict()
+    if request.method == 'GET':
+        form = UpdateProfileForm(instance=request.user)
+
+    if request.method == 'POST':
+        form = UpdateProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            data['form_is_valid'] = True
+            user = User.objects.get(pk=request.user.id)
+             
+        else:
+            data['form_is_valid'] = False
+
+        form = UpdateProfileForm(instance=user)
+
+    context = {'form': form}
+    data['html_form'] = render_to_string('motels/profile_update_form.html', context, request=request)
+
+    return JsonResponse(data)
+
