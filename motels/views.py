@@ -11,7 +11,7 @@ from django.http import  Http404
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import User, Post, RegularUserHistory
+from .models import User, Post, RegularUserHistory, Province
 from .forms import RegisterForm, AccountAuthenticationForm, UpdateProfileForm
 # Create your views here.
 
@@ -84,6 +84,9 @@ def update_profile(request):
     data = dict()
     if request.method == 'GET':
         form = UpdateProfileForm(instance=request.user)
+        context = {'form': form}
+        data['html_form'] = render_to_string('motels/profile_update_form.html', context, request=request)
+        return JsonResponse(data)
 
     if request.method == 'POST':
         form = UpdateProfileForm(request.POST, instance=request.user)
@@ -94,11 +97,33 @@ def update_profile(request):
              
         else:
             data['form_is_valid'] = False
-
-        form = UpdateProfileForm(instance=user)
-
-    context = {'form': form}
-    data['html_form'] = render_to_string('motels/profile_update_form.html', context, request=request)
-
+        
     return JsonResponse(data)
 
+
+@csrf_exempt
+@login_required
+def edit_profile(request):
+    data = dict()
+    user = User.objects.get(pk=request.user.id)
+    if request.method == 'GET':
+        data['last_name'] =  user.last_name
+        data['first_name'] = user.first_name
+        # data['address'] = serializers.serialize('json', user.address)
+        return JsonResponse(data)
+        
+@csrf_exempt
+@login_required
+def save_profile(request):
+    data = dict()
+    user = User.objects.get(pk=request.user.id)
+    if request.method == 'POST':
+        last_name = request.POST.get('last_name')
+        first_name = request.POST.get('first_name')
+        user.last_name = last_name
+        user.first_name = first_name
+        user.save(force_update=True)
+        data['status'] = True
+        # data['last_name'] =  user.last_name
+        # data['first_name'] = user.first_name
+        return JsonResponse(data)

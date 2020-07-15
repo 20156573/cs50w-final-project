@@ -1,4 +1,4 @@
-<form action="{% url 'update_profile' %}" method="POST" novalidate>
+<form id="updateProFrom" action="{% url 'update_profile' %}" method="post" novalidate>
     {% load crispy_forms_tags %}
     {% csrf_token %}
     <div class="form-row">
@@ -10,5 +10,5 @@
         </div>
     </div>
     {{ form.address|as_crispy_field }}
-    <input id="updateProBtn" type="submit" value="Lưu">
+    <input id="updateProBtn" type="button" value="Lưu">
 </form>

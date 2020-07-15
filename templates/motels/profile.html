@@ -41,17 +41,28 @@
         </div>
     </div>
 </div>
-{% else %}
-    <h1>Không có form</h1>
+
+<form id="editProBtn" action="{% url 'save_profile' %}" method="post" novalidate>
+    {% csrf_token %}
+    <input type="text" id="first_name" name="first_name" placeholder="Tên">
+    <input type="text" id="last_name" name="last_name" placeholder="Họ">
+    <select name="address" aria-placeholder="Địa chỉ" id=""></select>
+    <input type="button"  id='edit_data' value="Lưu">
+</form>
+<input type="submit" value="Lấy data" id="getForm">
 {% endif %}
 <script>
 
 
 function loadUpdateProfile() {
-    fetch(`update_profile`)
+    fetch(`update_profile`,
+    {
+        method: 'GET'
+    })
     .then(response => response.json())
     .then(data => {
-        const html = data['html_form']
+        const html = data.html_form
+        
         document.querySelector('#motel-profile-form').innerHTML = html;
     })
     .catch((error) => {
@@ -60,19 +71,47 @@ function loadUpdateProfile() {
 }
 
 function saveUpdateProfile(data) {
-    fetch(`/update_profile`,
+    fetch(`update_profile`,
     {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: data.serialize()
+        body: data.serialize(),
+        headers:{
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())  
+    .then((data) => {
+        console.log(data)
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+
+function getForm() {
+    fetch(`edit_profile`,
+    {
+        method: 'GET'
     })
     .then(response => response.json())
     .then(data => {
-        const html = data.html_form;
-        document.querySelector('#motel-profile-form').firstElementChild.remove()
-        document.querySelector('#motel-profile-form').innerHTML = html;
+        document.querySelector('#last_name').value = data.last_name;
+        document.querySelector('#first_name').value = data.first_name;
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+
+function saveForm(data) {
+    fetch(`save_profile`,
+    {
+        method: 'POST',
+        body: data,
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -83,23 +122,39 @@ document.addEventListener('DOMContentLoaded', () => {
     let modal = document.querySelector("#profile-edit-modal");
     let btn = document.querySelector("#profile-edit-Btn");
     let span = document.getElementsByClassName("close")[0];
-    let updateProBtn = document.querySelector('#updateProBtn')
     btn.onclick = function() {
-        modal.style.display = "block"
+        modal.style.display = "block";
         loadUpdateProfile();
+        
     }
-    updateProBtn.onclick = function () {
-        const data = document.querySelector('#motel-profile-form').innerHTML
-        saveUpdateProfile(data);
+
+    if (document.querySelector('#updateProForm')) {
+        document.querySelector('#updateProBtn').onclick = () => {
+            const data = new FormData(document.querySelector('#updateProForm'));
+            console.log(data);
+            saveUpdateProfile(data);
+        }
     }
-    span.onclick = function() {
+
+    span.onclick = () => {
         modal.style.display = "none";
     }
-    window.onclick = function(event) {
+    window.onclick = (event) => {
         if (event.target == modal) {
             modal.style.display = "none";
         }
     }
+
+    // demo ơ day
+    document.querySelector('#getForm').onclick = () => {
+        getForm();
+    }    
+    document.querySelector('#edit_data').onclick = () => {
+        const data = new FormData(document.querySelector('#editProBtn'));
+        console.log(data);
+        saveForm(data);
+    }
+    
 })   
 
 
