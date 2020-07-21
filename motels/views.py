@@ -6,12 +6,12 @@ from django.core import serializers
 from django.template.loader import render_to_string
 # from django.shortcuts import HttpResponse
 from django.db import IntegrityError
-from django.shortcuts import HttpResponseRedirect, render, get_object_or_404
+from django.shortcuts import HttpResponseRedirect, render, get_object_or_404, HttpResponse
 from django.http import  Http404
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import User, Post, RegularUserHistory, Province
+from .models import User, Post, RegularUserHistory, Province, District
 from .forms import RegisterForm, AccountAuthenticationForm, UpdateProfileForm
 # Create your views here.
 
@@ -78,38 +78,40 @@ def profile(request, user_id):
 
     return render(request, 'motels/profile.html', context)
 
-@csrf_exempt
+
+
 @login_required
-def update_profile(request):
-    data = dict()
+def create_post_category(request):
+    return render(request, 'motels/create_post_category.html')
+
+@csrf_exempt
+def create_post_new(request):
     if request.method == 'GET':
-        form = UpdateProfileForm(instance=request.user)
-        context = {'form': form}
-        data['html_form'] = render_to_string('motels/profile_update_form.html', context, request=request)
-        return JsonResponse(data)
+        return HttpResponseRedirect(reverse('create_post_category'))
 
     if request.method == 'POST':
-        form = UpdateProfileForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            data['form_is_valid'] = True
-            user = User.objects.get(pk=request.user.id)
-             
-        else:
-            data['form_is_valid'] = False
+        title = request.POST["title"]
+        provinces = Province.objects.all()
+        try:
+            category = int(request.POST["category"])
+        except:
+            raise Http404('Bạn gửi sai loại bài đăng rồi')
+
+        return render(request, 'motels/create_post_new.html', {'title': title, 'category': category, 'provinces': provinces})
+
+# API function
         
-    return JsonResponse(data)
-
-
 @csrf_exempt
 @login_required
 def edit_profile(request):
     data = dict()
-    user = User.objects.get(pk=request.user.id)
+    provinces = Province.objects.all()
     if request.method == 'GET':
-        data['last_name'] =  user.last_name
-        data['first_name'] = user.first_name
-        # data['address'] = serializers.serialize('json', user.address)
+        data['last_name'] =  request.user.last_name
+        data['first_name'] = request.user.first_name
+        data['user_address'] = request.user.address.id
+        # data['y_address'] = serializers.serialize('json', provinces)
+        data['all_address'] = [province.serialize() for province in provinces]
         return JsonResponse(data)
         
 @csrf_exempt
@@ -120,10 +122,19 @@ def save_profile(request):
     if request.method == 'POST':
         last_name = request.POST.get('last_name')
         first_name = request.POST.get('first_name')
+        # Validate nếu tỉnh không có trong db
+        address = request.POST.get('address')
         user.last_name = last_name
         user.first_name = first_name
+        user.address = Province.objects.get(pk=address)
         user.save(force_update=True)
         data['status'] = True
-        # data['last_name'] =  user.last_name
-        # data['first_name'] = user.first_name
+        data['last_name'] =  last_name
+        data['first_name'] = first_name
         return JsonResponse(data)
+
+def get_district(request, province_id):
+    data = dict()
+    districts = District.objects.select_related('province').filter(province=province_id)
+    data['districts'] = serializers.serialize('json', districts)
+    return JsonResponse(serializers.serialize('json', districts), safe=False)

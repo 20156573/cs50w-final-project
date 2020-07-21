@@ -1,0 +1,79 @@
+{% extends 'motels/base.html' %}
+
+{% load static %}
+
+{% block body %}
+<div class="create_post pl-5 pt-4 pr-5 pb-3">
+    <div class="create_post_body shadow-sm px-5 py-4 mx-3"> 
+        <div class="mb-4 mt-4">
+            <p class="create_post_head">Thông tin cơ bản</p>
+        </div>
+        <hr class="mb-5">
+        <div>
+            <!-- Tiêu đề -->
+            <div class="row">
+                <label for="create_post_title" class="col-md-2">* Tiêu đề</label>
+                <div class="col-md-10 pr-0">
+                    <input id="create_post_title" type="text" value="{{ title }}" placeholder="Tiêu đề">
+                    <button class="form-suffix" disabled></button>
+                </div>
+            </div>
+            <!-- Lựa chọn loại tin đăng -->
+
+            <div class="row mt-4">
+                <label class="col-md-2">* Loại bài đăng</label>
+                <div class="col-md-10 pr-0">
+                    <input class="create_post_category" type="hidden" value="{{ category }}">
+                    <p class="my-0 create_post_category_p"></p>
+                </div>
+            </div>
+
+            <!-- Mô tả -->
+            <div class="row mt-4">
+                <label class="col-md-2">* Mô tả bài đăng</label>
+                <div class="col-md-10 pr-0 ">
+                    <textarea  cols="60" rows="6"></textarea>
+                </div>
+            </div>
+
+            <!-- Diện tích -->
+            <div class="row mt-4">
+                <label class="col-md-2">* Diện tích</label>
+                <div class="col-md-10 pr-0 ">
+                    <input id="create_post_area" type="text">
+                    <button class="form-suffix" disabled>m2</button>
+                </div>
+                <!-- <div class="col-md-8"></div> -->
+            </div>
+
+            <!-- Địa chỉ -->
+            <div class="row mt-4">
+                <label class="col-md-2">* Địa chỉ</label>
+                <div class="col-md-2">
+                    <select name="province" id="province">
+                        <!-- <option selected disabled hidden style='display: none' value="">Tỉnh</option> -->
+                        {% for province in provinces %}
+                            <option  value="{{ province.id }}">{{ province }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 ">
+                    <select name="district" id="district">
+                        <option selected disabled hidden style='display: none' value="">Quận</option>
+                    </select>
+                </div>
+                <div class="col-md-2 ">
+                    <select name="commune" id="">
+                        <option selected disabled hidden style='display: none' value="">Huyện</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'motels/create_post_new.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'motels/base.html' %}
+
+{% load static %}
+
+{% block body %}
+<div class="create_post pl-5 pt-4 pr-5 pb-3">
+    <div class="create_post_body shadow-sm px-5 py-4 mx-3"> 
+        <div class="mb-4 mt-4">
+            <p class="create_post_head"><i class="fas fa-pen-alt"></i>  Thêm một tin mới</p>
+            <p>Đăng tin cho thuê nhà của bạn để tìm người thuê nhà nhanh hơn</p>
+        </div>
+        <hr class="mb-5">
+        <div>
+            <!-- Tiêu đề -->
+            <div class="create_post_title row">
+                <label for="create_post_title" class="col-sm-1">* Tiêu đề</label>
+                <div class="input-group col-sm-11 pr-0">
+                    <input id="create_post_title" type="text" class="form-control" placeholder="Tiêu đề">
+                    <div class="input-group-prepend">
+                        <div class="form-suffix input-group-text">0/110</div>
+                    </div>
+                </div>
+            </div>
+            <!-- Lựa chọn loại tin đăng -->
+
+            <div class="row mt-4 mb-4">
+                <label class="col-sm-1">* Bạn tìm</label>
+                <div class="col-sm-11 pr-0">
+                    <div class="type_post">
+                        <div class="row">
+                            <ul class="col-6 first-ul py-2">
+                                <li class="py-2 type_post_renter">Tìm người thuê nhà<i class="fas fa-chevron-right"></i></li>
+                                <li class="py-2 type_post_roomate" data-type="0" value="0">Tìm người ở nghép</li>
+                                <li class="py-2 type_post_hidden">cc</li>
+                            </ul>
+                            <ul class="col-6 second-ul py-2">
+                                <li class="py-2 type_post_renter_room" data-type="1" value="1">Thuê phòng trọ</li>
+                                <li class="py-2 type_post_renter_house" data-type="2" value="2">Thuê nhà nguyên căn</li>
+                                <li class="py-2 type_post_renter_apartment" data-type="3" value="3">Thuê nguyên căn chung cư</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-4 mb-4">Bạn đang: <span></span></p>
+            </div>
+            <input id="create_post_next" class="mt-5" type="submit" value="Tiếp theo">
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'motels/create_post_category.js' %}"></script>
+{% endblock %}

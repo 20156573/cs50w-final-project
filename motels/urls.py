@@ -4,14 +4,15 @@ from django.contrib.auth.views import LoginView
 
 urlpatterns = [
     path('', views.index, name="index"),
-    path('dang_ky/', views.register, name="register"),
-    path('login/', LoginView.as_view(), name='admin_login'),
-    path('dang_nhap/', views.login_view, name="login"),
-    path('dang_xuat/', views.logout_view, name="logout"),
+    path('register', views.register, name="register"),
+    path('admin_login', LoginView.as_view(), name='admin_login'),
+    path('login', views.login_view, name="login"),
+    path('logout', views.logout_view, name="logout"),
     path('<int:user_id>', views.profile, name="profile"),
-    
+    path('create_post/category', views.create_post_category, name='create_post_category'),
+    path('create_post/new', views.create_post_new, name='create_post_new'),
     # API route
-    path('update_profile', views.update_profile, name="update_profile"),
     path('edit_profile', views.edit_profile, name="edit_profile"),
     path('save_profile', views.save_profile, name='save_profile'),
+    path('get_district/<int:province_id>', views.get_district, name='get_district'),
 ]

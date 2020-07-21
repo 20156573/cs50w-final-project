@@ -55,6 +55,12 @@ class Province(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name
+        }
+
 class User(AbstractBaseUser, PermissionsMixin):
     
     email = models.EmailField(verbose_name='Email', max_length=255, unique=True)
@@ -125,7 +131,7 @@ class Post(models.Model):
         NAM = 1, _('Nam')
         NAMVANU = 2, _('Nam và nữ')
 
-    title = models.CharField(max_length=300)
+    title = models.CharField(max_length=110)
     description = models.TextField(max_length=1000)
     area = models.FloatField()
     max_area = models.IntegerField(null=True, blank=True) #diện tích nhà dao động tới
