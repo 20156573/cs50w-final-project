@@ -25,7 +25,9 @@ $button_color_2: #f5f6f7;
     line-height: 1;
     background-color: $body_bg;
 }
-
+input {
+    color: $base_menu_color;
+}
 select {
     border-radius: $border_button;
     height: 32px;
@@ -206,6 +208,22 @@ option:checked {
 }
 
 // Cho trang cá nhân
+.profile-edit-Btn{
+    padding: 9px;
+    border: none;
+    border-radius: $border_button;
+    width: 100%;
+    background-color: $button_color_2;
+    font-size: 14px;
+    cursor: pointer;
+}
+.profile-edit-Btn:hover {
+    background-color: $button_color_hover;
+    transition: 0.3s;
+}
+.profile-edit-Btn:focus {
+    outline: none;
+}
 .profile {
     color: $base_menu_color;
     display: grid;
@@ -234,23 +252,6 @@ option:checked {
                 
             }
 
-            #profile-edit-Btn {
-                padding: 9px;
-                border: none;
-                border-radius: $border_button;
-                width: 100%;
-                background-color: $button_color_2;
-                font-size: 14px;
-                cursor: pointer;
-            }
-            #profile-edit-Btn:hover {
-                background-color: $button_color_hover;
-                transition: 0.3s;
-            }
-            #profile-edit-Btn:focus {
-                
-                outline: none;
-            }
             #link-button-create_post {
                 display: inline-block;
                 border-radius: $border_box;
@@ -378,15 +379,35 @@ option:checked {
     color: $base_menu_color;
     padding: 0px;
 
+    input[type=text], input[type=number], input[type=submit],#button_post{
+        outline: none;
+        border-radius: $border_button;
+        height: 32px;
+        padding: 0px 12px 0px 12px;
+        font-size: 14px;
+        cursor: auto;
+        border: solid 1px $border_input_color;
+    }
+
+    input[type=text]::placeholder, input[type=number]::placeholder {
+        color: $border_input_color;
+    }
+    textarea {
+        outline-color: $button_hover_color; 
+    }
+    input[type=text]:focus, input[type=number]:focus{
+        cursor: auto;
+        border-color: $button_hover_color;
+    }
+
     .create_post_body{
         background-color: $white_color;
         border-radius: $border_box;
-
-        i {
+        
+        i{
             color: $base_menu_color;
         }
 
-        @extend %inputtext;
 
         label {
             padding-left: 0px;
@@ -395,6 +416,7 @@ option:checked {
             font-weight: 500;
             text-align: left;
         }
+        
         .row {
             margin: 0px 0px 0px 0px;
         }
@@ -404,14 +426,18 @@ option:checked {
             border-radius: 7px 0px 0px 7px !important;
         }
         #create_post_title {
-            width: 94.3%;
+            width: 95.5%;
             
             position: relative;
+        }
+        .detailed_address {
+            width: 100%;
         }
         #create_post_area {
             width: 10%;
         }
         textarea {
+            width: 60%;
             border: solid 1px $border_input_color;
         }
         .form-suffix {
@@ -426,11 +452,11 @@ option:checked {
             border-top: 1px solid $border_input_color;
             border-bottom: 1px solid $border_input_color;
             border-left: none;
-            background-color: $border_input_color;
+            background-color: $button_color_hover;
             
         }
         .form-suffix:hover {
-            background-color: $button_color_hover;
+            background-color: $border_input_color;
         }
 
         .type_post {
@@ -471,31 +497,94 @@ option:checked {
                     color: $border_input_color;
                 }
             }
-            .type_post_hidden {
-                visibility: hidden;
-            }
            
         } 
         p>span {
             color: $base_menu_bg;
         }
-    
+        .address, .type_post_hidden {
+            color: $button_color;
+            visibility: hidden;
+        }
+        .label-radio, .type_post_hidden, .create_post_rent {
+            font-weight: normal;
+        }
+        .classified-info {
+            background-color: $body_bg;
+            width: 60%;
+        }
+        .other_contact_info {
+            background-color: $body_bg;
+            width: 55%;
+            margin: auto;
+        }
+        // .icon_contact_info {
+        //     background-color: $white_color;
+        //     border: 1px $button_hover_color;
+        //     color: $button_hover_color;
+        //     text-align: center;
+        //     border-style: dashed;
+        //     i { 
+        //         color: $button_hover_color;
+        //     }
+        //     cursor: pointer;
+        // }
+
+            // input[type=file] {
+            //     // height: 120px; 
+            //     // width: 100px;
+            //     // background-color: $white_color;
+            //     // border: 1px dashed #c7ecee;
+            //     // cursor:pointer;
+            // }
+
+            // // input[type=file]:hover {
+            // //     background-color: red;
+            // //     transition: 0.2s;
+            // // }
+            // // input[type=file]::before {
+            // //     // content: 'fff';
+            // // }
+            // input[type=file]::-webkit-file-upload-button {
+            //     height: 120px; 
+            //     width: 100px;
+            //     background-color: $white_color;
+            //     border: 1px dashed #c7ecee;
+            //     cursor:pointer;
+            // }
+            // input[type=file]::-webkit-file-upload-button {
+            //     content: 'dd';
+            // }
+        
     }
-    #create_post_next {
+    #create_post_next, #button_post {
+
         background-color: $base_menu_bg;
         color: $white_color;
-        // font-weight: 500;
         border: none;
         cursor: pointer;
         width: 130px;
+        
     }
-
-    #create_post_next:disabled {
+    #create_post_next:hover, #button_post:hover {
+        background-color: #f5b504;
+    }
+    #create_post_next:disabled, #button_post:disabled {
         opacity: 0.5;
-        cursor: auto;
+        cursor: pointer;
+    }
+    #button_save:hover, #button_delete:hover{
+        background-color: $button_color_hover;
+        cursor: pointer;
     }
     .create_post_head{
         font-size: 19px;
         font-weight: 500;
+    }
+    #create_post_list_button {
+        box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+        position: -webkit-sticky;
+        position: sticky;
+        bottom	: 0;
     }
 }

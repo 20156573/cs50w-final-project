@@ -12,13 +12,11 @@
         <hr class="mb-5">
         <div>
             <!-- Tiêu đề -->
-            <div class="create_post_title row">
-                <label for="create_post_title" class="col-sm-1">* Tiêu đề</label>
-                <div class="input-group col-sm-11 pr-0">
-                    <input id="create_post_title" type="text" class="form-control" placeholder="Tiêu đề">
-                    <div class="input-group-prepend">
-                        <div class="form-suffix input-group-text">0/110</div>
-                    </div>
+            <div class="row">
+                <label for="create_post_title" class="col-md-1">* Tiêu đề</label>
+                <div class="col-md-11 pr-0">
+                    <input id="create_post_title" type="text" value="{{ title }}" placeholder="Tiêu đề">
+                    <button class="form-suffix" disabled></button>
                 </div>
             </div>
             <!-- Lựa chọn loại tin đăng -->

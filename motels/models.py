@@ -1,8 +1,3 @@
-# Create your tests here.
-# from django.db.models.signals import post_save
-# from django.dispatch import receiver
-
-# Create your models here.
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import (
@@ -126,23 +121,16 @@ class Commune(models.Model):
 
 
 class Post(models.Model):
-    class RentersGender(models.TextChoices):
-        NU = 0, _('Nữ')
-        NAM = 1, _('Nam')
-        NAMVANU = 2, _('Nam và nữ')
 
     title = models.CharField(max_length=110)
     description = models.TextField(max_length=1000)
     area = models.FloatField()
-    max_area = models.IntegerField(null=True, blank=True) #diện tích nhà dao động tới
-    renters_gender = models.IntegerField(choices=RentersGender.choices, default=RentersGender.NAMVANU)
-    furniture = models.TextField(max_length=500) #nội thất
+    renters_gender = models.IntegerField()
+    furniture = models.TextField(max_length=500, null=True, blank=True) #nội thất
 
     rent = models.IntegerField() #giá thuê nhà một tháng
     deposit = models.IntegerField(null=True, blank=True) #tiền đặt cọc
-    electricity_price = models.CharField(max_length=50, null=True, blank=True) #tiền điện
-    water_price = models.CharField(max_length=50, null=True, blank=True) #tiền nước
- 
+    
     is_roommate = models.BooleanField(default=False) #tìm người ở ghép
     is_room = models.BooleanField(default=False) #tìm người thuê nguyên phòng trọ
     is_house = models.BooleanField(default=False) #tìm người thuê nguyên căn nhà
@@ -157,14 +145,11 @@ class Post(models.Model):
             "title": self.title,
             "description": self.description,
             "area": self.area,
-            "max_area": self.max_area,
             "renters_gender": self.renters_gender,
             "furniture": self.furniture,
 
             "rent": self.rent,
             "deposit": self.deposit,
-            "electricity_price": self.electricity_price,
-            "water_prices": self.water_price,
 
             "is_roommate": self.is_roommate,
             "is_room": self.is_room,
@@ -178,7 +163,7 @@ class Post(models.Model):
 class PostAddress(models.Model):
     post = models.OneToOneField(Post, on_delete=models.CASCADE, primary_key=True)
     commune = models.ForeignKey(Commune, on_delete=models.CASCADE, related_name='address')
-    detailed_address = models.CharField(max_length=150, null=True, blank=True)
+    detailed_address = models.CharField(max_length=150)
 
     def __str__(self):
         return f"{self.detailed_address}, {self.commune}"
@@ -187,19 +172,17 @@ class Apartment(models.Model):
     post = models.OneToOneField(Post, on_delete=models.CASCADE, primary_key=True)
     number_of_bedrooms = models.IntegerField()
     number_of_toilets = models.IntegerField()
-    floor = models.CharField(max_length=15) #số tầng trên tổng số tầng
 
     def __str__(self):
         return f"{self.post}, có {self.number_of_bedrooms} phòng ngủ, \
-            có {self.number_of_toilets} phòng vệ sinh, \
-                ở tầng {self.floor} tầng"
+            có {self.number_of_toilets} phòng vệ sinh"
 
 class House(models.Model):
     post = models.OneToOneField(Post, on_delete=models.CASCADE, primary_key=True)
     number_of_bedrooms = models.IntegerField()
     number_of_toilets = models.IntegerField()
     total_floor = models.IntegerField()
- 
+
     def __str__(self):
         return f"{self.post}, nhà có {self.number_of_bedrooms} phòng ngủ, \
             có {self.number_of_toilets} phòng vệ sinh, \
@@ -207,8 +190,8 @@ class House(models.Model):
 
 class Room(models.Model):
     post = models.OneToOneField(Post, on_delete=models.CASCADE, primary_key=True)
-    max_rent = models.IntegerField(null=True, blank=True) #giá thuê nhà một tháng dao động tới
-    number_of_rooms = models.IntegerField() #Số phòng trọ còn trống để cho thuê
+    max_rent = models.IntegerField(null=True, blank=True)
+    number_of_rooms = models.IntegerField(null=True, blank=True) #Số phòng trọ còn trống để cho thuê
 
     def __str__(self):
         return f"{self.post}, còn {self.number_of_rooms} phòng trống"
@@ -229,9 +212,9 @@ class PostStatus(models.Model):
 
 class RegularUserHistory(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
-    post_status = models.ForeignKey(PostStatus, related_name='message', on_delete=models.PROTECT)
+    post_status = models.ForeignKey(PostStatus, related_name='message', on_delete=models.PROTECT, null = True)
     post = models.ForeignKey(Post, related_name='history', on_delete=models.CASCADE)
-    updated_by = models.ForeignKey(User, related_name='who', on_delete=models.PROTECT)
+    updated_by = models.ForeignKey(User, related_name='who', on_delete=models.PROTECT, null = True)
 
     def __str__(self):
         return f"{self.timestamp}, {self.post_status}, {self.post}, {self.updated_by}"
@@ -269,7 +252,7 @@ class Feedback(models.Model):
 class OtherFeedback(models.Model):
     feedback = models.CharField(max_length=100, blank=True)
 
-class FeedbackForHiding(models.Model):
+class UserFeedback(models.Model):
     regular_user_history = models.OneToOneField(RegularUserHistory, on_delete=models.PROTECT)
     feedback = models.ForeignKey(Feedback, on_delete=models.CASCADE, null=True, related_name='reason')
     other_feedback = models.ForeignKey(OtherFeedback, on_delete=models.CASCADE, related_name='other_reason', null=True)

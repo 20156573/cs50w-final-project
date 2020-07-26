@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'motels.apps.MotelsConfig',
+    'motels',
     'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',

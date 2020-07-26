@@ -5,13 +5,13 @@ from django.http import JsonResponse
 from django.core import serializers
 from django.template.loader import render_to_string
 # from django.shortcuts import HttpResponse
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.shortcuts import HttpResponseRedirect, render, get_object_or_404, HttpResponse
 from django.http import  Http404
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import User, Post, RegularUserHistory, Province, District
+from .models import *
 from .forms import RegisterForm, AccountAuthenticationForm, UpdateProfileForm
 # Create your views here.
 
@@ -99,6 +99,69 @@ def create_post_new(request):
 
         return render(request, 'motels/create_post_new.html', {'title': title, 'category': category, 'provinces': provinces})
 
+@transaction.atomic
+def create_post_new_action(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        category = request.POST['category']
+        furniture = request.POST['furniture'] 
+        description = request.POST['description']
+        renters_gender = request.POST['renters_gender']
+        area = request.POST['area']
+        # price
+        rent = request.POST['rent']
+        deposit = request.POST['deposit'] or None
+        
+        # address
+        # Kiểm tra commune tồn tại không
+        commune = Commune.objects.get(pk=request.POST['commune'])  
+        detailed_address = request.POST['detailed_address']
+
+        post = Post(title=title, furniture=furniture, description=description, renters_gender=renters_gender, \
+            area=area, rent=rent, deposit=deposit, poster=request.user)
+        address = PostAddress(post=post, commune=commune, detailed_address=detailed_address)
+
+        if category == '0':
+            # roommate
+            post.is_roommate=True
+            post.save()
+            number_of_roommate = request.POST['number_of_roommate']
+            roommate = Roommate(post=post, number_of_roommate=number_of_roommate)
+            roommate.save()
+            
+        elif category == '1':
+            # room
+            post.is_room=True
+            post.save()
+            number_of_rooms = request.POST['number_of_rooms'] or None
+            max_rent = request.POST['max_rent'] or None
+            room = Room(post=post, number_of_rooms=number_of_rooms, max_rent=max_rent)
+            room.save()
+            
+        elif category == '2':
+            # house
+            post.is_house=True
+            post.save()
+            number_of_bedrooms = request.POST['number_of_bedrooms']
+            number_of_toilets = request.POST['number_of_toilets']
+            total_floor = request.POST['total_floor']
+            house = House(number_of_bedrooms=number_of_bedrooms, number_of_toilets=number_of_toilets, total_floor=total_floor, post=post)
+            house.save()
+            
+        elif category == '3':
+            # apartment
+            post.is_apartment=True
+            post.save()
+            number_of_bedrooms = request.POST['number_of_bedrooms']
+            number_of_toilets = request.POST['number_of_toilets']
+            apartment = Apartment(number_of_toilets=number_of_toilets, number_of_bedrooms=number_of_bedrooms, post=post)
+            apartment.save()
+        else:
+            return HttpResponse('Sai phân loại bài đăng')
+        address.save()
+        return HttpResponse('Đã tạo bài đăng thành công')
+    return HttpResponseRedirect(reverse('create_post_category'))
+    
 # API function
         
 @csrf_exempt
@@ -106,13 +169,14 @@ def create_post_new(request):
 def edit_profile(request):
     data = dict()
     provinces = Province.objects.all()
-    if request.method == 'GET':
+    if request.method == 'POST':
         data['last_name'] =  request.user.last_name
         data['first_name'] = request.user.first_name
         data['user_address'] = request.user.address.id
         # data['y_address'] = serializers.serialize('json', provinces)
         data['all_address'] = [province.serialize() for province in provinces]
         return JsonResponse(data)
+    return HttpResponseRedirect(reverse('profile', args=(request.user.id,)))
         
 @csrf_exempt
 @login_required
@@ -132,9 +196,13 @@ def save_profile(request):
         data['last_name'] =  last_name
         data['first_name'] = first_name
         return JsonResponse(data)
+    return HttpResponseRedirect(reverse('profile', args=(request.user.id,)))
 
 def get_district(request, province_id):
-    data = dict()
     districts = District.objects.select_related('province').filter(province=province_id)
-    data['districts'] = serializers.serialize('json', districts)
     return JsonResponse(serializers.serialize('json', districts), safe=False)
+
+def get_commune(request, district_id):
+    communes = Commune.objects.select_related('district').filter(district=district_id)
+    return JsonResponse(serializers.serialize('json', communes), safe=False)
+

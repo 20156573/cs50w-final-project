@@ -2,7 +2,7 @@
 function getForm() {
     fetch(`edit_profile`,
     {
-        method: 'GET'
+        method: 'POST'
     })
     .then(response => response.json())
     .then(data => {

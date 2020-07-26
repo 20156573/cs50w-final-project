@@ -11,7 +11,7 @@
                 <p class="font-weight-light date-join"><i class="far fa-calendar-alt"></i>  {{ profile.get_date_joined }}</p>
             </div>
             {% if user.is_authenticated and user.id == profile.id %}
-                <button id="profile-edit-Btn">Chỉnh sửa hồ sơ</button>
+                <button id="profile-edit-Btn" class="profile-edit-Btn">Chỉnh sửa hồ sơ</button>
             {% endif %}
         </div>
     </div>
