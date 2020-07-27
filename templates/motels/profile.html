@@ -4,7 +4,7 @@
 
 {% block body %}
 <div class="profile px-3">
-    <div class="profile-grid-item pl-5 pt-4 pr-2 py-3">
+    <div class="profile-grid-item pl-5 pt-4 pr-2 pb-3">
         <div class="box shadow-sm px-4 py-4">
             <div>
                 <p class="full-name">{{ profile.get_full_name }}</p>
@@ -15,11 +15,50 @@
             {% endif %}
         </div>
     </div>
-    <div class="profile-grid-item pl-1 pt-4 pr-5 py-3">
+    <div class="profile-grid-item pl-1 pt-4 pr-5 pb-3">
         <div class="box shadow-sm px-4 py-4">
-            {% if user.is_authenticated and user.id == profile.id %}
-                <a class="nav-link" id="link-button-create_post" href="{% url 'create_post_category' %}">Đăng tin</a>
-            {% endif %}
+            <div>
+                <ul class="profile-horizontal-menu">
+                    {% if user.is_authenticated and user.id == profile.id %}
+                        <li><a href="">Tất cả</a> </li>
+                    {% endif %}
+                    <li class="active"><a href="">Đang đăng</a> </li>
+                    {% if user.is_authenticated and user.id == profile.id %}
+                        <li><a href="">Đang chờ duyệt</a></li>
+                        <li><a href="">Đã ẩn</a></li>
+                        <li><a href="">Đã bị khóa</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="d-flex">
+                <div class="search2">
+                    <input type="text" placeholder="Tìm kiếm" name="search" autocomplete="off">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </div>
+                {% if user.is_authenticated and user.id == profile.id %}
+                    <a class="nav-link ml-auto" id="link-button-create_post" href="{% url 'create_post_category' %}">Đăng tin</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="profile-grid-item pl-5 pt-0 pr-2 pb-3">
+        <div class=" px-4 py-4">
+            <div>
+                {% if user.is_authenticated and user.id == profile.id %}
+                <ul class="profile-vertical-menu">
+                    <li class="active"><a href="">Tin đăng của bạn</a></li>
+                    <li><a href="">Bản nháp</a></li>
+                    <li><a href="">Xem lại lịch sử</a></li>
+                    <hr>
+                    <li><a href="">Ví của bạn</a></li>
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="profile-grid-item pl-1 pr-5 pt-0">
+        <div class="box  shadow-sm px-4 py-4">
+            <!-- Bài đăng của người dùng đặt ở đây -->
         </div>
     </div>
 </div>
@@ -43,11 +82,11 @@
                         <div class="row">
                             <div class="col-sm-6 mb-3">
                                 <label for="last_name">Họ</label>
-                                <input id="last_name"  name="last_name" class="form-control " type="text" placeholder="Họ">
+                                <input id="last_name"  name="last_name"  type="text" placeholder="Họ">
                             </div>
                             <div class="col-sm-6 mb-3">
                                 <label for="first_name">Tên</label>
-                                <input id="first_name" name="first_name" class="form-control " type="text" placeholder="Tên">
+                                <input id="first_name" name="first_name"  type="text" placeholder="Tên">
                             </div>
                         </div>
                         <div>

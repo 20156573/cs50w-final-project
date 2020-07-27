@@ -43,12 +43,15 @@ function add_address(data){
 }
 document.addEventListener('DOMContentLoaded', () => {
     let modal = document.querySelector("#profile-edit-modal");
-    let btn = document.querySelector("#profile-edit-Btn");
     let span = document.getElementsByClassName("close")[0];
-    btn.onclick = function() {
-        modal.style.display = "block";
-        
+    if (document.querySelector("#profile-edit-Btn")) {
+        let btn = document.querySelector("#profile-edit-Btn");
+        btn.onclick = function() {
+            modal.style.display = "block";
+            
+        }
     }
+    
 
     span.onclick = () => {
         modal.style.display = "none";

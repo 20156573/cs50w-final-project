@@ -159,8 +159,8 @@ def create_post_new_action(request):
         else:
             return HttpResponse('Sai phân loại bài đăng')
         address.save()
-        return HttpResponse('Đã tạo bài đăng thành công')
-    return HttpResponseRedirect(reverse('create_post_category'))
+        return HttpResponseRedirect(reverse('create_post_category'))
+    return HttpResponseRedirect(reverse('profile', args=(request.user.id,)))
     
 # API function
         

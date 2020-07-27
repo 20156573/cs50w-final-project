@@ -212,9 +212,9 @@ class PostStatus(models.Model):
 
 class RegularUserHistory(models.Model):
     timestamp = models.DateTimeField(default=timezone.now)
-    post_status = models.ForeignKey(PostStatus, related_name='message', on_delete=models.PROTECT, null = True)
+    post_status = models.ForeignKey(PostStatus, related_name='message', on_delete=models.PROTECT)
     post = models.ForeignKey(Post, related_name='history', on_delete=models.CASCADE)
-    updated_by = models.ForeignKey(User, related_name='who', on_delete=models.PROTECT, null = True)
+    updated_by = models.ForeignKey(User, related_name='who', on_delete=models.PROTECT)
 
     def __str__(self):
         return f"{self.timestamp}, {self.post_status}, {self.post}, {self.updated_by}"

@@ -10,9 +10,9 @@ $border_box: 3px;
 
 $border_button: 7px;
 
-$button_color: #4aac44;
+$button_color: #f6c90e;
 
-$button_hover_color: #2Ebc4f;
+$button_hover_color: #fb0;
 
 $border_input_color: #bdc3c7;
 
@@ -66,18 +66,18 @@ option:checked {
 
 %inputtext {
     input {
-        
+        outline: none;
         border-radius: $border_button;
         height: 32px;
         padding: 0px 12px 0px 12px;
         font-size: 14px;
         cursor: auto;
-        border: solid 1px $border_input_color;
+        border: solid 1px $button_color_hover
     }
     input:focus {
         outline: none;
         cursor: auto;
-        border-color: #838080;
+        border-color: $border_input_color;
     }
 }
 // Cho menu
@@ -152,7 +152,43 @@ option:checked {
         }
     }  
 }
+.search2 {
+    float: left;
+    padding: none;
+    height: 32px;
+    border: 1px solid $button_color_hover;
+    border-radius: $border_button;
+    // width: 400px;
+    
+    input[type=text] {
+        outline: none;
+        width: 350px;
+        padding: 5px 5px 5px 12px;
+        border: none;
+        border-radius: $border_button 0px 0px $border_button;
+    }
+    button {
+        border-radius: 0px $border_button $border_button 0px;
+        float: right;
+        padding: 8px 10px;
 
+        background: $white_color;
+        font-size: 14px;
+        border: none;
+        cursor: pointer;
+
+        i {
+            color: $button_color_hover;
+        }
+    }
+    button:focus {
+        outline: none;
+    }
+}
+.search2:hover {
+    border-color: $border_input_color;
+    transition: 0.3s;
+}
 // Cho trang đăng ký
 .register-body { 
     .base-menu {
@@ -227,14 +263,46 @@ option:checked {
 .profile {
     color: $base_menu_color;
     display: grid;
-    grid-template-columns: 380px auto;
+    grid-template-columns: 310px auto;
     padding: 0px;
 
     .profile-grid-item {
         // border: 1px solid rgba(0, 0, 0, 0.8);
         // padding: 15px 10px 15px 50px;
 
+        .profile-vertical-menu {
+            list-style-type: none;
+            padding: 0px;
+            line-height: 1.5;
+            li {
+                padding: 5px 6px 5px 6px;
+                cursor: pointer;
+                border-radius: $border_box;
+                margin-bottom: 1px;
+                border: 1px solid $body_bg;
+            }
+            li:hover:not(.active)  {
+                a {
+                    color: $button_color;
+                }
+                border-color: $button_color_2;
+                background-color: $white_color;
+            }
+            .active {
+                font-weight: 500;
+                background-color: $white_color;
+                border-color: $button_color_2;
+                a {
+                    color: $button_color;
+                }
+            }
+            li>a {
+                color: $base_menu_color;
+                text-decoration: none;
+            }
+        }
         .box {
+            // @extend %inputtext;
             background-color: $white_color;
             // margin-top: 0px;
             border-radius: $border_box;
@@ -268,6 +336,36 @@ option:checked {
             }
             #link-button-create_post:hover {
                 background-color: $button_hover_color;
+            }
+            .profile-horizontal-menu {
+                list-style-type: none;
+                padding: 0px;
+                margin: none;
+                
+                border-bottom: solid 1px $button_color_hover;
+                li {
+                    display: inline-block;
+                    margin: none;
+                    padding: 15px 20px 15px 20px;
+                    border-bottom: solid 2.5px $white_color;
+                }
+                li:hover:not(.active) {
+                    cursor: pointer;
+                    border-bottom: solid 2.5px $border_input_color;
+                }
+                li>a {
+                    color: $base_menu_color;
+                }
+                li>a:hover {
+                    text-decoration: none;
+                }
+                .active{
+                    border-bottom: solid 2.5px $base_menu_bg;
+                }
+                .active a {
+                    font-weight: 500;
+                    color: $base_menu_bg;
+                }
             }
         }
     }
@@ -513,48 +611,38 @@ option:checked {
             background-color: $body_bg;
             width: 60%;
         }
+        input[type=file]::-webkit-file-upload-button {
+            display: none;
+        }
+        input[type=file] {
+            width: 77px;
+            outline: none;
+        }
+        .post-image {
+            position: relative;
+        }
+        input[type=file]::before{
+            position: absolute;
+            bottom:0%;
+            content: 'Ảnh';  
+            background-color: $button_color_hover;
+            display: inline-block;
+            border-radius: $border_button;
+            padding: 8px 22px;
+            cursor: pointer;
+            outline: none;
+        }
+        input[type=file]:hover::before {
+            background-color: $border_input_color;
+            transition: 0.3s;
+        }
+
         .other_contact_info {
             background-color: $body_bg;
             width: 55%;
             margin: auto;
         }
-        // .icon_contact_info {
-        //     background-color: $white_color;
-        //     border: 1px $button_hover_color;
-        //     color: $button_hover_color;
-        //     text-align: center;
-        //     border-style: dashed;
-        //     i { 
-        //         color: $button_hover_color;
-        //     }
-        //     cursor: pointer;
-        // }
-
-            // input[type=file] {
-            //     // height: 120px; 
-            //     // width: 100px;
-            //     // background-color: $white_color;
-            //     // border: 1px dashed #c7ecee;
-            //     // cursor:pointer;
-            // }
-
-            // // input[type=file]:hover {
-            // //     background-color: red;
-            // //     transition: 0.2s;
-            // // }
-            // // input[type=file]::before {
-            // //     // content: 'fff';
-            // // }
-            // input[type=file]::-webkit-file-upload-button {
-            //     height: 120px; 
-            //     width: 100px;
-            //     background-color: $white_color;
-            //     border: 1px dashed #c7ecee;
-            //     cursor:pointer;
-            // }
-            // input[type=file]::-webkit-file-upload-button {
-            //     content: 'dd';
-            // }
+     
         
     }
     #create_post_next, #button_post {

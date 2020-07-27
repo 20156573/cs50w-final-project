@@ -143,16 +143,37 @@
             <hr class="mb-5">
             <div class="row">
                 <label class="col-md-2">Hình ảnh nhà</label>
-                <div class="col-md-10 pl-0">
-                    <input class="mt-4" type="file"  id="image_1" name="image_1">
-                    <input class="mt-4" type="file"  id="image_2" name="image_2">
-                    <input class="mt-4" type="file"  id="image_3" name="image_3">
-                    <input class="mt-4" type="file"  id="image_4" name="image_4">
-                    <input class="mt-4" type="file"  id="image_5" name="image_5">
-                    <input class="mt-4" type="file"  id="image_6" name="image_6">
+                <div class="col-md-10 pl-0 post-image">
+                    <div class="img_view float-right col-md-10"></div>
+                    <input id="post-image-input" class="mt-4" multiple="multiple" type="file" name="image">
                 </div>
             </div>
-            
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    var image = [];
+                    document.querySelector('#post-image-input').onchange = function() {
+                        
+                        if (this.files && this.files[0]) {
+                            for (var i = 0; i < this.files.length; i++){
+                                let reader = new FileReader();
+                                reader.onload = function (e) {
+                                    let img = document.createElement('img');
+                                    img.src = e.target.result;
+                                    img.style.height = '100px';
+                                    img.style.marginRight = '5px';
+                                    document.querySelector('.img_view').appendChild(img);
+                                };
+
+                                image.push(this.files[i]);
+                                reader.readAsDataURL(this.files[i]);
+                            }
+                        }
+                        console.log(`image: ${image}`);
+                        console.log(this.files);
+                            
+                    }
+                })
+            </script>
         </div>
 
         <!-- Thông tin liên hệ -->
@@ -167,26 +188,13 @@
                     <!-- thong tin lien he cua user -->
                     <div class="col-sm-5">Mr/Mrs: {{ user.get_full_name }}</div>
                     <div class="col-sm-7">Sdt: {{ user.get_contact_number }}</div>
-                    <!-- <div class="col mt-5" class="">
-                        <div class="row container container-fluid add_other_contact_info">
-                            <div class="col-5 pl-0">
-                                <input type="text" placeholder="Mr/Mrs">
-                            </div>
-                            <div class="col-7"> 
-                                <input type="text" name="" id="" placeholder="Số điện thoại">
-                            </div>
-                        </div>
-                        <div class="icon_contact_info p-2">
-                            <i class="fas fa-plus"></i> Thêm thông tin liên hệ
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </div>
         <div id="create_post_list_button" class="px-5 pt-2  pb-2 mx-3 create_post_body mt-4 mb-4">
             <div class="d-flex">
-                <div class="mr-auto p-2"><input id="button_delete" class="justify-content-start profile-edit-Btn" type="button" value="Xoá"></div>
-                <div class="p-2"><input id="button_save" class="profile-edit-Btn" type="button" value="Lưu & ẩn"></div>
+                <div class="mr-auto p-2"><input id="button_delete" class="justify-content-start profile-edit-Btn px-4" type="button" value="Xoá"></div>
+                <div class="p-2"><input id="button_save" class="profile-edit-Btn px-4" type="button" value="Lưu & ẩn"></div>
                 <div class="p-2"><input id="button_post" class="profile-edit-Btn" type="submit" value="Đăng"></div>
             </div>
         </div>
