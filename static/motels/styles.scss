@@ -1,6 +1,6 @@
 $body_bg: #fafafa;
 
-$base_menu_bg: #f6c90e;
+$base_menu_bg: #e63757;
 
 $white_color: white;
 
@@ -10,9 +10,9 @@ $border_box: 3px;
 
 $border_button: 7px;
 
-$button_color: #f6c90e;
+$button_color: #e63757;
 
-$button_hover_color: #fb0;
+$button_hover_color: #e63757;
 
 $border_input_color: #bdc3c7;
 
@@ -20,6 +20,7 @@ $button_color_hover: #e9ebee;
 
 $button_color_2: #f5f6f7;
 
+$opacity_color: #95aac9;
 .base-body {
     font-size: 15px;
     line-height: 1;
@@ -81,33 +82,43 @@ option:checked {
     }
 }
 // Cho menu
+
+.profile-post-pre-avatar {
+    object-fit:cover; 
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid $button_color_hover;
+}
 .base-menu {
     line-height: 1;
     font-weight: bold;
     line-height: 1;
     overflow: hidden;
-    background-color: $base_menu_bg;
-
+    background-color: $white_color;
     %base-menu-a {
-        color: #ffffff;
         text-align: center;
         padding: 14px 16px;
         text-decoration: none;
-        // font-size: 15px;
     }
     .base-menu-left {
         @extend %base-menu-a;
-        // padding: 10px 12px;
+        color: $button_color;
         float: left;
     }
 
     .base-menu-right {
         @extend %base-menu-a;
+        color: $opacity_color;
         float: right;
     }
-
-    a:hover,  a.active {
+    .personal-page-link {
+        padding-top: 8px;
+        padding-bottom: 0px;
+    }
+    a:hover:not(.fa-house-user),  a.active {
         color: $base_menu_color; 
+        transition: 0.4s;
     }
 
     .base-menu-avatar-mini{
@@ -120,30 +131,36 @@ option:checked {
         float: left;
         input[type=text] {
             outline: none;
-            padding: 6px;
+            padding: 6px 6px 6px 12px;
             margin: 6px 0px 6px 10px;
-            border: none;
-            border-radius: $border_button 0px 0px $border_button;
+            
+            border-radius: 15px 0px 0px  15px;
             width: 220px;
             -webkit-transition: width .35s ease-in-out;
             transition: width .35s ease-in-out;
+            border: 1px solid $opacity_color;
+            border-right: none;
+        }
+        input[type=text]::placeholder{
+            color: $opacity_color;
         }
         input[type=text]:focus {
             width: 400px;
         }
         button {
-            border-radius: 0px $border_button $border_button 0px;
+            border-radius: 0px 15px 15px 0px;
             float: right;
             padding: 9px 10px;
             margin-top: 6px;
             margin-bottom: 6px;
             background: $white_color;
             font-size: 14px;
-            border: none;
+            border: 1px solid $opacity_color;
+            border-left: none;
             cursor: pointer;
 
             i {
-                color: $base_menu_bg;
+                color: $opacity_color;
             }
         }
         button:hover {
@@ -267,8 +284,6 @@ option:checked {
     padding: 0px;
 
     .profile-grid-item {
-        // border: 1px solid rgba(0, 0, 0, 0.8);
-        // padding: 15px 10px 15px 50px;
 
         .profile-vertical-menu {
             list-style-type: none;
@@ -302,10 +317,9 @@ option:checked {
             }
         }
         .box {
-            // @extend %inputtext;
             background-color: $white_color;
-            // margin-top: 0px;
             border-radius: $border_box;
+
             .date-join, .full-name {
                 cursor: pointer;
             }
@@ -315,7 +329,7 @@ option:checked {
             }
 
             i {
-                opacity: 0.6;
+                color: $border_input_color;
                 margin-right: 3px;
                 
             }
@@ -351,7 +365,7 @@ option:checked {
                 }
                 li:hover:not(.active) {
                     cursor: pointer;
-                    border-bottom: solid 2.5px $border_input_color;
+                    border-bottom: solid 2.5px $opacity_color;
                 }
                 li>a {
                     color: $base_menu_color;
@@ -367,6 +381,63 @@ option:checked {
                     color: $base_menu_bg;
                 }
             }
+            // bài đăng xem trước
+           
+            .profile-post-pre {
+                .pre-post-link-pro {
+                    color: $base_menu_color;
+                    font-weight: 500;
+                }
+                .pre-post-link-ava {
+                    text-decoration: none;
+                }
+                .profile-post-pre-image {
+                    object-fit:cover; 
+                    border-radius: 3px;
+                    height: 100px; 
+                }
+                .update-time, .pre-post-address, .pre-post-description {
+                    color: $opacity_color;
+                    font-size: 14px;
+                }
+                .pre-post-description {
+                    display: flex;
+                    span {
+                        display: inline-block; /* <- Prevent <tr> in a display css */
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        overflow: hidden;
+                    }
+                }
+                .update-time {
+                    span {
+                        color: $button_color !important;
+                    }
+                }
+                .text-capitalize {
+                    text-decoration: none;
+                    font-size: 17px;
+                    font-weight: 500;
+                    color: $base_menu_color;
+                    
+                    cursor: pointer;
+                }
+                .pre-post-address {
+                    position: absolute;
+                    bottom: 0px;
+                }
+                .rent-center {
+                    position: absolute; 
+                    top:50%; 
+                    right: 15px;
+                    transform: translate(0%, -50%);
+                    p {
+                        margin: 0px;
+                        color: $button_hover_color;
+                    }
+                }
+            }
+            
         }
     }
 }
@@ -434,6 +505,9 @@ option:checked {
 
             
         }
+        // #editProBtn {
+        //     cursor: pointer;
+        // }
     }
 
 }
@@ -618,12 +692,35 @@ option:checked {
             width: 77px;
             outline: none;
         }
+
         .post-image {
-            position: relative;
+
+            div {
+                cursor: pointer;
+                font-size: 20px;
+                margin-right: 3px;
+                position: relative;
+                display: inline-block;
+            }
+            span {
+                font-weight: 500;
+                cursor: pointer;
+                top: 0px;
+                position: absolute;
+                right: 7px;
+            }
+            span:hover {
+                color: $button_color_2;
+            }
+            img {
+                height: 100px; 
+                width: 100px; 
+                object-fit:cover;
+            }
         }
+
         input[type=file]::before{
-            position: absolute;
-            bottom:0%;
+            vertical-align: auto;
             content: 'Ảnh';  
             background-color: $button_color_hover;
             display: inline-block;
@@ -655,7 +752,8 @@ option:checked {
         
     }
     #create_post_next:hover, #button_post:hover {
-        background-color: #f5b504;
+        // background-color: rgb(212, 44, 75);
+        opacity: 0.9;
     }
     #create_post_next:disabled, #button_post:disabled {
         opacity: 0.5;

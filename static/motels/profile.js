@@ -7,7 +7,7 @@ function getForm() {
     .then(response => response.json())
     .then(data => {
         console.log(data)
-        
+          
         let y = data.all_address.map(add_address);
         document.querySelector('#first_name').value = data.first_name;
         document.querySelector('#last_name').value = data.last_name;

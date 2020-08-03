@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         case '1':
             document.querySelector('.create_post_category_p').innerHTML = 'Cho thuê phòng trọ';
             document.querySelector('.classified-info').innerHTML = `<div class="row">
-                <label class="col-sm-3 label-radio" for="">Bạn còn</label>
+                <label class="col-sm-3 label-radio" for="">Bạn cho thuê</label>
                 <input class="col-sm-6" type="number" id="create-post-number_of_rooms" name="number_of_rooms" placeholder="VD: 2">
                 <label class="col-sm-3 label-radio pl-4" for="">phòng</label>
             </div>`;
@@ -214,14 +214,59 @@ document.addEventListener('DOMContentLoaded', () => {
         
     });
 
-});
 
-// function checkFrom() {
-//     if ((title.value != '') && (detailed_address != '')) {
+    var image = [];
+    document.querySelector('#post-image-input').onchange = function(event) {
+        if (this.files && this.files[0]) {
+            document.querySelector('.post-image small').hidden = true;
+            for (var i = 0; i < this.files.length; i++){
 
-//         document.querySelector('#button_post').disabled = false;
-//     }
-//     else {
-//         document.querySelector('#button_post').disabled = true;
-//     }
-// }
+                let index = image.length;
+                let reader = new FileReader();
+
+                reader.onload = function (e) {
+                    let div_img = document.createElement('div');
+                    div_img.innerHTML = `<img src="${e.target.result}" alt=""><span data-index="${index}" class='hide-img'>x</span>`;
+                    document.querySelector('.img_view').appendChild(div_img);
+                };
+                image.push(this.files[i]);
+                reader.readAsDataURL(this.files[i]);
+            }
+
+            
+            console.log(this.files);
+        }
+        console.log(image);
+    }
+    document.addEventListener('click', event => {
+        const element = event.target;
+        if (element.className === 'hide-img') {
+            console.log(element.dataset.index);
+            image[element.dataset.index] = '';
+            console.log(image);
+            element.parentElement.remove();
+        }
+        if (element.id ==='button_post') {
+            var images = [];
+            for (var i = 0; i < image.length; i++) {
+                if (image[i] != '') {
+                    images.push(image[i]);
+                }
+            }
+            let list = new DataTransfer();
+            for (var i=0; i<images.length; i++){
+                let file = images[i];
+                list.items.add(file);
+            }
+
+            let myFileList = list.files;
+            document.querySelector('#post-image-input').files = myFileList;
+            
+            if (myFileList.length === 0) {
+                document.querySelector('.post-image small').innerHTML = "vui lòng chọn ít nhất một ảnh.";
+                document.querySelector('.post-image small').hidden = false;
+            }
+
+        }
+    });
+})

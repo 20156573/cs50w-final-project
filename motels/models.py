@@ -1,3 +1,4 @@
+import re
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import (
@@ -6,6 +7,25 @@ from django.contrib.auth.models import (
 from django.utils.translation import gettext_lazy as _
 # from PIL import Image
 # Create your models here.
+
+def no_accent_vietnamese(s):
+    s = s.encode().decode('utf-8')
+    s = re.sub(u'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
+    s = re.sub(u'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
+    s = re.sub(u'[èéẹẻẽêềếệểễ]', 'e', s)
+    s = re.sub(u'[ÈÉẸẺẼÊỀẾỆỂỄ]', 'E', s)
+    s = re.sub(u'[òóọỏõôồốộổỗơờớợởỡ]', 'o', s)
+    s = re.sub(u'[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]', 'O', s)
+    s = re.sub(u'[ìíịỉĩ]', 'i', s)
+    s = re.sub(u'[ÌÍỊỈĨ]', 'I', s)
+    s = re.sub(u'[ùúụủũưừứựửữ]', 'u', s)
+    s = re.sub(u'[ƯỪỨỰỬỮÙÚỤỦŨ]', 'U', s)
+    s = re.sub(u'[ỳýỵỷỹ]', 'y', s)
+    s = re.sub(u'[ỲÝỴỶỸ]', 'Y', s)
+    s = re.sub(u'Đ', 'D', s)
+    s = re.sub(u'đ', 'd', s)
+    return s.encode('utf-8').decode("utf-8")
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, last_name, first_name, password=None):
@@ -83,6 +103,10 @@ class User(AbstractBaseUser, PermissionsMixin):
             return self.email
         return full_name.strip()
 
+    def get_full_name_link(self):
+        e = self.email[0:self.email.index("@")] + '.' + str(self.id)
+        return e
+
     def __str__(self):
         return '{} <{}>'.format(self.get_full_name(), self.email)
 
@@ -130,11 +154,14 @@ class Post(models.Model):
 
     rent = models.IntegerField() #giá thuê nhà một tháng
     deposit = models.IntegerField(null=True, blank=True) #tiền đặt cọc
-    
-    is_roommate = models.BooleanField(default=False) #tìm người ở ghép
-    is_room = models.BooleanField(default=False) #tìm người thuê nguyên phòng trọ
-    is_house = models.BooleanField(default=False) #tìm người thuê nguyên căn nhà
-    is_apartment = models.BooleanField(default=False) #tìm người thuê nguyên chung cư
+    category = models.IntegerField() 
+    update_time = models.DateTimeField(auto_now_add=True)
+    status = models.IntegerField(default=0)
+
+    #tìm người ở ghép 0
+    #tìm người thuê nguyên phòng trọ 1
+    #tìm người thuê nguyên căn nhà 2
+    #tìm người thuê nguyên chung cư 3
     
     other_contact_info = models.CharField(max_length=35, null=True, blank=True)
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
@@ -150,15 +177,33 @@ class Post(models.Model):
 
             "rent": self.rent,
             "deposit": self.deposit,
-
-            "is_roommate": self.is_roommate,
-            "is_room": self.is_room,
-            "is_house": self.is_house,
-            "is_apartment": self.is_apartment,
+            'update_time': self.update_time,
+            'category': self.category,
 
             "contact_info": self.other_contact_info,
             "poster": self.poster.id,
         }
+        
+    def getCategory(self):
+        category_c = {
+            0: 'Tìm người ở ghép',
+            1: 'Cho thuê phòng trọ',
+            2: 'Cho thuê nhà nguyên căn',
+            3: 'Cho thuê nguyên căn chung cư'
+        }
+        return category_c[self.category]
+
+    def getUpdateTime(self):
+        now = timezone.now()
+        before = self.update_time
+        day_left = (now.date() - before.date()).days
+        if day_left == 0:
+            return "Hôm nay"
+        return f"{day_left} ngày"
+
+    def get_title_link(self):
+        s = no_accent_vietnamese(self.title).replace(' ', '-').lower()
+        return s
 
 class PostAddress(models.Model):
     post = models.OneToOneField(Post, on_delete=models.CASCADE, primary_key=True)
@@ -205,19 +250,18 @@ class Roommate(models.Model):
     
 class PostStatus(models.Model):
     status = models.CharField(verbose_name='Status', max_length=400)
-    is_active = models.BooleanField(verbose_name='Active', default=False)
 
     def __str__(self):
         return f"{self.status}"
 
 class RegularUserHistory(models.Model):
-    timestamp = models.DateTimeField(default=timezone.now)
-    post_status = models.ForeignKey(PostStatus, related_name='message', on_delete=models.PROTECT)
+    created_at = models.DateTimeField(default=timezone.now)
+    status = models.ForeignKey(PostStatus, related_name='message', on_delete=models.PROTECT)
     post = models.ForeignKey(Post, related_name='history', on_delete=models.CASCADE)
     updated_by = models.ForeignKey(User, related_name='who', on_delete=models.PROTECT)
 
     def __str__(self):
-        return f"{self.timestamp}, {self.post_status}, {self.post}, {self.updated_by}"
+        return f"{self.created_at}, {self.status}, {self.post}, {self.updated_by}"
         
     def get_weekday(self):
         return lambda x: "Thứ hai" if x == 0 else "Thứ ba" if x == 1 else "Thứ tư"\
@@ -226,7 +270,7 @@ class RegularUserHistory(models.Model):
 
     def get_how_many_day_ago(self):
         now = timezone.now()
-        before = self.timestamp
+        before = self.created_at
         day_left = (now.date() - before.date()).days
         week_day = self.get_weekday()(before.weekday())
         dayandmonth = f"{before.day} tháng {before.month}"
@@ -240,22 +284,26 @@ class RegularUserHistory(models.Model):
             return f"{day_left} ngày trước, {week_day}, {dayandmonth}"
 
     def get_hourandminute(self):
-        hour = self.timestamp.hour
+        hour = self.created_at.hour
         if hour >= 12:
-            return f"{hour}:{self.timestamp.minute} PM"
+            return f"{hour}:{self.created_at.minute} PM"
         if hour < 12:
-            return f"{hour}:{self.timestamp.minute} AM"
+            return f"{hour}:{self.created_at.minute} AM"
 
 class Feedback(models.Model):
-    feedback = models.CharField(max_length=70, blank=True)
+    action_flag = models.IntegerField(default=3)
+    feedback = models.CharField(max_length=100)
 
 class OtherFeedback(models.Model):
-    feedback = models.CharField(max_length=100, blank=True)
+    action_flag = models.IntegerField(default=3)
+    feedback = models.CharField(max_length=150)
+    created_at = models.DateTimeField(auto_now_add=True)
+    post = models.ForeignKey(Post, on_delete=models.PROTECT)
 
 class UserFeedback(models.Model):
-    regular_user_history = models.OneToOneField(RegularUserHistory, on_delete=models.PROTECT)
-    feedback = models.ForeignKey(Feedback, on_delete=models.CASCADE, null=True, related_name='reason')
-    other_feedback = models.ForeignKey(OtherFeedback, on_delete=models.CASCADE, related_name='other_reason', null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    feedback = models.ForeignKey(Feedback, on_delete=models.CASCADE, related_name='reason')
+    post = models.ForeignKey(Post, on_delete=models.PROTECT, related_name='object')
 
 class Image(models.Model):
     image = models.ImageField(upload_to='photo_post/')

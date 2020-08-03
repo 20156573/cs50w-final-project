@@ -1,5 +1,5 @@
 // Xử lý ô input nhập title 
-var selected = "rgb(246, 201, 14)";
+var selected = "rgb(230, 55, 87)";
 var unselected = "rgb(75, 75, 75)";
 var post_type, title;
 // Tạo form

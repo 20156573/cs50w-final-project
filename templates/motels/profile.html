@@ -57,8 +57,42 @@
         </div>
     </div>
     <div class="profile-grid-item pl-1 pr-5 pt-0">
-        <div class="box  shadow-sm px-4 py-4">
+        <div class="box  shadow-sm px-4 pt-4 pb-4">
+            <!-- ĐANG ĐĂNG -->
             <!-- Bài đăng của người dùng đặt ở đây -->
+            {% for post in posts %}
+            
+            {% if not forloop.first %}
+                <hr class="mt-4">
+            {% endif %}
+            <div class="profile-post-pre">
+                <a class="pre-post-link-ava" href="{% url 'profile' request.user.get_full_name_link %}">
+                    <img class="profile-post-pre-avatar" src="{{MEDIA_URL}}/{{request.user.avatar}}" alt="Ảnh đại diện"> 
+                </a>
+                <a class="pre-post-link-pro" href="{% url 'profile' request.user.get_full_name_link %}"> {{ request.user.get_full_name }}</a>
+                <a class="update-time" href=""> &#8226; <span>{{ post.getCategory }}</span> &#8226; {{post.getUpdateTime}}</a>
+                <div class="row mt-3">
+                    <div class="col-md-2">
+                        {% if post.image %}
+                            <a href=""><img class="img-fluid profile-post-pre-image" src="{{MEDIA_URL}}/{{post.image}}" alt="Ảnh bài đăng"></a>
+                        {% else %}
+                            Bài đăng chưa có ảnh
+                        {% endif %}
+                    </div>
+                    <div class="col-md-7 pr-0">
+                        <div><a href="{% url 'view_own_post' request.user.get_full_name_link post.get_title_link post.id %}" class="text-capitalize">{{post.title}}</a></div>
+                        <div class="mt-2 pre-post-description"><span>{{ post.description }}</span></div>
+                        <div class="pre-post-address"><i class="fas fa-map-marked-alt"></i> {{post.address}}</div>
+                    </div>
+                    
+                    <div class="col-md-3 p-0">
+                        <div class="rent-center"><p>{{post.rent}} <samp>đ/tháng</samp></p></div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                <small>Bạn chưa đăng tin nào</small>
+            {% endfor %}
         </div>
     </div>
 </div>
@@ -86,12 +120,13 @@
                             </div>
                             <div class="col-sm-6 mb-3">
                                 <label for="first_name">Tên</label>
-                                <input id="first_name" name="first_name"  type="text" placeholder="Tên">
+                                <input id="first_name" name="first_name" type="text" placeholder="Tên">
                             </div>
                         </div>
                         <div>
                             <label for="user_address">Địa chỉ</label>
                             <select name="address"  id="user_address">
+                                <option  selected disabled hidden style='display: none' value="">Tỉnh</option>
                             </select>
                         </div>
                         
@@ -100,14 +135,14 @@
                     </form>
                 </div>
                 <div class="col-sm-4">
-                    <img src="{{MEDIA_URL}}default.png" class="img-thumbnail mg-fluid rounded-circle" alt="Ảnh đại diện của bạn">
+                    <img src="{{MEDIA_URL}}/{{request.user.avatar}}" class="img-thumbnail mg-fluid rounded-circle" alt="Ảnh đại diện của bạn">
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-
 {% endif %}
+
 <script src="{% static 'motels/profile.js' %}"></script>
 {% endblock %}

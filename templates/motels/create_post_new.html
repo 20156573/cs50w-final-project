@@ -39,7 +39,7 @@
             <div class="row mt-4">
                 <label class="col-md-2">* Diện tích</label>
                 <div class="col-md-10 pr-0 ">
-                    <input id="create_post_area" required name="area" type="text">
+                    <input id="create_post_area" required name="area" type="number">
                     <button class="form-suffix" disabled>m2</button>
                 </div>
             </div>
@@ -144,38 +144,14 @@
             <div class="row">
                 <label class="col-md-2">Hình ảnh nhà</label>
                 <div class="col-md-10 pl-0 post-image">
-                    <div class="img_view float-right col-md-10"></div>
-                    <input id="post-image-input" class="mt-4" multiple="multiple" type="file" name="image">
+                    <div class="img_view float-right col-md-10">    
+                    </div>
+                    <input id="post-image-input" required name="image" class="mt-4" multiple="multiple" accept="image/x-png,image/jpeg" type="file">
+                    <small hidden></small>
                 </div>
             </div>
-            <script>
-                document.addEventListener('DOMContentLoaded', () => {
-                    var image = [];
-                    document.querySelector('#post-image-input').onchange = function() {
-                        
-                        if (this.files && this.files[0]) {
-                            for (var i = 0; i < this.files.length; i++){
-                                let reader = new FileReader();
-                                reader.onload = function (e) {
-                                    let img = document.createElement('img');
-                                    img.src = e.target.result;
-                                    img.style.height = '100px';
-                                    img.style.marginRight = '5px';
-                                    document.querySelector('.img_view').appendChild(img);
-                                };
-
-                                image.push(this.files[i]);
-                                reader.readAsDataURL(this.files[i]);
-                            }
-                        }
-                        console.log(`image: ${image}`);
-                        console.log(this.files);
-                            
-                    }
-                })
-            </script>
+            
         </div>
-
         <!-- Thông tin liên hệ -->
         
         <div class="create_post_body shadow-sm px-5 pt-4 pb-5 mx-3 mt-4"> 

@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core import serializers
 from django.template.loader import render_to_string
+from django.core.files.storage import FileSystemStorage
 # from django.shortcuts import HttpResponse
 from django.db import IntegrityError, transaction
 from django.shortcuts import HttpResponseRedirect, render, get_object_or_404, HttpResponse
@@ -64,12 +65,25 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
-def profile(request, user_id):
+def profile(request, username):
+
     try:
+        user_id = int(username[username.rindex(".")+1:len(username)])
         user = User.objects.get(pk=user_id)
     except User.DoesNotExist:
         raise Http404("Người dùng này không tồn tại hoặc không còn hoạt động")
-    posts = user.posts.all().order_by('-id')
+ 
+    except ValueError:
+        raise Http404("Value error")
+    if username != user.get_full_name_link():
+        raise Http404("Người dùng này không tồn tại hoặc không còn hoạt động")
+
+    posts = Post.objects.raw("select DISTINCT ON (id) p.id, p.title, p.rent, p.category, i.image, concat\
+        (motels_district.name, ', ', motels_province.name ) as address from motels_post p \
+        left join motels_image as i on i.post_id = p.id join motels_postaddress as a on a.post_id = p.id \
+        join motels_commune on motels_commune.id =  a.commune_id \
+        join motels_district on motels_district.id = motels_commune.district_id join motels_province on motels_district.province_id \
+        = motels_province.id ORDER BY p.id desc, i.id desc")
 
     context = {
         "profile": user,
@@ -118,12 +132,11 @@ def create_post_new_action(request):
         detailed_address = request.POST['detailed_address']
 
         post = Post(title=title, furniture=furniture, description=description, renters_gender=renters_gender, \
-            area=area, rent=rent, deposit=deposit, poster=request.user)
+            area=area, rent=rent, deposit=deposit, poster=request.user, category=category)
         address = PostAddress(post=post, commune=commune, detailed_address=detailed_address)
 
         if category == '0':
             # roommate
-            post.is_roommate=True
             post.save()
             number_of_roommate = request.POST['number_of_roommate']
             roommate = Roommate(post=post, number_of_roommate=number_of_roommate)
@@ -131,7 +144,6 @@ def create_post_new_action(request):
             
         elif category == '1':
             # room
-            post.is_room=True
             post.save()
             number_of_rooms = request.POST['number_of_rooms'] or None
             max_rent = request.POST['max_rent'] or None
@@ -140,7 +152,6 @@ def create_post_new_action(request):
             
         elif category == '2':
             # house
-            post.is_house=True
             post.save()
             number_of_bedrooms = request.POST['number_of_bedrooms']
             number_of_toilets = request.POST['number_of_toilets']
@@ -158,8 +169,18 @@ def create_post_new_action(request):
             apartment.save()
         else:
             return HttpResponse('Sai phân loại bài đăng')
+        
         address.save()
-        return HttpResponseRedirect(reverse('create_post_category'))
+        # return HttpResponse(request.FILES['image'])
+        if bool(request.FILES.get('image', False)) == True:
+        # if request.FILES['image']:
+            images = request.FILES.getlist('image')
+            for i in range(len(images)):
+                f = Image()
+                f.post = post
+                f.image = images[i]
+                f.save()
+        return HttpResponseRedirect(reverse('profile', args=(request.user.id,)))
     return HttpResponseRedirect(reverse('profile', args=(request.user.id,)))
     
 # API function
@@ -172,11 +193,13 @@ def edit_profile(request):
     if request.method == 'POST':
         data['last_name'] =  request.user.last_name
         data['first_name'] = request.user.first_name
-        data['user_address'] = request.user.address.id
-        # data['y_address'] = serializers.serialize('json', provinces)
+        if request.user.address == None:
+            data['user_address'] = request.user.address
+        else:
+            data['user_address'] = request.user.address.id
         data['all_address'] = [province.serialize() for province in provinces]
         return JsonResponse(data)
-    return HttpResponseRedirect(reverse('profile', args=(request.user.id,)))
+    return HttpResponseRedirect(reverse('profile', args=(request.user.get_full_name_link(),)))
         
 @csrf_exempt
 @login_required
@@ -196,7 +219,7 @@ def save_profile(request):
         data['last_name'] =  last_name
         data['first_name'] = first_name
         return JsonResponse(data)
-    return HttpResponseRedirect(reverse('profile', args=(request.user.id,)))
+    return HttpResponseRedirect(reverse('profile', args=(request.user.get_full_name_link(),)))
 
 def get_district(request, province_id):
     districts = District.objects.select_related('province').filter(province=province_id)
@@ -205,4 +228,24 @@ def get_district(request, province_id):
 def get_commune(request, district_id):
     communes = Commune.objects.select_related('district').filter(district=district_id)
     return JsonResponse(serializers.serialize('json', communes), safe=False)
+
+def view_own_post(request, username, title, post_id):
+    try:
+        user_id = int(username[username.rindex(".")+1:len(username)])
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        raise Http404("Người dùng này không tồn tại hoặc không còn hoạt động")
+    except ValueError:
+        raise Http404("Người dùng này không tồn tại hoặc không còn hoạt động")
+
+    try:
+        post = Post.objects.get(pk=post_id)
+    except Post.DoesNotExist:
+        raise Http404("Bài đăng không tồn tại hoặc đã bị gỡ")
+    
+    context = {
+        "post": post
+    }
+
+    return render(request, 'motels/view_post.html', context)
 

@@ -39,10 +39,10 @@ option:checked {
   border: none;
   cursor: pointer;
   border-radius: 3px;
-  background-color: #f6c90e;
+  background-color: #e63757;
 }
 .modal .modal-content-info .motel-row-body input[type=button]:hover, .register-body .register form input[type=button]:hover, .modal .modal-content-info .motel-row-body input[type=submit]:hover, .register-body .register form input[type=submit]:hover {
-  background-color: #fb0;
+  background-color: #e63757;
   transition: 0.3s;
 }
 
@@ -61,27 +61,41 @@ option:checked {
   border-color: #bdc3c7;
 }
 
+.profile-post-pre-avatar {
+  object-fit: cover;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #e9ebee;
+}
+
 .base-menu {
   line-height: 1;
   font-weight: bold;
   line-height: 1;
   overflow: hidden;
-  background-color: #f6c90e;
+  background-color: white;
 }
 .base-menu .base-menu-right, .base-menu .base-menu-left {
-  color: #ffffff;
   text-align: center;
   padding: 14px 16px;
   text-decoration: none;
 }
 .base-menu .base-menu-left {
+  color: #e63757;
   float: left;
 }
 .base-menu .base-menu-right {
+  color: #95aac9;
   float: right;
 }
-.base-menu a:hover, .base-menu a.active {
+.base-menu .personal-page-link {
+  padding-top: 8px;
+  padding-bottom: 0px;
+}
+.base-menu a:hover:not(.fa-house-user), .base-menu a.active {
   color: #4b4b4b;
+  transition: 0.4s;
 }
 .base-menu .base-menu-avatar-mini {
   width: inherit;
@@ -93,30 +107,35 @@ option:checked {
 }
 .base-menu .search-container input[type=text] {
   outline: none;
-  padding: 6px;
+  padding: 6px 6px 6px 12px;
   margin: 6px 0px 6px 10px;
-  border: none;
-  border-radius: 7px 0px 0px 7px;
+  border-radius: 15px 0px 0px 15px;
   width: 220px;
   -webkit-transition: width 0.35s ease-in-out;
   transition: width 0.35s ease-in-out;
+  border: 1px solid #95aac9;
+  border-right: none;
+}
+.base-menu .search-container input[type=text]::placeholder {
+  color: #95aac9;
 }
 .base-menu .search-container input[type=text]:focus {
   width: 400px;
 }
 .base-menu .search-container button {
-  border-radius: 0px 7px 7px 0px;
+  border-radius: 0px 15px 15px 0px;
   float: right;
   padding: 9px 10px;
   margin-top: 6px;
   margin-bottom: 6px;
   background: white;
   font-size: 14px;
-  border: none;
+  border: 1px solid #95aac9;
+  border-left: none;
   cursor: pointer;
 }
 .base-menu .search-container button i {
-  color: #f6c90e;
+  color: #95aac9;
 }
 .base-menu .search-container button:hover {
   background: #fafafa;
@@ -162,7 +181,7 @@ option:checked {
   background-color: white;
 }
 .register-body .base-menu i {
-  color: #f6c90e;
+  color: #e63757;
   font-size: 30px;
 }
 .register-body .base-menu p {
@@ -172,7 +191,7 @@ option:checked {
   margin-bottom: 0px;
 }
 .register-body .register {
-  background-color: #f6c90e;
+  background-color: #e63757;
 }
 .register-body .register .register-icon {
   color: white;
@@ -246,7 +265,7 @@ option:checked {
   background-color: white;
 }
 .profile .profile-grid-item .profile-vertical-menu li:hover:not(.active) a {
-  color: #f6c90e;
+  color: #e63757;
 }
 .profile .profile-grid-item .profile-vertical-menu .active {
   font-weight: 500;
@@ -254,7 +273,7 @@ option:checked {
   border-color: #f5f6f7;
 }
 .profile .profile-grid-item .profile-vertical-menu .active a {
-  color: #f6c90e;
+  color: #e63757;
 }
 .profile .profile-grid-item .profile-vertical-menu li > a {
   color: #4b4b4b;
@@ -272,7 +291,7 @@ option:checked {
   font-weight: 500;
 }
 .profile .profile-grid-item .box i {
-  opacity: 0.6;
+  color: #bdc3c7;
   margin-right: 3px;
 }
 .profile .profile-grid-item .box #link-button-create_post {
@@ -284,11 +303,11 @@ option:checked {
   text-decoration: none;
   color: white;
   border: none;
-  background-color: #f6c90e;
+  background-color: #e63757;
   transition: 0.3s;
 }
 .profile .profile-grid-item .box #link-button-create_post:hover {
-  background-color: #fb0;
+  background-color: #e63757;
 }
 .profile .profile-grid-item .box .profile-horizontal-menu {
   list-style-type: none;
@@ -304,7 +323,7 @@ option:checked {
 }
 .profile .profile-grid-item .box .profile-horizontal-menu li:hover:not(.active) {
   cursor: pointer;
-  border-bottom: solid 2.5px #bdc3c7;
+  border-bottom: solid 2.5px #95aac9;
 }
 .profile .profile-grid-item .box .profile-horizontal-menu li > a {
   color: #4b4b4b;
@@ -313,11 +332,61 @@ option:checked {
   text-decoration: none;
 }
 .profile .profile-grid-item .box .profile-horizontal-menu .active {
-  border-bottom: solid 2.5px #f6c90e;
+  border-bottom: solid 2.5px #e63757;
 }
 .profile .profile-grid-item .box .profile-horizontal-menu .active a {
   font-weight: 500;
-  color: #f6c90e;
+  color: #e63757;
+}
+.profile .profile-grid-item .box .profile-post-pre .pre-post-link-pro {
+  color: #4b4b4b;
+  font-weight: 500;
+}
+.profile .profile-grid-item .box .profile-post-pre .pre-post-link-ava {
+  text-decoration: none;
+}
+.profile .profile-grid-item .box .profile-post-pre .profile-post-pre-image {
+  object-fit: cover;
+  border-radius: 3px;
+  height: 100px;
+}
+.profile .profile-grid-item .box .profile-post-pre .update-time, .profile .profile-grid-item .box .profile-post-pre .pre-post-address, .profile .profile-grid-item .box .profile-post-pre .pre-post-description {
+  color: #95aac9;
+  font-size: 14px;
+}
+.profile .profile-grid-item .box .profile-post-pre .pre-post-description {
+  display: flex;
+}
+.profile .profile-grid-item .box .profile-post-pre .pre-post-description span {
+  display: inline-block;
+  /* <- Prevent <tr> in a display css */
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.profile .profile-grid-item .box .profile-post-pre .update-time span {
+  color: #e63757 !important;
+}
+.profile .profile-grid-item .box .profile-post-pre .text-capitalize {
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 500;
+  color: #4b4b4b;
+  cursor: pointer;
+}
+.profile .profile-grid-item .box .profile-post-pre .pre-post-address {
+  position: absolute;
+  bottom: 0px;
+}
+.profile .profile-grid-item .box .profile-post-pre .rent-center {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translate(0%, -50%);
+}
+.profile .profile-grid-item .box .profile-post-pre .rent-center p {
+  margin: 0px;
+  color: #e63757;
 }
 
 .modal {
@@ -420,11 +489,11 @@ option:checked {
   color: #bdc3c7;
 }
 .create_post textarea {
-  outline-color: #fb0;
+  outline-color: #e63757;
 }
 .create_post input[type=text]:focus, .create_post input[type=number]:focus {
   cursor: auto;
-  border-color: #fb0;
+  border-color: #e63757;
 }
 .create_post .create_post_body {
   background-color: white;
@@ -514,10 +583,10 @@ option:checked {
   color: #bdc3c7;
 }
 .create_post .create_post_body p > span {
-  color: #f6c90e;
+  color: #e63757;
 }
 .create_post .create_post_body .address, .create_post .create_post_body .type_post_hidden {
-  color: #f6c90e;
+  color: #e63757;
   visibility: hidden;
 }
 .create_post .create_post_body .label-radio, .create_post .create_post_body .type_post_hidden, .create_post .create_post_body .create_post_rent {
@@ -534,12 +603,30 @@ option:checked {
   width: 77px;
   outline: none;
 }
-.create_post .create_post_body .post-image {
+.create_post .create_post_body .post-image div {
+  cursor: pointer;
+  font-size: 20px;
+  margin-right: 3px;
   position: relative;
+  display: inline-block;
+}
+.create_post .create_post_body .post-image span {
+  font-weight: 500;
+  cursor: pointer;
+  top: 0px;
+  position: absolute;
+  right: 7px;
+}
+.create_post .create_post_body .post-image span:hover {
+  color: #f5f6f7;
+}
+.create_post .create_post_body .post-image img {
+  height: 100px;
+  width: 100px;
+  object-fit: cover;
 }
 .create_post .create_post_body input[type=file]::before {
-  position: absolute;
-  bottom: 0%;
+  vertical-align: auto;
   content: "Ảnh";
   background-color: #e9ebee;
   display: inline-block;
@@ -558,14 +645,14 @@ option:checked {
   margin: auto;
 }
 .create_post #create_post_next, .create_post #button_post {
-  background-color: #f6c90e;
+  background-color: #e63757;
   color: white;
   border: none;
   cursor: pointer;
   width: 130px;
 }
 .create_post #create_post_next:hover, .create_post #button_post:hover {
-  background-color: #f5b504;
+  opacity: 0.9;
 }
 .create_post #create_post_next:disabled, .create_post #button_post:disabled {
   opacity: 0.5;
