@@ -66,15 +66,13 @@ def logout_view(request):
     return HttpResponseRedirect(reverse("index"))
 
 def profile(request, username):
-
     try:
         user_id = int(username[username.rindex(".")+1:len(username)])
         user = User.objects.get(pk=user_id)
     except User.DoesNotExist:
         raise Http404("Người dùng này không tồn tại hoặc không còn hoạt động")
- 
-    except ValueError:
-        raise Http404("Value error")
+    # except ValueError:
+    #     raise Http404("Value error")
     if username != user.get_full_name_link():
         raise Http404("Người dùng này không tồn tại hoặc không còn hoạt động")
 
@@ -185,7 +183,7 @@ def create_post_new_action(request):
     
 # API function
         
-@csrf_exempt
+# @csrf_exempt
 @login_required
 def edit_profile(request):
     data = dict()
@@ -199,7 +197,10 @@ def edit_profile(request):
             data['user_address'] = request.user.address.id
         data['all_address'] = [province.serialize() for province in provinces]
         return JsonResponse(data)
+
     return HttpResponseRedirect(reverse('profile', args=(request.user.get_full_name_link(),)))
+    # return HttpResponse(request.user.get_full_name_link())
+    # return HttpResponse('dd')
         
 @csrf_exempt
 @login_required
