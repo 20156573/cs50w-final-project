@@ -66,21 +66,22 @@
                 <hr class="mt-4">
             {% endif %}
             <div class="profile-post-pre">
-                <a class="pre-post-link-ava" href="{% url 'profile' request.user.get_full_name_link %}">
-                    <img class="profile-post-pre-avatar" src="{{MEDIA_URL}}/{{request.user.avatar}}" alt="Ảnh đại diện"> 
+                <!-- Phải về link chủ bài đăng, không phải chính mình -->
+                <a class="pre-post-link-ava" href="{% url 'profile' post.poster.get_full_name_link %}">
+                    <img class="profile-post-pre-avatar" src="{{MEDIA_URL}}/{{post.poster.avatar}}" alt="Ảnh đại diện"> 
                 </a>
-                <a class="pre-post-link-pro" href="{% url 'profile' request.user.get_full_name_link %}"> {{ request.user.get_full_name }}</a>
+                <a class="pre-post-link-pro post-pre-full-name" href="{% url 'profile' post.poster.get_full_name_link %}"> {{ post.full_name }}</a>
                 <a class="update-time" href=""> &#8226; <span>{{ post.getCategory }}</span> &#8226; {{post.getUpdateTime}}</a>
                 <div class="row mt-3">
                     <div class="col-md-2">
                         {% if post.image %}
-                            <a href=""><img class="img-fluid profile-post-pre-image" src="{{MEDIA_URL}}/{{post.image}}" alt="Ảnh bài đăng"></a>
+                            <a href="{% url 'view_own_post' post.poster.get_full_name_link post.get_title_link %}"><img class="img-fluid profile-post-pre-image" src="{{MEDIA_URL}}/{{post.image}}" alt="Ảnh bài đăng"></a>
                         {% else %}
                             Bài đăng chưa có ảnh
                         {% endif %}
                     </div>
                     <div class="col-md-7 pr-0">
-                        <div><a href="{% url 'view_own_post' request.user.get_full_name_link post.get_title_link post.id %}" class="text-capitalize">{{post.title}}</a></div>
+                        <div><a href="{% url 'view_own_post' post.poster.get_full_name_link post.get_title_link %}" class="text-capitalize">{{post.title}}</a></div>
                         <div class="mt-2 pre-post-description"><span>{{ post.description }}</span></div>
                         <div class="pre-post-address"><i class="fas fa-map-marked-alt"></i> {{post.address}}</div>
                     </div>
@@ -91,7 +92,7 @@
                 </div>
             </div>
             {% empty %}
-                <small>Bạn chưa đăng tin nào</small>
+                <small>Bạn chưa đăng tin nào/ Người dùng này hiện đang không cho thuê nhà trọ nào</small>
             {% endfor %}
         </div>
     </div>

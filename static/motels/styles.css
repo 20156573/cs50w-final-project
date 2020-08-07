@@ -1,6 +1,6 @@
 @charset "UTF-8";
 .base-body {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1;
   background-color: #fafafa;
 }
@@ -63,44 +63,86 @@ option:checked {
 
 .profile-post-pre-avatar {
   object-fit: cover;
-  width: 30px;
-  height: 30px;
+  width: 33px;
+  height: 33px;
   border-radius: 50%;
-  border: 1px solid #e9ebee;
+  border: 1px solid none;
 }
 
 .base-menu {
-  line-height: 1;
-  font-weight: bold;
-  line-height: 1;
+  font-weight: 500;
   overflow: hidden;
   background-color: white;
 }
 .base-menu .base-menu-right, .base-menu .base-menu-left {
   text-align: center;
-  padding: 14px 16px;
   text-decoration: none;
 }
 .base-menu .base-menu-left {
   color: #e63757;
+  padding: 12px 16px;
+  font-family: fantasy;
+  font-size: 20px;
   float: left;
 }
 .base-menu .base-menu-right {
-  color: #95aac9;
+  color: #4b4b4b;
+  float: right;
+  padding: 9px 10px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  margin-left: 10px;
+  background-color: #f5f6f7;
+  border-radius: 20px;
+}
+.base-menu .base-menu-add-post::before {
+  content: "+";
+  margin-right: 5px;
+  padding: 0px 5px;
+  border-radius: 50%;
+  background-color: #bdc3c7;
+}
+.base-menu a.base-menu-right:hover {
+  background-color: #e9ebee;
+}
+.base-menu .ava-dropdown {
+  display: block;
   float: right;
 }
-.base-menu .personal-page-link {
-  padding-top: 8px;
-  padding-bottom: 0px;
+.base-menu .ava-dropdown .ava-dropdown-btn {
+  padding: 6px 16px 0px 22px;
+  cursor: pointer;
 }
-.base-menu a:hover:not(.fa-house-user), .base-menu a.active {
+.base-menu .ava-dropdown .ava-dropdown-content {
+  display: none;
+  position: absolute;
+  border: solid #e9ebee;
+  border-width: 1px;
+  border-radius: 3px;
+  right: 50px;
+  background-color: white;
+  min-width: 160px;
+  padding: 5px 0px 5px 0px;
+  box-shadow: 0 20px 20px rgba(168, 167, 167, 0.12), 0 10px 10px rgba(209, 207, 207, 0.24);
+  z-index: 1;
+}
+.base-menu .ava-dropdown .ava-dropdown-content a {
   color: #4b4b4b;
-  transition: 0.4s;
+  padding: 7px 40px 7px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+  font-weight: 400;
 }
-.base-menu .base-menu-avatar-mini {
-  width: inherit;
-  overflow: hidden;
-  margin-top: -4px;
+.base-menu .ava-dropdown .ava-dropdown-content a:hover {
+  color: white;
+  background-color: #e63757;
+}
+.base-menu .ava-dropdown:hover .ava-dropdown-content {
+  display: block;
+}
+.base-menu .ava-dropdown:hover .ava-dropdown-btn .profile-post-pre-avatar {
+  border: 1px solid #bdc3c7;
 }
 .base-menu .search-container {
   float: left;
@@ -113,11 +155,8 @@ option:checked {
   width: 220px;
   -webkit-transition: width 0.35s ease-in-out;
   transition: width 0.35s ease-in-out;
-  border: 1px solid #95aac9;
+  border: 1px solid #bdc3c7;
   border-right: none;
-}
-.base-menu .search-container input[type=text]::placeholder {
-  color: #95aac9;
 }
 .base-menu .search-container input[type=text]:focus {
   width: 400px;
@@ -125,17 +164,17 @@ option:checked {
 .base-menu .search-container button {
   border-radius: 0px 15px 15px 0px;
   float: right;
-  padding: 9px 10px;
+  padding: 8.5px 10px;
   margin-top: 6px;
   margin-bottom: 6px;
   background: white;
   font-size: 14px;
-  border: 1px solid #95aac9;
+  border: 1px solid #bdc3c7;
   border-left: none;
   cursor: pointer;
 }
 .base-menu .search-container button i {
-  color: #95aac9;
+  color: #bdc3c7;
 }
 .base-menu .search-container button:hover {
   background: #fafafa;
@@ -146,7 +185,7 @@ option:checked {
   float: left;
   padding: none;
   height: 32px;
-  border: 1px solid #e9ebee;
+  border: 1px solid #bdc3c7;
   border-radius: 7px;
 }
 .search2 input[type=text] {
@@ -173,7 +212,7 @@ option:checked {
 }
 
 .search2:hover {
-  border-color: #bdc3c7;
+  border-color: #97b4e0;
   transition: 0.3s;
 }
 
@@ -248,53 +287,54 @@ option:checked {
   grid-template-columns: 310px auto;
   padding: 0px;
 }
-.profile .profile-grid-item .profile-vertical-menu {
+
+.profile-grid-item .profile-vertical-menu {
   list-style-type: none;
   padding: 0px;
   line-height: 1.5;
 }
-.profile .profile-grid-item .profile-vertical-menu li {
+.profile-grid-item .profile-vertical-menu li {
   padding: 5px 6px 5px 6px;
   cursor: pointer;
   border-radius: 3px;
   margin-bottom: 1px;
   border: 1px solid #fafafa;
 }
-.profile .profile-grid-item .profile-vertical-menu li:hover:not(.active) {
+.profile-grid-item .profile-vertical-menu li:hover:not(.active) {
   border-color: #f5f6f7;
   background-color: white;
 }
-.profile .profile-grid-item .profile-vertical-menu li:hover:not(.active) a {
+.profile-grid-item .profile-vertical-menu li:hover:not(.active) a {
   color: #e63757;
 }
-.profile .profile-grid-item .profile-vertical-menu .active {
+.profile-grid-item .profile-vertical-menu .active {
   font-weight: 500;
   background-color: white;
   border-color: #f5f6f7;
 }
-.profile .profile-grid-item .profile-vertical-menu .active a {
+.profile-grid-item .profile-vertical-menu .active a {
   color: #e63757;
 }
-.profile .profile-grid-item .profile-vertical-menu li > a {
+.profile-grid-item .profile-vertical-menu li > a {
   color: #4b4b4b;
   text-decoration: none;
 }
-.profile .profile-grid-item .box {
+.profile-grid-item .box {
   background-color: white;
   border-radius: 3px;
 }
-.profile .profile-grid-item .box .date-join, .profile .profile-grid-item .box .full-name {
+.profile-grid-item .date-join, .profile-grid-item .full-name {
   cursor: pointer;
 }
-.profile .profile-grid-item .box .full-name {
+.profile-grid-item .full-name {
   font-size: 18px;
   font-weight: 500;
 }
-.profile .profile-grid-item .box i {
+.profile-grid-item i {
   color: #bdc3c7;
   margin-right: 3px;
 }
-.profile .profile-grid-item .box #link-button-create_post {
+.profile-grid-item #link-button-create_post {
   display: inline-block;
   border-radius: 3px;
   height: 32px;
@@ -306,85 +346,85 @@ option:checked {
   background-color: #e63757;
   transition: 0.3s;
 }
-.profile .profile-grid-item .box #link-button-create_post:hover {
+.profile-grid-item #link-button-create_post:hover {
   background-color: #e63757;
 }
-.profile .profile-grid-item .box .profile-horizontal-menu {
+.profile-grid-item .profile-horizontal-menu {
   list-style-type: none;
   padding: 0px;
   margin: none;
   border-bottom: solid 1px #e9ebee;
 }
-.profile .profile-grid-item .box .profile-horizontal-menu li {
+.profile-grid-item .profile-horizontal-menu li {
   display: inline-block;
   margin: none;
   padding: 15px 20px 15px 20px;
   border-bottom: solid 2.5px white;
 }
-.profile .profile-grid-item .box .profile-horizontal-menu li:hover:not(.active) {
+.profile-grid-item .profile-horizontal-menu li:hover:not(.active) {
   cursor: pointer;
   border-bottom: solid 2.5px #95aac9;
 }
-.profile .profile-grid-item .box .profile-horizontal-menu li > a {
+.profile-grid-item .profile-horizontal-menu li > a {
   color: #4b4b4b;
 }
-.profile .profile-grid-item .box .profile-horizontal-menu li > a:hover {
+.profile-grid-item .profile-horizontal-menu li > a:hover {
   text-decoration: none;
 }
-.profile .profile-grid-item .box .profile-horizontal-menu .active {
+.profile-grid-item .profile-horizontal-menu .active {
   border-bottom: solid 2.5px #e63757;
 }
-.profile .profile-grid-item .box .profile-horizontal-menu .active a {
+.profile-grid-item .profile-horizontal-menu .active a {
   font-weight: 500;
   color: #e63757;
 }
-.profile .profile-grid-item .box .profile-post-pre .pre-post-link-pro {
+.profile-grid-item .profile-post-pre .pre-post-link-pro {
   color: #4b4b4b;
   font-weight: 500;
 }
-.profile .profile-grid-item .box .profile-post-pre .pre-post-link-ava {
+.profile-grid-item .profile-post-pre .pre-post-link-ava {
   text-decoration: none;
 }
-.profile .profile-grid-item .box .profile-post-pre .profile-post-pre-image {
+.profile-grid-item .profile-post-pre .profile-post-pre-image {
   object-fit: cover;
   border-radius: 3px;
   height: 100px;
 }
-.profile .profile-grid-item .box .profile-post-pre .update-time, .profile .profile-grid-item .box .profile-post-pre .pre-post-address, .profile .profile-grid-item .box .profile-post-pre .pre-post-description {
+.profile-grid-item .profile-post-pre .update-time, .profile-grid-item .profile-post-pre .pre-post-address, .profile-grid-item .profile-post-pre .pre-post-description {
   color: #95aac9;
   font-size: 14px;
 }
-.profile .profile-grid-item .box .profile-post-pre .pre-post-description {
+.profile-grid-item .profile-post-pre .pre-post-description {
   display: flex;
 }
-.profile .profile-grid-item .box .profile-post-pre .pre-post-description span {
+.profile-grid-item .profile-post-pre .pre-post-description span {
   display: inline-block;
   /* <- Prevent <tr> in a display css */
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
-.profile .profile-grid-item .box .profile-post-pre .update-time span {
+.profile-grid-item .profile-post-pre .update-time span {
   color: #e63757 !important;
 }
-.profile .profile-grid-item .box .profile-post-pre .text-capitalize {
+.profile-grid-item .profile-post-pre .text-capitalize {
   text-decoration: none;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 500;
   color: #4b4b4b;
   cursor: pointer;
 }
-.profile .profile-grid-item .box .profile-post-pre .pre-post-address {
+.profile-grid-item .profile-post-pre .pre-post-address {
   position: absolute;
   bottom: 0px;
 }
-.profile .profile-grid-item .box .profile-post-pre .rent-center {
+.profile-grid-item .profile-post-pre .rent-center {
   position: absolute;
   top: 50%;
   right: 15px;
   transform: translate(0%, -50%);
 }
-.profile .profile-grid-item .box .profile-post-pre .rent-center p {
+.profile-grid-item .profile-post-pre .rent-center p {
   margin: 0px;
   color: #e63757;
 }
@@ -671,6 +711,39 @@ option:checked {
   position: -webkit-sticky;
   position: sticky;
   bottom: 0;
+}
+
+.index {
+  color: #4b4b4b;
+  display: grid;
+  grid-template-columns: auto 400px;
+  padding: 0px;
+}
+.index .index-avatar {
+  object-fit: cover;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 1px solid none;
+}
+.index .index-full-name {
+  color: #4b4b4b;
+  font-weight: 500;
+}
+.index .index-saved-posts > .mr-auto {
+  font-weight: 500;
+  color: #bdc3c7;
+}
+.index a:not(.update-time) {
+  text-decoration: none;
+}
+.index .fa-bookmark {
+  font-size: 20px;
+  cursor: pointer;
+}
+.index .fa-bookmark:hover {
+  color: #4b4b4b;
+  transition: 0.2s;
 }
 
 /*# sourceMappingURL=styles.css.map */

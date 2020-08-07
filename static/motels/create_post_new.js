@@ -1,5 +1,5 @@
 function getDistrict(province_id) {
-    fetch(`/get_district/${province_id}`)
+    fetch(`../api/get_district/${province_id}`)
     .then(response => response.json())
     .then(data => {
         data = JSON.parse(data);
@@ -26,7 +26,7 @@ function getDistrict(province_id) {
 };
 
 function getCommune(district_id) {
-    fetch(`/get_commune/${district_id}`)
+    fetch(`../api/get_commune/${district_id}`)
     .then(response => response.json())
     .then(data => {
         data = JSON.parse(data);

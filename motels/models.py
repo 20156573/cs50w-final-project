@@ -98,7 +98,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     def get_full_name(self):
-        full_name = '%s %s' % (self.first_name, self.last_name)
+        full_name = '%s %s' % (self.last_name, self.first_name)
         if full_name == 'None None':
             return self.email
         return full_name.strip()
@@ -202,7 +202,7 @@ class Post(models.Model):
         return f"{day_left} ngày"
 
     def get_title_link(self):
-        s = no_accent_vietnamese(self.title).replace(' ', '-').lower()
+        s = no_accent_vietnamese(self.title).replace(' ', '-').lower() + '.' + str(self.id) 
         return s
 
 class PostAddress(models.Model):

@@ -1,11 +1,11 @@
 import json
+from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core import serializers
 from django.template.loader import render_to_string
 from django.core.files.storage import FileSystemStorage
-# from django.shortcuts import HttpResponse
 from django.db import IntegrityError, transaction
 from django.shortcuts import HttpResponseRedirect, render, get_object_or_404, HttpResponse
 from django.http import  Http404
@@ -65,31 +65,30 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
-def profile(request, username):
+def profile(request, user_name):
     try:
-        user_id = int(username[username.rindex(".")+1:len(username)])
+        user_id = int(user_name[user_name.rindex(".")+1:len(user_name)])
         user = User.objects.get(pk=user_id)
     except User.DoesNotExist:
-        raise Http404("Người dùng này không tồn tại hoặc không còn hoạt động")
-    # except ValueError:
-    #     raise Http404("Value error")
-    if username != user.get_full_name_link():
-        raise Http404("Người dùng này không tồn tại hoặc không còn hoạt động")
+        raise Http404("Id không tồn tại")
+    except ValueError:
+        raise Http404("Không nhận được user_name")
+    if user_name != user.get_full_name_link():
+        raise Http404("Sai phần đầu của gmail")
 
-    posts = Post.objects.raw("select DISTINCT ON (id) p.id, p.title, p.rent, p.category, i.image, concat\
-        (motels_district.name, ', ', motels_province.name ) as address from motels_post p \
-        left join motels_image as i on i.post_id = p.id join motels_postaddress as a on a.post_id = p.id \
-        join motels_commune on motels_commune.id =  a.commune_id \
-        join motels_district on motels_district.id = motels_commune.district_id join motels_province on motels_district.province_id \
-        = motels_province.id ORDER BY p.id desc, i.id desc")
+    posts = Post.objects.raw("select DISTINCT ON (id) p.id, p.title, p.rent, p.category, i.image, concat(motels_district.name, ', ', \
+        motels_province.name ) as address , concat(u.last_name,' ', u.first_name) as full_name from motels_post p \
+            join motels_user as u on u.id = p.poster_id\
+                left join motels_image as i on i.post_id = p.id join motels_postaddress as a on a.post_id = p.id \
+                    join motels_commune on motels_commune.id =  a.commune_id join motels_district on motels_district.id = \
+                        motels_commune.district_id join motels_province on motels_district.province_id = motels_province.id where \
+                            p.poster_id = %(user_id)s  ORDER BY p.id desc, i.id desc", {'user_id': user_id})
 
     context = {
         "profile": user,
         "posts": posts
     }
-
     return render(request, 'motels/profile.html', context)
-
 
 
 @login_required
@@ -97,6 +96,7 @@ def create_post_category(request):
     return render(request, 'motels/create_post_category.html')
 
 @csrf_exempt
+@login_required
 def create_post_new(request):
     if request.method == 'GET':
         return HttpResponseRedirect(reverse('create_post_category'))
@@ -112,6 +112,7 @@ def create_post_new(request):
         return render(request, 'motels/create_post_new.html', {'title': title, 'category': category, 'provinces': provinces})
 
 @transaction.atomic
+@login_required
 def create_post_new_action(request):
     if request.method == 'POST':
         title = request.POST['title']
@@ -169,21 +170,39 @@ def create_post_new_action(request):
             return HttpResponse('Sai phân loại bài đăng')
         
         address.save()
-        # return HttpResponse(request.FILES['image'])
         if bool(request.FILES.get('image', False)) == True:
-        # if request.FILES['image']:
             images = request.FILES.getlist('image')
             for i in range(len(images)):
                 f = Image()
                 f.post = post
                 f.image = images[i]
                 f.save()
-        return HttpResponseRedirect(reverse('profile', args=(request.user.id,)))
-    return HttpResponseRedirect(reverse('profile', args=(request.user.id,)))
+        return HttpResponseRedirect(reverse('profile', args=[request.user.get_full_name_link()]))
+    return HttpResponseRedirect(reverse('profile', args=[request.user.get_full_name_link()]))
     
+def view_own_post(request, user_name, title):
+    try:
+        user_id = int(user_name[user_name.rindex(".")+1:len(user_name)])
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        raise Http404("Người dùng này không tồn tại hoặc không còn hoạt động")
+    except ValueError:
+        raise Http404("Người dùng này không tồn tại hoặc không còn hoạt động")
+
+    try:
+        post_id = int(title[title.rindex(".")+1:len(title)])
+        post = Post.objects.get(pk=post_id)
+    except Post.DoesNotExist:
+        raise Http404("Bài đăng không tồn tại hoặc đã bị gỡ")
+    
+    context = {
+        "post": post
+    }
+
+    return render(request, 'motels/view_post.html', context)
+
 # API function
         
-# @csrf_exempt
 @login_required
 def edit_profile(request):
     data = dict()
@@ -199,8 +218,6 @@ def edit_profile(request):
         return JsonResponse(data)
 
     return HttpResponseRedirect(reverse('profile', args=(request.user.get_full_name_link(),)))
-    # return HttpResponse(request.user.get_full_name_link())
-    # return HttpResponse('dd')
         
 @csrf_exempt
 @login_required
@@ -214,13 +231,14 @@ def save_profile(request):
         address = request.POST.get('address')
         user.last_name = last_name
         user.first_name = first_name
-        user.address = Province.objects.get(pk=address)
+        if address is not None:
+            user.address = Province.objects.get(pk=address)
         user.save(force_update=True)
         data['status'] = True
         data['last_name'] =  last_name
         data['first_name'] = first_name
         return JsonResponse(data)
-    return HttpResponseRedirect(reverse('profile', args=(request.user.get_full_name_link(),)))
+    return HttpResponseRedirect(reverse('profile', args=[request.user.get_full_name_link()]))
 
 def get_district(request, province_id):
     districts = District.objects.select_related('province').filter(province=province_id)
@@ -230,23 +248,30 @@ def get_commune(request, district_id):
     communes = Commune.objects.select_related('district').filter(district=district_id)
     return JsonResponse(serializers.serialize('json', communes), safe=False)
 
-def view_own_post(request, username, title, post_id):
-    try:
-        user_id = int(username[username.rindex(".")+1:len(username)])
-        user = User.objects.get(pk=user_id)
-    except User.DoesNotExist:
-        raise Http404("Người dùng này không tồn tại hoặc không còn hoạt động")
-    except ValueError:
-        raise Http404("Người dùng này không tồn tại hoặc không còn hoạt động")
-
-    try:
-        post = Post.objects.get(pk=post_id)
-    except Post.DoesNotExist:
-        raise Http404("Bài đăng không tồn tại hoặc đã bị gỡ")
-    
-    context = {
-        "post": post
-    }
-
-    return render(request, 'motels/view_post.html', context)
+def get_index(request):
+    posts = Post.objects.raw("select DISTINCT ON (id) p.id, p.title, p.rent, p.category, i.image, concat(motels_district.name, ', ', \
+        motels_province.name ) as address , concat(u.last_name,' ', u.first_name) as full_name, u.avatar from motels_post p \
+            join motels_user as u on u.id = p.poster_id\
+                left join motels_image as i on i.post_id = p.id join motels_postaddress as a on a.post_id = p.id \
+                    join motels_commune on motels_commune.id =  a.commune_id join motels_district on motels_district.id = \
+                        motels_commune.district_id join motels_province on motels_district.province_id = motels_province.id ORDER BY p.id desc, i.id desc")
+    data = []
+    for i in range(len(posts)):
+        post = {
+            'post_id': posts[i].id,
+            'poster_id': posts[i].poster.id,
+            'post_link': posts[i].get_title_link(),
+            'user_link': posts[i].poster.get_full_name_link(),
+            'user_avatar': settings.MEDIA_URL + '/' + posts[i].avatar,
+            'full_name': posts[i].full_name,
+            'title': posts[i].title,
+            'category': posts[i].getCategory(),
+            'update_time': posts[i].getUpdateTime(),  
+            'address': posts[i].address,
+            'post_image': settings.MEDIA_URL  + posts[i].image,
+            'description': posts[i].description,
+            'rent': posts[i].rent
+        }
+        data.append(post)
+    return JsonResponse(data, safe=False)
 

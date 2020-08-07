@@ -3,5 +3,28 @@
 {% load static %}
 
 {% block body %}
-    
+<script type = "text/javascript"> 
+    if ("{{ user.id }}")
+        var myJavaScriptVariable = "{{ user.id }}"; 
+</script> 
+<div class="index px-5">
+    <div class="profile-grid-item index-all-post pl-5 pt-4 pr-2 pb-3">
+        
+    </div>
+    <div class="profile-grid-item pl-1 pt-4 pr-5 pb-3">
+        <div class="px-4 pt-2 pb-4">
+            {% if user.is_authenticated %}
+            <div class="mb-4">
+                <a href="{% url 'profile' user.get_full_name_link %}"><img class="index-avatar" src="{{MEDIA_URL}}/{{request.user.avatar}}" alt="Ảnh đại diện"></a>
+                <a href="{% url 'profile' user.get_full_name_link %}"><span class="ml-3 index-full-name">{{ request.user.get_full_name }}</span></a>
+            </div>
+            <div class="d-flex index-saved-posts">
+                <div class="mr-auto">Tin bạn đã lưu</div>
+                <div class=""><a href=""><span>Xem tất cả</span></a></div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="{% static 'motels/index.js' %}"></script>
 {% endblock %}

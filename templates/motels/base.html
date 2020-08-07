@@ -12,21 +12,28 @@
     </head>
     <body class="base-body">
         <div class="base-menu px-5">
-            <a class="base-menu-left" href="{% url 'index' %}"><i class="fas fa-house-user"></i></a>
+            <a class="base-menu-left" href="{% url 'index' %}">Rao nhà trọ</a>
             <div class="search-container">
                 <form action="">
                     <input type="text" placeholder="Tìm kiếm..." name="search" autocomplete="off">
                     <button type="submit"><i class="fa fa-search"></i></button>
                 </form>
             </div>
-
             {% if user.is_authenticated %}
-                <a class="nav-link base-menu-right personal-page-link" href="{% url 'profile' request.user.get_full_name_link %}">
-                    <img class="profile-post-pre-avatar" src="{{MEDIA_URL}}/{{request.user.avatar}}" alt="Ảnh đại diện">
-                </a>
+                <div class="ava-dropdown">
+                    <div class="ava-dropdown-btn">
+                        <img class="profile-post-pre-avatar" src="{{MEDIA_URL}}/{{request.user.avatar}}" alt="Ảnh đại diện">
+                    </div>
+                    <div class="ava-dropdown-content">
+                        <a href="">Tài khoản của bạn</a>
+                        <a href="{% url 'profile' user.get_full_name_link %}">Tin đăng của bạn</a>
+                        <a href="">Tin đăng đã lưu</a>
+                        <hr class="my-2">
+                        <a href="{% url 'logout' %}">Đăng xuất</a>
+                    </div>
+                </div>
                 <a class="base-menu-right" href=""><i class="far fa-bell"></i></a>
-                <a class="nav-link base-menu-right" href="{% url 'create_post_category' %}">Đăng tin</a>
-                <a class="nav-link base-menu-right" href="{% url 'logout' %}">Đăng xuất</a>
+                <a class="nav-link base-menu-right base-menu-add-post" href="{% url 'create_post_category' %}">Đăng tin</a>
             {% else %}
                 <a class="nav-link base-menu-right" href="{% url 'register' %}">Đăng ký</a>
                 <a class="nav-link base-menu-right" href="{% url 'login' %}">Đăng nhập</a>

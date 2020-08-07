@@ -22,7 +22,7 @@ $button_color_2: #f5f6f7;
 
 $opacity_color: #95aac9;
 .base-body {
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1;
     background-color: $body_bg;
 }
@@ -85,47 +85,96 @@ option:checked {
 
 .profile-post-pre-avatar {
     object-fit:cover; 
-    width: 30px;
-    height: 30px;
+    width: 33px;
+    height: 33px;
     border-radius: 50%;
-    border: 1px solid $button_color_hover;
+    border: 1px solid none;
 }
 .base-menu {
-    line-height: 1;
-    font-weight: bold;
-    line-height: 1;
+    font-weight: 500;
     overflow: hidden;
     background-color: $white_color;
+
     %base-menu-a {
         text-align: center;
-        padding: 14px 16px;
         text-decoration: none;
     }
     .base-menu-left {
         @extend %base-menu-a;
         color: $button_color;
+        padding: 12px 16px;
+        font-family: fantasy;
+        font-size: 20px;
         float: left;
     }
 
     .base-menu-right {
         @extend %base-menu-a;
-        color: $opacity_color;
+        color: $base_menu_color;
         float: right;
+        padding: 9px 10px;
+        margin-top: 6px;
+        margin-bottom: 6px;
+        margin-left: 10px;
+        background-color: $button_color_2;
+        border-radius: 20px;    
     }
-    .personal-page-link {
-        padding-top: 8px;
-        padding-bottom: 0px;
+    .base-menu-add-post::before{
+        content: '\002B';
+        margin-right: 5px;
+        padding: 0px 5px;
+        border-radius: 50%;
+        background-color: $border_input_color;
     }
-    a:hover:not(.fa-house-user),  a.active {
-        color: $base_menu_color; 
-        transition: 0.4s;
+    a.base-menu-right:hover{
+        background-color: $button_color_hover;
+    }
+    // Cho dropdown menu ở avatar
+    .ava-dropdown {
+        display: block;
+        float: right;
+        .ava-dropdown-btn {
+            padding: 6px 16px 0px 22px;
+            cursor: pointer;
+        }
+
+        .ava-dropdown-content {
+            display: none;
+            position: absolute;
+            border: solid $button_color_hover;
+            border-width: 1px;
+            border-radius: 3px;
+            right: 50px;
+            background-color: $white_color;
+            min-width: 160px;
+            padding: 5px 0px 5px 0px;
+            box-shadow: 0 20px 20px rgba(168, 167, 167, 0.12), 0 10px 10px rgba(209, 207, 207, 0.24);
+            z-index: 1;
+
+            a {
+                color: $base_menu_color;
+                padding: 7px 40px 7px 16px;
+                text-decoration: none;
+                display: block;
+                text-align: left;
+                font-weight: 400;
+            }
+            a:hover {
+                color: $white_color;
+                background-color: $button_color;
+                // font-weight: 500;
+            }
+            
+        }
+    }
+    .ava-dropdown:hover .ava-dropdown-content{
+        display: block;
+    }
+    .ava-dropdown:hover .ava-dropdown-btn .profile-post-pre-avatar{
+        border: 1px solid $border_input_color;
     }
 
-    .base-menu-avatar-mini{
-        width: inherit;
-        overflow: hidden;
-        margin-top: -4px;
-    }
+    
 
     .search-container{
         float: left;
@@ -138,11 +187,8 @@ option:checked {
             width: 220px;
             -webkit-transition: width .35s ease-in-out;
             transition: width .35s ease-in-out;
-            border: 1px solid $opacity_color;
+            border: 1px solid $border_input_color;
             border-right: none;
-        }
-        input[type=text]::placeholder{
-            color: $opacity_color;
         }
         input[type=text]:focus {
             width: 400px;
@@ -150,17 +196,17 @@ option:checked {
         button {
             border-radius: 0px 15px 15px 0px;
             float: right;
-            padding: 9px 10px;
+            padding: 8.5px 10px;
             margin-top: 6px;
             margin-bottom: 6px;
             background: $white_color;
             font-size: 14px;
-            border: 1px solid $opacity_color;
+            border: 1px solid $border_input_color;
             border-left: none;
             cursor: pointer;
 
             i {
-                color: $opacity_color;
+                color: $border_input_color;
             }
         }
         button:hover {
@@ -173,7 +219,7 @@ option:checked {
     float: left;
     padding: none;
     height: 32px;
-    border: 1px solid $button_color_hover;
+    border: 1px solid $border_input_color;
     border-radius: $border_button;
     // width: 400px;
     
@@ -203,7 +249,7 @@ option:checked {
     }
 }
 .search2:hover {
-    border-color: $border_input_color;
+    border-color: #97b4e0;
     transition: 0.3s;
 }
 // Cho trang đăng ký
@@ -282,166 +328,165 @@ option:checked {
     display: grid;
     grid-template-columns: 310px auto;
     padding: 0px;
+}
+.profile-grid-item {
 
-    .profile-grid-item {
+    .profile-vertical-menu {
+        list-style-type: none;
+        padding: 0px;
+        line-height: 1.5;
+        li {
+            padding: 5px 6px 5px 6px;
+            cursor: pointer;
+            border-radius: $border_box;
+            margin-bottom: 1px;
+            border: 1px solid $body_bg;
+        }
+        li:hover:not(.active)  {
+            a {
+                color: $button_color;
+            }
+            border-color: $button_color_2;
+            background-color: $white_color;
+        }
+        .active {
+            font-weight: 500;
+            background-color: $white_color;
+            border-color: $button_color_2;
+            a {
+                color: $button_color;
+            }
+        }
+        li>a {
+            color: $base_menu_color;
+            text-decoration: none;
+        }
+    }
+    .box {
+        background-color: $white_color;
+        border-radius: $border_box;
+    }
+        .date-join, .full-name {
+            cursor: pointer;
+        }
+        .full-name {
+            font-size: 18px;
+            font-weight: 500;
+        }
 
-        .profile-vertical-menu {
+        i {
+            color: $border_input_color;
+            margin-right: 3px;
+            
+        }
+
+        #link-button-create_post {
+            display: inline-block;
+            border-radius: $border_box;
+            height: 32px;
+            font-size: 14px;
+            
+            text-align: center;
+            text-decoration: none;
+
+            color: $white_color;
+            border: none;
+            background-color: $button_color;
+            transition: 0.3s;
+        }
+        #link-button-create_post:hover {
+            background-color: $button_hover_color;
+        }
+        .profile-horizontal-menu {
             list-style-type: none;
             padding: 0px;
-            line-height: 1.5;
+            margin: none;
+            // font-size: 15px;
+            
+            border-bottom: solid 1px $button_color_hover;
             li {
-                padding: 5px 6px 5px 6px;
+                display: inline-block;
+                margin: none;
+                padding: 15px 20px 15px 20px;
+                border-bottom: solid 2.5px $white_color;
+            }
+            li:hover:not(.active) {
                 cursor: pointer;
-                border-radius: $border_box;
-                margin-bottom: 1px;
-                border: 1px solid $body_bg;
-            }
-            li:hover:not(.active)  {
-                a {
-                    color: $button_color;
-                }
-                border-color: $button_color_2;
-                background-color: $white_color;
-            }
-            .active {
-                font-weight: 500;
-                background-color: $white_color;
-                border-color: $button_color_2;
-                a {
-                    color: $button_color;
-                }
+                border-bottom: solid 2.5px $opacity_color;
             }
             li>a {
                 color: $base_menu_color;
+            }
+            li>a:hover {
                 text-decoration: none;
             }
-        }
-        .box {
-            background-color: $white_color;
-            border-radius: $border_box;
-
-            .date-join, .full-name {
-                cursor: pointer;
+            .active{
+                border-bottom: solid 2.5px $base_menu_bg;
             }
-            .full-name {
-                font-size: 18px;
+            .active a {
+                font-weight: 500;
+                color: $base_menu_bg;
+            }
+        }
+        // bài đăng xem trước
+       
+        .profile-post-pre {
+            .pre-post-link-pro {
+                color: $base_menu_color;
                 font-weight: 500;
             }
-
-            i {
-                color: $border_input_color;
-                margin-right: 3px;
-                
-            }
-
-            #link-button-create_post {
-                display: inline-block;
-                border-radius: $border_box;
-                height: 32px;
-                font-size: 14px;
-                
-                text-align: center;
+            .pre-post-link-ava {
                 text-decoration: none;
-
-                color: $white_color;
-                border: none;
-                background-color: $button_color;
-                transition: 0.3s;
             }
-            #link-button-create_post:hover {
-                background-color: $button_hover_color;
+            .profile-post-pre-image {
+                object-fit:cover; 
+                border-radius: 3px;
+                height: 100px; 
             }
-            .profile-horizontal-menu {
-                list-style-type: none;
-                padding: 0px;
-                margin: none;
+            .update-time, .pre-post-address, .pre-post-description {
+                color: $opacity_color;
+                font-size: 14px;
+            }
+            .pre-post-description {
+                display: flex;
+                span {
+                    display: inline-block; /* <- Prevent <tr> in a display css */
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    overflow: hidden;
+                }
+            }
+            .update-time {
+                span {
+                    color: $button_color !important;
+                }
+            }
+            .text-capitalize {
+                text-decoration: none;
+                font-size: 15px;
+                font-weight: 500;
+                color: $base_menu_color;
                 
-                border-bottom: solid 1px $button_color_hover;
-                li {
-                    display: inline-block;
-                    margin: none;
-                    padding: 15px 20px 15px 20px;
-                    border-bottom: solid 2.5px $white_color;
-                }
-                li:hover:not(.active) {
-                    cursor: pointer;
-                    border-bottom: solid 2.5px $opacity_color;
-                }
-                li>a {
-                    color: $base_menu_color;
-                }
-                li>a:hover {
-                    text-decoration: none;
-                }
-                .active{
-                    border-bottom: solid 2.5px $base_menu_bg;
-                }
-                .active a {
-                    font-weight: 500;
-                    color: $base_menu_bg;
+                cursor: pointer;
+            }
+            .pre-post-address {
+                position: absolute;
+                bottom: 0px;
+            }
+            .rent-center {
+                position: absolute; 
+                top:50%; 
+                right: 15px;
+                transform: translate(0%, -50%);
+                p {
+                    margin: 0px;
+                    color: $button_hover_color;
                 }
             }
-            // bài đăng xem trước
-           
-            .profile-post-pre {
-                .pre-post-link-pro {
-                    color: $base_menu_color;
-                    font-weight: 500;
-                }
-                .pre-post-link-ava {
-                    text-decoration: none;
-                }
-                .profile-post-pre-image {
-                    object-fit:cover; 
-                    border-radius: 3px;
-                    height: 100px; 
-                }
-                .update-time, .pre-post-address, .pre-post-description {
-                    color: $opacity_color;
-                    font-size: 14px;
-                }
-                .pre-post-description {
-                    display: flex;
-                    span {
-                        display: inline-block; /* <- Prevent <tr> in a display css */
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
-                        overflow: hidden;
-                    }
-                }
-                .update-time {
-                    span {
-                        color: $button_color !important;
-                    }
-                }
-                .text-capitalize {
-                    text-decoration: none;
-                    font-size: 17px;
-                    font-weight: 500;
-                    color: $base_menu_color;
-                    
-                    cursor: pointer;
-                }
-                .pre-post-address {
-                    position: absolute;
-                    bottom: 0px;
-                }
-                .rent-center {
-                    position: absolute; 
-                    top:50%; 
-                    right: 15px;
-                    transform: translate(0%, -50%);
-                    p {
-                        margin: 0px;
-                        color: $button_hover_color;
-                    }
-                }
-            }
-            
         }
-    }
+        
+    
 }
-
 .modal {
     display: none; 
     position: fixed;
@@ -772,5 +817,43 @@ option:checked {
         position: -webkit-sticky;
         position: sticky;
         bottom	: 0;
+    }
+}
+
+// Cho trang index
+
+.index {
+    color: $base_menu_color;
+    display: grid;
+    grid-template-columns: auto 400px;
+    padding: 0px;
+    
+    .index-avatar {
+        object-fit:cover; 
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 1px solid none;
+
+    }
+    .index-full-name {
+        color: $base_menu_color;
+        font-weight: 500;
+    }
+    .index-saved-posts>.mr-auto {
+        font-weight: 500;
+        color: $border_input_color;
+    }
+    a:not(.update-time)  {
+        text-decoration: none;
+    }
+
+    .fa-bookmark {
+        font-size: 20px;
+        cursor: pointer;
+    }
+    .fa-bookmark:hover {
+        color: $base_menu_color;
+        transition: 0.2s;
     }
 }
