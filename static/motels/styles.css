@@ -61,6 +61,13 @@ option:checked {
   border-color: #bdc3c7;
 }
 
+.index .list_following, .profile-grid-item .profile-post-pre .pre-post-description span {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .profile-post-pre-avatar {
   object-fit: cover;
   width: 33px;
@@ -378,6 +385,9 @@ option:checked {
   font-weight: 500;
   color: #e63757;
 }
+.profile-grid-item .profile-post-pre {
+  line-height: 1.5;
+}
 .profile-grid-item .profile-post-pre .pre-post-link-pro {
   color: #4b4b4b;
   font-weight: 500;
@@ -398,11 +408,7 @@ option:checked {
   display: flex;
 }
 .profile-grid-item .profile-post-pre .pre-post-description span {
-  display: inline-block;
-  /* <- Prevent <tr> in a display css */
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+  width: 32em;
 }
 .profile-grid-item .profile-post-pre .update-time span {
   color: #e63757 !important;
@@ -413,10 +419,6 @@ option:checked {
   font-weight: 500;
   color: #4b4b4b;
   cursor: pointer;
-}
-.profile-grid-item .profile-post-pre .pre-post-address {
-  position: absolute;
-  bottom: 0px;
 }
 .profile-grid-item .profile-post-pre .rent-center {
   position: absolute;
@@ -738,12 +740,23 @@ option:checked {
   text-decoration: none;
 }
 .index .fa-bookmark {
-  font-size: 20px;
+  color: #95aac9;
   cursor: pointer;
+  padding: 3px 12px 3px 12px;
+  border-radius: 3px;
+}
+.index .fa-bookmark::after {
+  font-size: 14px;
+  content: "  Lưu";
+  font-weight: 500;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 .index .fa-bookmark:hover {
-  color: #4b4b4b;
-  transition: 0.2s;
+  background-color: #f5f6f7;
+  transition: 0.1s;
+}
+.index .list_following {
+  width: 15em;
 }
 
 /*# sourceMappingURL=styles.css.map */

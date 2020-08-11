@@ -4,28 +4,12 @@ from django.db import models
 from django.contrib.auth.models import (
     BaseUserManager, AbstractBaseUser, PermissionsMixin
 )
+
+from . import util
+
 from django.utils.translation import gettext_lazy as _
 # from PIL import Image
 # Create your models here.
-
-def no_accent_vietnamese(s):
-    s = s.encode().decode('utf-8')
-    s = re.sub(u'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', s)
-    s = re.sub(u'[ÀÁẠẢÃĂẰẮẶẲẴÂẦẤẬẨẪ]', 'A', s)
-    s = re.sub(u'[èéẹẻẽêềếệểễ]', 'e', s)
-    s = re.sub(u'[ÈÉẸẺẼÊỀẾỆỂỄ]', 'E', s)
-    s = re.sub(u'[òóọỏõôồốộổỗơờớợởỡ]', 'o', s)
-    s = re.sub(u'[ÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠ]', 'O', s)
-    s = re.sub(u'[ìíịỉĩ]', 'i', s)
-    s = re.sub(u'[ÌÍỊỈĨ]', 'I', s)
-    s = re.sub(u'[ùúụủũưừứựửữ]', 'u', s)
-    s = re.sub(u'[ƯỪỨỰỬỮÙÚỤỦŨ]', 'U', s)
-    s = re.sub(u'[ỳýỵỷỹ]', 'y', s)
-    s = re.sub(u'[ỲÝỴỶỸ]', 'Y', s)
-    s = re.sub(u'Đ', 'D', s)
-    s = re.sub(u'đ', 'd', s)
-    return s.encode('utf-8').decode("utf-8")
-
 
 class UserManager(BaseUserManager):
     def create_user(self, email, last_name, first_name, password=None):
@@ -202,7 +186,7 @@ class Post(models.Model):
         return f"{day_left} ngày"
 
     def get_title_link(self):
-        s = no_accent_vietnamese(self.title).replace(' ', '-').lower() + '.' + str(self.id) 
+        s = util.no_accent_vietnamese(self.title).replace(' ', '-').lower() + '.' + str(self.id) 
         return s
 
 class PostAddress(models.Model):
@@ -316,7 +300,10 @@ class PostFollow(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(verbose_name='Active', default=True)
     post = models.ForeignKey(Post, related_name='followed', on_delete=models.CASCADE)
-    follower = models.ManyToManyField(User, related_name='followers')
+    follower = models.ForeignKey(User, related_name='followers', on_delete=models.PROTECT)
+
+    class Meta:
+        unique_together = (("post", "follower"),)
 
     def __str__(self):
         return f"{self.timestamp}, {self.is_active}, {self.post}, {self.follower}"

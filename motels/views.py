@@ -1,4 +1,7 @@
 import json
+
+import socketio
+from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -16,8 +19,23 @@ from .models import *
 from .forms import RegisterForm, AccountAuthenticationForm, UpdateProfileForm
 # Create your views here.
 
+sio = socketio.Server()
+
+# wrap with a WSGI application
+# app = socketio.WSGIApp(sio)
+
+from finalproject_v2.wsgi import application
+
+application = socketio.WSGIApp(sio, application)
+
 def index(request):
-    return render(request, "motels/index.html")
+    context = {'list_following': None}
+    if request.user.is_authenticated:
+        user =  request.user
+        list_following = PostFollow.objects.filter(follower=user, is_active='True').order_by('-timestamp')[:7]
+        context = {'list_following': list_following}
+    # return HttpResponse(context)
+    return render(request, "motels/index.html", context)
 
 def register(request):
     form = RegisterForm()
@@ -42,7 +60,8 @@ def register(request):
     }
     return render(request, 'motels/register.html', context)
 def login_view(request):
-
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("index"))
     if request.method == 'POST':
         form = AccountAuthenticationForm(request.POST)
         if form.is_valid():
@@ -201,6 +220,8 @@ def view_own_post(request, user_name, title):
 
     return render(request, 'motels/view_post.html', context)
 
+
+
 # API function
         
 @login_required
@@ -249,12 +270,15 @@ def get_commune(request, district_id):
     return JsonResponse(serializers.serialize('json', communes), safe=False)
 
 def get_index(request):
+    user_id = request.user.id
     posts = Post.objects.raw("select DISTINCT ON (id) p.id, p.title, p.rent, p.category, i.image, concat(motels_district.name, ', ', \
-        motels_province.name ) as address , concat(u.last_name,' ', u.first_name) as full_name, u.avatar from motels_post p \
+        motels_province.name ) as address , concat(u.last_name,' ', u.first_name) as full_name, u.avatar, motels_postfollow.is_active\
+            from motels_post p \
             join motels_user as u on u.id = p.poster_id\
                 left join motels_image as i on i.post_id = p.id join motels_postaddress as a on a.post_id = p.id \
-                    join motels_commune on motels_commune.id =  a.commune_id join motels_district on motels_district.id = \
-                        motels_commune.district_id join motels_province on motels_district.province_id = motels_province.id ORDER BY p.id desc, i.id desc")
+                    join motels_commune on motels_commune.id =  a.commune_id join motels_district on motels_district.id = motels_commune.district_id\
+                        join motels_province on motels_district.province_id = motels_province.id \
+                            left join motels_postfollow ON motels_postfollow.post_id = p.id and motels_postfollow.follower_id = %(user_id)s ORDER BY p.id desc, i.id desc", {'user_id': user_id})
     data = []
     for i in range(len(posts)):
         post = {
@@ -262,7 +286,7 @@ def get_index(request):
             'poster_id': posts[i].poster.id,
             'post_link': posts[i].get_title_link(),
             'user_link': posts[i].poster.get_full_name_link(),
-            'user_avatar': settings.MEDIA_URL + '/' + posts[i].avatar,
+            'user_avatar': settings.MEDIA_URL + posts[i].avatar,
             'full_name': posts[i].full_name,
             'title': posts[i].title,
             'category': posts[i].getCategory(),
@@ -270,8 +294,47 @@ def get_index(request):
             'address': posts[i].address,
             'post_image': settings.MEDIA_URL  + posts[i].image,
             'description': posts[i].description,
+            'is_active': posts[i].is_active,
             'rent': posts[i].rent
         }
         data.append(post)
     return JsonResponse(data, safe=False)
 
+@login_required
+def follow(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+    data = json.loads(request.body)
+    follower = request.user
+    post = Post.objects.get(pk=data.get("post_id"))
+
+    follow, created = PostFollow.objects.get_or_create(post=post, follower=follower)
+
+    if not created:
+        if follow.is_active == False:
+            follow.is_active = True
+            follow.timestamp = timezone.now()
+        else:
+            follow.is_active = False
+        follow.save(force_update=True)
+
+    return JsonResponse(
+        {"is_active": follow.is_active, 
+        "full_name_link": follow.post.poster.get_full_name_link(),  
+        # "avatar": settings.MEDIA_URL + follow.post.poster.avatar, 
+        "title": follow.post.title, 
+        "title_link": follow.post.get_title_link()}
+        , safe=False, status=201)
+
+# Socket io
+
+votes = {'yes': 0, 'no': 0, 'maybe': 0}
+def socket(request):
+    return render(request, 'motels/socket.html', {'votes': votes})
+
+
+@sio.on('submit-vote')
+def vote(sid, data):
+    selection = data["selection"]
+    votes[selection] += 1
+    sio.emit("votes-totals", {'data': votes}, broadcast=True)

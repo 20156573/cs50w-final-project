@@ -81,6 +81,13 @@ option:checked {
         border-color: $border_input_color;
     }
 }
+            
+%title {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 // Cho menu
 
 .profile-post-pre-avatar {
@@ -431,6 +438,7 @@ option:checked {
         // bài đăng xem trước
        
         .profile-post-pre {
+            line-height: 1.5;
             .pre-post-link-pro {
                 color: $base_menu_color;
                 font-weight: 500;
@@ -447,13 +455,13 @@ option:checked {
                 color: $opacity_color;
                 font-size: 14px;
             }
+
             .pre-post-description {
                 display: flex;
                 span {
-                    display: inline-block; /* <- Prevent <tr> in a display css */
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    overflow: hidden;
+                    @extend %title;
+                    width: 32em;
+                    
                 }
             }
             .update-time {
@@ -468,10 +476,6 @@ option:checked {
                 color: $base_menu_color;
                 
                 cursor: pointer;
-            }
-            .pre-post-address {
-                position: absolute;
-                bottom: 0px;
             }
             .rent-center {
                 position: absolute; 
@@ -823,6 +827,7 @@ option:checked {
 // Cho trang index
 
 .index {
+    // line-height: 1.5;
     color: $base_menu_color;
     display: grid;
     grid-template-columns: auto 400px;
@@ -849,11 +854,27 @@ option:checked {
     }
 
     .fa-bookmark {
-        font-size: 20px;
+        color: $opacity_color;
+        // font-size: 20px;
         cursor: pointer;
+        padding: 3px 12px 3px 12px;
+        border-radius: $border_box;
     }
+    .fa-bookmark::after {
+        font-size: 14px;
+        content: '  Lưu';
+        font-weight: 500;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+
     .fa-bookmark:hover {
-        color: $base_menu_color;
-        transition: 0.2s;
+        background-color: $button_color_2;
+
+        transition: 0.1s;
+    }
+    .list_following {
+        
+        @extend %title;
+        width: 15em;
     }
 }

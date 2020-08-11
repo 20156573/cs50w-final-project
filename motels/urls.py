@@ -18,5 +18,8 @@ urlpatterns = [
     path('api/save_profile', views.save_profile, name='save_profile'),
     path('api/get_district/<str:province_id>', views.get_district, name='get_district'),
     path('api/get_commune/<str:district_id>', views.get_commune, name='get_commune'),
-    path('api/get_index', views.get_index, name='get_index')
+    path('api/get_index', views.get_index, name='get_index'),
+    path('api/follow', views.follow, name="follow"),
+    # socket route
+    path('demo/socket', views.socket, name='socket'),
 ]

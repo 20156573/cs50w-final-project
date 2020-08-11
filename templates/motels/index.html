@@ -21,6 +21,15 @@
             <div class="d-flex index-saved-posts">
                 <div class="mr-auto">Tin bạn đã lưu</div>
                 <div class=""><a href=""><span>Xem tất cả</span></a></div>
+               
+            </div>
+            <div class="mt-4 list_following">
+                {% for follow in list_following %}
+                    <div class="mb-2" data-post_id = "{{ follow.post_id }}">
+                        <a href="{% url 'profile' follow.follower.get_full_name_link %}"><img class="profile-post-pre-avatar" src="{{MEDIA_URL}}/{{ follow.follower.avatar }}" alt="Ảnh đại diện"></a>
+                        <a href="{% url 'view_own_post' follow.follower.get_full_name_link follow.post.get_title_link %}"><span>{{ follow.post.title }}</span></a>
+                    </div>
+                {% endfor %}
             </div>
             {% endif %}
         </div>
