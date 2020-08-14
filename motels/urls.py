@@ -13,6 +13,8 @@ urlpatterns = [
     path('create_post/new', views.create_post_new, name='create_post_new'),
     path('create_post/new/action', views.create_post_new_action, name='create_post_new_action'),
     path('<str:user_name>/posts/<str:title>', views.view_own_post, name='view_own_post'),
+    path('<str:user_name>/saved', views.post_saved, name='post_saved'),
+    
     # API route
     path('api/edit_profile', views.edit_profile, name="edit_profile"),
     path('api/save_profile', views.save_profile, name='save_profile'),

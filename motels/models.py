@@ -149,6 +149,9 @@ class Post(models.Model):
     
     other_contact_info = models.CharField(max_length=35, null=True, blank=True)
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
+    
+    def __str__(self):
+        return ('User ' + str(self.poster.id) + ' - ' + self.poster.get_full_name()+ ' - ' + self.title).strip()
 
     def serialize(self):
         return {
@@ -176,7 +179,14 @@ class Post(models.Model):
             3: 'Cho thuê nguyên căn chung cư'
         }
         return category_c[self.category]
-
+    def getGenderRenter(self):
+        gender = {
+            0: 'Nữ',
+            1: 'Nam',
+            2: 'Nam và nữ'
+        }
+        return gender[self.renters_gender]
+        
     def getUpdateTime(self):
         now = timezone.now()
         before = self.update_time

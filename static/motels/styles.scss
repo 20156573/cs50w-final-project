@@ -88,6 +88,28 @@ option:checked {
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+
+@keyframes remove {
+    0% {
+        opacity: 1;
+        height: 100%;
+        line-height: 100%;
+    }
+    50% {
+        opacity: 0.4;
+        height: 50%;
+        line-height: 50%;
+        padding: 0px;
+        margin-bottom: 50%;
+    }
+    100% {
+        opacity: 0;
+        height: 0px;
+        line-height: 0px;
+        padding: 0px;
+        margin-bottom: 0px;
+    }
+}
 // Cho menu
 
 .profile-post-pre-avatar {
@@ -438,6 +460,11 @@ option:checked {
         // bài đăng xem trước
        
         .profile-post-pre {
+            animation-name: remove;
+            animation-duration: 0.4s;
+            animation-fill-mode: forwards;
+            animation-play-state: paused;
+
             line-height: 1.5;
             .pre-post-link-pro {
                 color: $base_menu_color;
@@ -827,7 +854,7 @@ option:checked {
 // Cho trang index
 
 .index {
-    // line-height: 1.5;
+    
     color: $base_menu_color;
     display: grid;
     grid-template-columns: auto 400px;
@@ -855,7 +882,6 @@ option:checked {
 
     .fa-bookmark {
         color: $opacity_color;
-        // font-size: 20px;
         cursor: pointer;
         padding: 3px 12px 3px 12px;
         border-radius: $border_box;
@@ -866,7 +892,12 @@ option:checked {
         font-weight: 500;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     }
-
+    .far.fa-bookmark::after {
+        content: '  Lưu';
+    }
+    .fas.fa-bookmark::after {
+        content: '  Bỏ lưu';
+    }
     .fa-bookmark:hover {
         background-color: $button_color_2;
 
@@ -876,5 +907,16 @@ option:checked {
         
         @extend %title;
         width: 15em;
+        
+    }
+    
+
+    
+    .list_following>div {
+
+        animation-name: remove;
+        animation-duration: 0.4s;
+        animation-fill-mode: forwards;
+        animation-play-state: paused;
     }
 }

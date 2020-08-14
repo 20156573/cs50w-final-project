@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
-from .models import User
+from .models import User, Post
 
 
 class UserCreationForm(forms.ModelForm):
@@ -66,8 +66,17 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email', 'first_name', 'last_name')
     filter_horizontal = ()
 
+class PostAdmin(admin.ModelAdmin):
+    # exclude = ('title', ) Không show một trường nào đó ra
+    # fields = ('title', 'area', ) #Các trường hiển thị chi tiết
 
+    list_display = ('title', 'update_time') #Các trường hiển thị nhanh
+
+    list_filter = ('update_time', 'category') #Bộ lọc   
+
+    # change_list_template = 'admin/posts/posts_change_list.html'
+
+admin.site.site_header = 'Raonhatro Admin'
 admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
-# admin.site.register(Post)
-# admin.site.register(PostStatus)
+admin.site.register(Post, PostAdmin)

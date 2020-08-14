@@ -14,7 +14,7 @@ function getCookie(name) {
 }
 let csrftoken = getCookie('csrftoken');
 function getForm() {
-    fetch(`api/edit_profile`,
+    fetch(`../api/edit_profile`,
     {
         method: 'POST',
         credentials: "same-origin",

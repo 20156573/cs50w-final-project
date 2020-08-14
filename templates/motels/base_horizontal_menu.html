@@ -1,0 +1,25 @@
+
+    <div class="box shadow-sm px-4 py-4">
+        <div>
+            <ul class="profile-horizontal-menu">
+                {% if user.is_authenticated and user.id == profile.id %}
+                    <li><a href="">Tất cả</a> </li>
+                {% endif %}
+                <li class="active"><a href="">Đang đăng</a> </li>
+                {% if user.is_authenticated and user.id == profile.id %}
+                    <li><a href="">Đang chờ duyệt</a></li>
+                    <li><a href="">Đã ẩn</a></li>
+                    <li><a href="">Đã bị khóa</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="d-flex">
+            <div class="search2">
+                <input type="text" placeholder="Tìm kiếm" name="search" autocomplete="off">
+                <button type="submit"><i class="fa fa-search"></i></button>
+            </div>
+            {% if user.is_authenticated and user.id == profile.id %}
+                <a class="nav-link ml-auto" id="link-button-create_post" href="{% url 'create_post_category' %}">Đăng tin</a>
+            {% endif %}
+        </div>
+    </div>

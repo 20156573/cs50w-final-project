@@ -27,12 +27,13 @@
                     <div class="ava-dropdown-content">
                         <a href="">Tài khoản của bạn</a>
                         <a href="{% url 'profile' user.get_full_name_link %}">Tin đăng của bạn</a>
-                        <a href="">Tin đăng đã lưu</a>
+                        <a href="{% url 'post_saved' user.get_full_name_link %}">Tin đăng đã lưu</a>
                         <hr class="my-2">
                         <a href="{% url 'logout' %}">Đăng xuất</a>
                     </div>
                 </div>
                 <a class="base-menu-right" href=""><i class="far fa-bell"></i></a>
+                <a class="base-menu-right" href="{% url 'post_saved' user.get_full_name_link %}"><i class="far fa-bookmark"></i></a>
                 <a class="nav-link base-menu-right base-menu-add-post" href="{% url 'create_post_category' %}">Đăng tin</a>
             {% else %}
                 <a class="nav-link base-menu-right" href="{% url 'register' %}">Đăng ký</a>

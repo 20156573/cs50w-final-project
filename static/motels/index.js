@@ -20,6 +20,7 @@ var border_input_color = 'rgb(189,195,199)';
 document.addEventListener('DOMContentLoaded', () => {
     load();
 });
+
 function load(){
     fetch(`api/get_index`)
     .then(response => response.json())
@@ -28,6 +29,13 @@ function load(){
         document.querySelectorAll('.fa-bookmark').forEach(changeColor);
     })
 };
+
+function changeColor(item, index){
+    item.addEventListener('click', event => {
+        const element = event.target;
+        save(item.dataset.post_id, element);   
+    })
+}
 
 function save(id, element) {
     fetch(`api/follow`,
@@ -47,22 +55,22 @@ function save(id, element) {
     .then(response => response.json())
     .then(data => {
 
-        console.log(data.is_active);
-        console.log(data.full_name_link);
-
         if (data.is_active === true) {
             element.className = 'fas fa-bookmark';
-            // let div = document.createElement('div');
-            // div.className = 'mb-2';
-            // div.dataset.post_id = id;
-            // div.innerHTML = `<a href="../${data.full_name_link}"><img class="profile-post-pre-avatar" src="${data.avatar}" alt="Ảnh đại diện"></a>
-            // <a href="../${data.full_name_link}/posts/${data.title_link}"><span>${data.title}</span></a>`;
-            // let list = document.querySelector('.list_following');
-            // list.insertBefore(div, list.childNodes[0]); 
-
+            let list = document.querySelector('.list_following');
+            let title = document.createElement('div');
+            title.dataset.post_id = id;
+            title.className= 'mb-2';
+            title.innerHTML = `<a href="../${data.full_name_link}"><img class="profile-post-pre-avatar" src="${data.avatar}" alt="Ảnh đại diện"></a>
+            <a href="../${data.full_name_link}/posts/${data.title_link}"><span>${data.title}</span></a>`;
+            list.insertBefore(title, list.childNodes[0]);
         }
         else {
-            document.querySelector(`.list_following [data-post_id="${id}"]`).remove();
+            document.querySelector(`.list_following [data-post_id="${id}"]`).style.animationPlayState = 'running';
+
+            document.querySelector(`.list_following [data-post_id="${id}"]`).addEventListener('animationend', () => {
+                document.querySelector(`.list_following [data-post_id="${id}"]`).remove();
+            });
             element.className = 'far fa-bookmark';
         }
     })
@@ -71,44 +79,40 @@ function save(id, element) {
     });
 }
 
-function changeColor(item, index){
-    item.addEventListener('click', event => {
-        const element = event.target;
-        save(item.dataset.post_id, element);   
-    })
-}
+
 
 function add_post(x) {
     const post = document.createElement('div');
     post.className = 'profile-post-pre box py-0 mb-4 shadow-sm p-4';
     post.dataset.post_id = `${x.post_id}`;
-    post.innerHTML = ` <div class="d-flex"> 
-    <div class="mr-auto">
-        <a class="pre-post-link-ava" href="../${x.user_link}">
+    post.innerHTML = ` 
+    <div class="d-flex bd-highlight"> 
+        <a class="pre-post-link-ava bd-highlight" href="../${x.user_link}">
             <img class="profile-post-pre-avatar" src="${x.user_avatar}" alt="Ảnh đại diện"> 
         </a>
-        <a class="pre-post-link-pro post-pre-full-name" href="../${x.user_link}"> ${x.full_name}</a>
-        <a class="update-time" href="../${x.user_link}/posts/${x.post_link}"> &#8226; <span>${x.category}</span> &#8226; ${x.update_time}</a>
+        <a class="pre-post-link-pro post-pre-full-name mx-1 align-self-center bd-highlight " href="../${x.user_link}"> ${x.full_name}</a>
+        <a class="update-time bd-highlight align-self-center" href="../${x.user_link}/posts/${x.post_link}"> &#8226; <span>${x.category}</span> &#8226; ${x.update_time}</a>
+        <span class="ml-1  bd-highlight align-self-center far_save_button"></span>
     </div>
-</div>
-<div class="row mt-3">
-    <div class="col-md-2">
-        <a href="../${x.user_link}/posts/${x.post_link}"><img class="img-fluid profile-post-pre-image" src="${x.post_image}" alt="Ảnh bài đăng"></a>
-        
-    </div>
-    <div class="col-md-7 pr-0 d-flex align-items-start flex-column bd-highlight">
-        <div><a href="../${x.user_link}/posts/${x.post_link}" class="text-capitalize bd-highlight">${x.title}</a></div>
-        <div class='pre-post-description'><span>${x.description}</span></div>
-        <div class="pre-post-address bd-highlight mt-auto"><span class="far_save_button"></span><i class="fas fa-map-marked-alt"></i> ${x.address}</div>
-    </div>
-    <div class="col-md-3 p-0">
-        <div class="rent-center"><p>${x.rent} <samp>đ/tháng</samp></p></div>
-    </div>
-</div>`;
+    <div class="row mt-3">
+        <div class="col-md-2">
+            <a href="../${x.user_link}/posts/${x.post_link}"><img class="img-fluid profile-post-pre-image" src="${x.post_image}" alt="Ảnh bài đăng"></a>
+            
+        </div>
+        <div class="col-md-7 pr-0 d-flex align-items-start flex-column bd-highlight">
+            <div><a href="../${x.user_link}/posts/${x.post_link}" class="text-capitalize bd-highlight">${x.title}</a></div>
+            <div class='pre-post-description mt-2'><span>${x.description}</span></div>
+            <div class="pre-post-address bd-highlight mt-auto"><i class="fas fa-map-marked-alt"></i> ${x.address}</div>
+        </div>
+        <div class="col-md-3 p-0">
+            <div class="rent-center"><p>${x.rent} <samp>đ/tháng</samp></p></div>
+        </div>
+    </div>`;
     document.querySelector(".index-all-post").appendChild(post);
 
     if(x.poster_id != myJavaScriptVariable || myJavaScriptVariable === '') {
         let bookmark = document.createElement('i');
+        console.log(x.is_active);
         if (x.is_active === true) {
             bookmark.className = 'fas fa-bookmark';
         }

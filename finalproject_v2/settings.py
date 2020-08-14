@@ -32,7 +32,9 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'motels.apps.MotelsConfig',
+    # 'finalproject_v2.apps.SuitConfig',
     'crispy_forms',
+    # 'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

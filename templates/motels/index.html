@@ -12,7 +12,7 @@
         
     </div>
     <div class="profile-grid-item pl-1 pt-4 pr-5 pb-3">
-        <div class="px-4 pt-2 pb-4">
+        <div class="px-4 pt-2 pb-4 ">
             {% if user.is_authenticated %}
             <div class="mb-4">
                 <a href="{% url 'profile' user.get_full_name_link %}"><img class="index-avatar" src="{{MEDIA_URL}}/{{request.user.avatar}}" alt="Ảnh đại diện"></a>
@@ -20,13 +20,12 @@
             </div>
             <div class="d-flex index-saved-posts">
                 <div class="mr-auto">Tin bạn đã lưu</div>
-                <div class=""><a href=""><span>Xem tất cả</span></a></div>
-               
+                <div class=""><a href="{% url 'post_saved' user.get_full_name_link %}"><span>Xem tất cả</span></a></div>
             </div>
             <div class="mt-4 list_following">
                 {% for follow in list_following %}
                     <div class="mb-2" data-post_id = "{{ follow.post_id }}">
-                        <a href="{% url 'profile' follow.follower.get_full_name_link %}"><img class="profile-post-pre-avatar" src="{{MEDIA_URL}}/{{ follow.follower.avatar }}" alt="Ảnh đại diện"></a>
+                        <a href="{% url 'profile' follow.post.poster.get_full_name_link %}"><img class="profile-post-pre-avatar" src="{{MEDIA_URL}}/{{ follow.follower.avatar }}" alt="Ảnh đại diện"></a>
                         <a href="{% url 'view_own_post' follow.follower.get_full_name_link follow.post.get_title_link %}"><span>{{ follow.post.title }}</span></a>
                     </div>
                 {% endfor %}

@@ -3,5 +3,20 @@
 {% load static %}
 
 {% block body %}
-    Đây là trang quản lý từng bài đăng
+    <ul>
+        <li>Tiêu đề: {{ post.title }}</li>
+        <li>Thời gian: {{ post.getUpdateTime }}</li>
+        <li>Phân loại: {{ post.getCategory }}</li>
+        <li>Diện tích: {{ post.area }}</li>
+        <li>Mô tả: {{ post.description }}</li>
+        <li>Cho {{ post.getGenderRenter }} thuê</li>
+        <li>Nội thất: {{ post.furniture }}</li>
+        <li>Giá: {{ post.rent }}</li>
+        {% if post.deposit %}
+            <li>Đặt cọc: {{ post.deposit }}</li>
+        {% endif %}
+        {% for image in post.image %}
+            {{ image.name }}
+        {% endfor %}
+    </ul>
 {% endblock %}

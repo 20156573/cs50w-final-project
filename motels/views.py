@@ -32,9 +32,8 @@ def index(request):
     context = {'list_following': None}
     if request.user.is_authenticated:
         user =  request.user
-        list_following = PostFollow.objects.filter(follower=user, is_active='True').order_by('-timestamp')[:7]
+        list_following = PostFollow.objects.select_related('post').select_related('follower').filter(follower=user, is_active='True')[:6]
         context = {'list_following': list_following}
-    # return HttpResponse(context)
     return render(request, "motels/index.html", context)
 
 def register(request):
@@ -95,14 +94,17 @@ def profile(request, user_name):
     if user_name != user.get_full_name_link():
         raise Http404("Sai phần đầu của gmail")
 
+
+
     posts = Post.objects.raw("select DISTINCT ON (id) p.id, p.title, p.rent, p.category, i.image, concat(motels_district.name, ', ', \
-        motels_province.name ) as address , concat(u.last_name,' ', u.first_name) as full_name from motels_post p \
+        motels_province.name ) as address , concat(u.last_name,' ', u.first_name) as full_name, u.avatar, motels_postfollow.is_active\
+            from motels_post p \
             join motels_user as u on u.id = p.poster_id\
                 left join motels_image as i on i.post_id = p.id join motels_postaddress as a on a.post_id = p.id \
-                    join motels_commune on motels_commune.id =  a.commune_id join motels_district on motels_district.id = \
-                        motels_commune.district_id join motels_province on motels_district.province_id = motels_province.id where \
-                            p.poster_id = %(user_id)s  ORDER BY p.id desc, i.id desc", {'user_id': user_id})
-
+                    join motels_commune on motels_commune.id =  a.commune_id join motels_district on motels_district.id = motels_commune.district_id\
+                        join motels_province on motels_district.province_id = motels_province.id \
+                            left join motels_postfollow ON motels_postfollow.post_id = p.id and motels_postfollow.follower_id = %(u)s\
+                                where p.poster_id = %(user_id)s  ORDER BY p.id desc, i.id desc", {'user_id': user_id, 'u': request.user.id}) 
     context = {
         "profile": user,
         "posts": posts
@@ -220,9 +222,34 @@ def view_own_post(request, user_name, title):
 
     return render(request, 'motels/view_post.html', context)
 
-
-
 # API function
+
+@login_required
+def post_saved(request, user_name):
+    try:
+        user_id = int(user_name[user_name.rindex(".")+1:len(user_name)])
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        raise Http404("Id không tồn tại")
+    except ValueError:
+        raise Http404("Không nhận được user_name")
+    if user_name != user.get_full_name_link():
+        raise Http404("Sai phần đầu của gmail")
+
+    posts = Post.objects.raw("select DISTINCT ON (id) p.id, p.title, p.rent, p.category, i.image, concat(motels_district.name, ', ', \
+        motels_province.name ) as address , concat(u.last_name,' ', u.first_name) as full_name, u.avatar from motels_post p\
+            join motels_user as u on u.id = p.poster_id left join motels_image as i on i.post_id = p.id join motels_postaddress \
+                as a on a.post_id = p.id join motels_commune on motels_commune.id =  a.commune_id join motels_district on motels_district.id \
+                    = motels_commune.district_id join motels_province on motels_district.province_id = motels_province.id\
+                        join motels_postfollow  ON motels_postfollow.post_id = p.id and motels_postfollow.follower_id = %(user_id)s and \
+                            motels_postfollow.is_active  = true ORDER BY p.id desc, i.id desc", {'user_id': user_id})
+
+    context = {
+        "profile": user,
+        "posts": posts
+    }
+    return render(request, 'motels/post_saved.html', context)
+
         
 @login_required
 def edit_profile(request):
@@ -286,7 +313,7 @@ def get_index(request):
             'poster_id': posts[i].poster.id,
             'post_link': posts[i].get_title_link(),
             'user_link': posts[i].poster.get_full_name_link(),
-            'user_avatar': settings.MEDIA_URL + posts[i].avatar,
+            'user_avatar': settings.MEDIA_URL + '/' + posts[i].avatar,
             'full_name': posts[i].full_name,
             'title': posts[i].title,
             'category': posts[i].getCategory(),
@@ -318,13 +345,15 @@ def follow(request):
             follow.is_active = False
         follow.save(force_update=True)
 
-    return JsonResponse(
-        {"is_active": follow.is_active, 
-        "full_name_link": follow.post.poster.get_full_name_link(),  
-        # "avatar": settings.MEDIA_URL + follow.post.poster.avatar, 
-        "title": follow.post.title, 
-        "title_link": follow.post.get_title_link()}
-        , safe=False, status=201)
+    data = {
+        "is_active": follow.is_active,
+        "title": follow.post.title,
+        'title_link': follow.post.get_title_link(),
+        'avatar': settings.MEDIA_URL + follow.follower.avatar.name,
+        'full_name_link': follow.follower.get_full_name_link()
+
+    }
+    return JsonResponse(data, safe=False, status=201)
 
 # Socket io
 
