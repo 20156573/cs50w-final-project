@@ -3,28 +3,49 @@
         "model": "motels.poststatus",
         "pk": 1,
         "fields": {
-            "status": "Bạn đã tạo một tin đăng và đang chờ duyệt"
+            "status": "Tin của bạn đang chờ duyệt"
         }
     },
     {
         "model": "motels.poststatus",
         "pk": 2,
         "fields": {
-            "status": "Tin đăng của bạn đã được duyệt thành công"
+            "status": "Tin của bạn đã được duyệt thành công"
         }
     },
     {
         "model": "motels.poststatus",
         "pk": 3,
         "fields": {
-            "status": "Tin đăng của bạn chưa được duyệt"
+            "status": "Tin của bạn không được duyệt"
         }
     },
     {
         "model": "motels.poststatus",
         "pk": 4,
         "fields": {
-            "status": "Bạn đã hủy yêu cầu duyệt tin đăng thành công"
+            "status": "Bạn đã hủy yêu cầu duyệt tin"
+        }
+    },
+    {
+        "model": "motels.poststatus",
+        "pk": 5,
+        "fields": {
+            "status": "Tin của bạn đã bị ẩn bởi admin"
+        }
+    },
+    {
+        "model": "motels.poststatus",
+        "pk": 6,
+        "fields": {
+            "status": "Bạn đã ẩn tin của mình"
+        }
+    },
+    {
+        "model": "motels.poststatus",
+        "pk": 7,
+        "fields": {
+            "status": "Tin đã bỏ ẩn"
         }
     }
 ]

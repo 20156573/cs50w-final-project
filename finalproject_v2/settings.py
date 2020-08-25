@@ -32,16 +32,16 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'motels.apps.MotelsConfig',
-    # 'finalproject_v2.apps.SuitConfig',
+    'finance.apps.FinanceConfig',
+    'django.contrib.messages',
+    'finalproject_v2.apps.SuitConfig',
     'crispy_forms',
-    # 'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
-    'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'django_socketio'
+    
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -77,7 +77,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'finalproject_v2.wsgi.application'
 
-
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 

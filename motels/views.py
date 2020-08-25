@@ -1,6 +1,5 @@
 import json
 
-import socketio
 from django.utils import timezone
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
@@ -10,29 +9,24 @@ from django.core import serializers
 from django.template.loader import render_to_string
 from django.core.files.storage import FileSystemStorage
 from django.db import IntegrityError, transaction
-from django.shortcuts import HttpResponseRedirect, render, get_object_or_404, HttpResponse
+from django.shortcuts import HttpResponseRedirect, render, get_object_or_404, HttpResponse, redirect
 from django.http import  Http404
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-
+from django.contrib.auth.forms import PasswordChangeForm
 from .models import *
-from .forms import RegisterForm, AccountAuthenticationForm, UpdateProfileForm
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from .forms import RegisterForm, AccountAuthenticationForm, UpdateProfileForm, MyChangeFormPasswordChild
 # Create your views here.
 
-sio = socketio.Server()
 
-# wrap with a WSGI application
-# app = socketio.WSGIApp(sio)
-
-from finalproject_v2.wsgi import application
-
-application = socketio.WSGIApp(sio, application)
 
 def index(request):
     context = {'list_following': None}
     if request.user.is_authenticated:
         user =  request.user
-        list_following = PostFollow.objects.select_related('post').select_related('follower').filter(follower=user, is_active='True')[:6]
+        list_following = PostFollow.objects.select_related('post__poster').select_related('follower').filter(follower=user, is_active='True')[:6]
         context = {'list_following': list_following}
     return render(request, "motels/index.html", context)
 
@@ -79,6 +73,22 @@ def login_view(request):
     }
     return render(request, 'motels/login.html', context)
 
+
+@login_required
+def user_change_password(request):
+    if request.method == 'POST':
+        form = MyChangeFormPasswordChild(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, form.user)  # Important!
+            messages.success(request, 'Mật khẩu của bạn đã được cập nhật thành công')
+            return redirect('user_change_password')
+    else:
+        form = MyChangeFormPasswordChild(request.user)
+    context={'form': form,}
+
+    return render(request, 'motels/change_password.html', context) 
+
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
@@ -91,6 +101,8 @@ def profile(request, user_name):
         raise Http404("Id không tồn tại")
     except ValueError:
         raise Http404("Không nhận được user_name")
+    if user.is_active == False:
+        raise Http404("Người dùng đã ngưng hoạt động")
     if user_name != user.get_full_name_link():
         raise Http404("Sai phần đầu của gmail")
 
@@ -99,18 +111,17 @@ def profile(request, user_name):
     posts = Post.objects.raw("select DISTINCT ON (id) p.id, p.title, p.rent, p.category, i.image, concat(motels_district.name, ', ', \
         motels_province.name ) as address , concat(u.last_name,' ', u.first_name) as full_name, u.avatar, motels_postfollow.is_active\
             from motels_post p \
-            join motels_user as u on u.id = p.poster_id\
-                left join motels_image as i on i.post_id = p.id join motels_postaddress as a on a.post_id = p.id \
-                    join motels_commune on motels_commune.id =  a.commune_id join motels_district on motels_district.id = motels_commune.district_id\
-                        join motels_province on motels_district.province_id = motels_province.id \
-                            left join motels_postfollow ON motels_postfollow.post_id = p.id and motels_postfollow.follower_id = %(u)s\
-                                where p.poster_id = %(user_id)s  ORDER BY p.id desc, i.id desc", {'user_id': user_id, 'u': request.user.id}) 
+            join motels_user as u on u.id = p.poster_id and u.is_active=true \
+            left join motels_image as i on i.post_id = p.id join motels_postaddress as a on a.post_id = p.id \
+            join motels_commune on motels_commune.id =  a.commune_id join motels_district on motels_district.id = motels_commune.district_id\
+            join motels_province on motels_district.province_id = motels_province.id \
+            left join motels_postfollow ON motels_postfollow.post_id = p.id and motels_postfollow.follower_id = %(u)s\
+            where p.poster_id = %(user_id)s and (p.status = 2 or p.status = 7)  ORDER BY p.id desc, i.id desc", {'user_id': user_id, 'u': request.user.id}) 
     context = {
         "profile": user,
         "posts": posts
     }
     return render(request, 'motels/profile.html', context)
-
 
 @login_required
 def create_post_category(request):
@@ -209,6 +220,8 @@ def view_own_post(request, user_name, title):
         raise Http404("Người dùng này không tồn tại hoặc không còn hoạt động")
     except ValueError:
         raise Http404("Người dùng này không tồn tại hoặc không còn hoạt động")
+    if user.is_active == False:
+        raise Http404("Người dùng đã ngưng hoạt động")
 
     try:
         post_id = int(title[title.rindex(".")+1:len(title)])
@@ -223,7 +236,6 @@ def view_own_post(request, user_name, title):
     return render(request, 'motels/view_post.html', context)
 
 # API function
-
 @login_required
 def post_saved(request, user_name):
     try:
@@ -238,11 +250,11 @@ def post_saved(request, user_name):
 
     posts = Post.objects.raw("select DISTINCT ON (id) p.id, p.title, p.rent, p.category, i.image, concat(motels_district.name, ', ', \
         motels_province.name ) as address , concat(u.last_name,' ', u.first_name) as full_name, u.avatar from motels_post p\
-            join motels_user as u on u.id = p.poster_id left join motels_image as i on i.post_id = p.id join motels_postaddress \
+            join motels_user as u on u.id = p.poster_id and u.is_active=true left join motels_image as i on i.post_id = p.id join motels_postaddress \
                 as a on a.post_id = p.id join motels_commune on motels_commune.id =  a.commune_id join motels_district on motels_district.id \
                     = motels_commune.district_id join motels_province on motels_district.province_id = motels_province.id\
                         join motels_postfollow  ON motels_postfollow.post_id = p.id and motels_postfollow.follower_id = %(user_id)s and \
-                            motels_postfollow.is_active  = true ORDER BY p.id desc, i.id desc", {'user_id': user_id})
+                            motels_postfollow.is_active = true ORDER BY p.id desc, i.id desc", {'user_id': user_id})
 
     context = {
         "profile": user,
@@ -305,7 +317,7 @@ def get_index(request):
                 left join motels_image as i on i.post_id = p.id join motels_postaddress as a on a.post_id = p.id \
                     join motels_commune on motels_commune.id =  a.commune_id join motels_district on motels_district.id = motels_commune.district_id\
                         join motels_province on motels_district.province_id = motels_province.id \
-                            left join motels_postfollow ON motels_postfollow.post_id = p.id and motels_postfollow.follower_id = %(user_id)s ORDER BY p.id desc, i.id desc", {'user_id': user_id})
+                            left join motels_postfollow ON motels_postfollow.post_id = p.id and motels_postfollow.follower_id = %(user_id)s where (p.status = 2 or p.status = 7) ORDER BY p.id desc, i.id desc", {'user_id': user_id})
     data = []
     for i in range(len(posts)):
         post = {
@@ -327,6 +339,77 @@ def get_index(request):
         data.append(post)
     return JsonResponse(data, safe=False)
 
+
+def profile_get_post(request, user_id, section):
+    try:
+        user = User.objects.get(pk=user_id)
+    except User.DoesNotExist:
+        raise Http404("Id không tồn tại")
+    if user.is_active == False:
+        raise Http404("Người dùng đã ngưng hoạt động")
+
+    if section == 'active':
+        posts = Post.objects.raw("select DISTINCT ON (id) p.id, p.title, p.rent, p.category, p.status, p.update_time, i.image, concat(motels_district.name, ', ', \
+        motels_province.name ) as address , concat(u.last_name,' ', u.first_name) as full_name, u.avatar, motels_postfollow.is_active\
+            from motels_post p \
+            join motels_user as u on u.id = p.poster_id and u.is_active=true \
+            left join motels_image as i on i.post_id = p.id join motels_postaddress as a on a.post_id = p.id \
+            join motels_commune on motels_commune.id =  a.commune_id join motels_district on motels_district.id = motels_commune.district_id\
+            join motels_province on motels_district.province_id = motels_province.id \
+            left join motels_postfollow ON motels_postfollow.post_id = p.id and motels_postfollow.follower_id = %(u)s\
+            where p.poster_id = %(user_id)s and (p.status = 2 or p.status = 7)  ORDER BY p.id desc, i.id desc", {'user_id': user_id, 'u': request.user.id})
+    if section == 'all':
+        posts = Post.objects.raw("select DISTINCT ON (id) p.id, p.title, p.rent, p.status, p.update_time, p.category, i.image, concat(motels_district.name, ', ', \
+        motels_province.name ) as address , concat(u.last_name,' ', u.first_name) as full_name, u.avatar, motels_postfollow.is_active\
+            from motels_post p \
+            join motels_user as u on u.id = p.poster_id and u.is_active=true \
+            left join motels_image as i on i.post_id = p.id join motels_postaddress as a on a.post_id = p.id \
+            join motels_commune on motels_commune.id =  a.commune_id join motels_district on motels_district.id = motels_commune.district_id\
+            join motels_province on motels_district.province_id = motels_province.id \
+            left join motels_postfollow ON motels_postfollow.post_id = p.id and motels_postfollow.follower_id = %(u)s\
+            where p.poster_id = %(user_id)s ORDER BY p.id desc, i.id desc", {'user_id': user_id, 'u': request.user.id})
+    if section == 'waiting':
+        posts = Post.objects.raw("select DISTINCT ON (id) p.id, p.title, p.rent, p.status, p.update_time, p.category, i.image, concat(motels_district.name, ', ', \
+        motels_province.name ) as address , concat(u.last_name,' ', u.first_name) as full_name, u.avatar, motels_postfollow.is_active\
+            from motels_post p \
+            join motels_user as u on u.id = p.poster_id and u.is_active=true \
+            left join motels_image as i on i.post_id = p.id join motels_postaddress as a on a.post_id = p.id \
+            join motels_commune on motels_commune.id =  a.commune_id join motels_district on motels_district.id = motels_commune.district_id\
+            join motels_province on motels_district.province_id = motels_province.id \
+            left join motels_postfollow ON motels_postfollow.post_id = p.id and motels_postfollow.follower_id = %(u)s\
+            where p.poster_id = %(user_id)s and p.status = 1 ORDER BY p.id desc, i.id desc", {'user_id': user_id, 'u': request.user.id})
+    if section == 'hidden':
+        posts = Post.objects.raw("select DISTINCT ON (id) p.id, p.title, p.rent, p.status, p.update_time, p.category, i.image, concat(motels_district.name, ', ', \
+        motels_province.name ) as address , concat(u.last_name,' ', u.first_name) as full_name, u.avatar, motels_postfollow.is_active\
+            from motels_post p \
+            join motels_user as u on u.id = p.poster_id and u.is_active=true \
+            left join motels_image as i on i.post_id = p.id join motels_postaddress as a on a.post_id = p.id \
+            join motels_commune on motels_commune.id =  a.commune_id join motels_district on motels_district.id = motels_commune.district_id\
+            join motels_province on motels_district.province_id = motels_province.id \
+            left join motels_postfollow ON motels_postfollow.post_id = p.id and motels_postfollow.follower_id = %(u)s\
+            where p.poster_id = %(user_id)s and (p.status = 6 or p.status = 5 or p.status = 3) ORDER BY p.id desc, i.id desc", {'user_id': user_id, 'u': request.user.id})
+    data = []
+    for i in range(len(posts)):
+        post = {
+            'post_id': posts[i].id,
+            'poster_id': posts[i].poster.id,
+            'post_link': posts[i].get_title_link(),
+            'user_link': posts[i].poster.get_full_name_link(),
+            'user_avatar': settings.MEDIA_URL + '/' + posts[i].avatar,
+            'full_name': posts[i].full_name,
+            'title': posts[i].title,
+            'category': posts[i].getCategory(),
+            'update_time': posts[i].getUpdateTime(),  
+            'address': posts[i].address,
+            'post_image': settings.MEDIA_URL  + posts[i].image,
+            'description': posts[i].description,
+            'is_active': posts[i].is_active,
+            'rent': posts[i].rent,
+            'status': posts[i].status
+        }
+        data.append(post)
+    return JsonResponse(data, safe=False)
+        
 @login_required
 def follow(request):
     if request.method != "POST":
@@ -349,21 +432,10 @@ def follow(request):
         "is_active": follow.is_active,
         "title": follow.post.title,
         'title_link': follow.post.get_title_link(),
-        'avatar': settings.MEDIA_URL + follow.follower.avatar.name,
+        'avatar': settings.MEDIA_URL + follow.post.poster.avatar.name,
         'full_name_link': follow.follower.get_full_name_link()
 
     }
     return JsonResponse(data, safe=False, status=201)
 
 # Socket io
-
-votes = {'yes': 0, 'no': 0, 'maybe': 0}
-def socket(request):
-    return render(request, 'motels/socket.html', {'votes': votes})
-
-
-@sio.on('submit-vote')
-def vote(sid, data):
-    selection = data["selection"]
-    votes[selection] += 1
-    sio.emit("votes-totals", {'data': votes}, broadcast=True)

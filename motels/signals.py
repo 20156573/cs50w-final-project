@@ -8,6 +8,6 @@ def create_history(sender, instance, created, **kwargs):
     if created:
         status = PostStatus.objects.get(pk=1)
         RegularUserHistory.objects.create(status=status, post=instance, updated_by=instance.poster)
-
+    
 
 

@@ -1,0 +1,178 @@
+{% extends 'motels/base.html' %}
+
+{% load static %}
+
+{% block body %}
+
+<div class="profile px-3">
+    <div class="profile-grid-item pl-5 pt-4 pr-2 pb-3">
+        <div class="box shadow-sm px-4 py-4">
+            <div>
+                <p class="full-name">{{ request.user.get_full_name }}</p>
+                <p class="font-weight-light date-join"><i class="far fa-calendar-alt"></i>  {{ request.user.get_date_joined }}</p>
+            </div>
+            {% if user.is_authenticated and user.id == request.user.id %}
+                <button id="profile-edit-Btn" class="profile-edit-Btn">Chỉnh sửa hồ sơ</button>
+            {% endif %}
+        </div>
+        <div class=" px-4 py-4 mt-3">
+            <div>
+                {% if user.is_authenticated and user.id == request.user.id %}
+                <ul class="profile-vertical-menu">
+                    <li><a href="{% url 'profile' user.get_full_name_link %}">Tin đăng của bạn</a></li>
+                    
+                    <li><a href="">Hoạt động</a></li>
+                    <hr>
+                    <li class="active"><a href="{% url 'your_finance' %}">Ví của bạn</a></li>
+                    <hr>
+                    <li><a href="{% url 'post_saved' user.get_full_name_link %}">Đã lưu</a></li>
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-grid-item pl-1 pt-4 pr-5 pb-3">
+        <div class="box shadow-sm px-4 py-4">
+            <div>
+                <ul class="profile-horizontal-menu">
+                    <li data-section="in">Lịch sử nạp tiền</li>
+                    <li data-section="out">Lịch sử đẩy tin</li>
+                </ul>
+            </div>
+            <div class="d-flex">
+                <div id="finance_now">Bạn đang có <span>{{ finance }}</span> đ</div>
+                <a class="nav-link ml-auto" id="link-button-create_post" href="{% url 'view_form' %}">Đẩy tin</a>
+            </div>
+        </div>
+        <div class="index-all-post pt-4">
+        <div class="box  shadow-sm px-4 pb-4 mb-3">
+            <!-- ĐANG ĐĂNG -->
+            <!-- Bài đăng của người dùng đặt ở đây -->
+            <div class="container pt-4">
+                <table id="history">
+                    <tr>
+                        <th>Trạng thái</th>
+                        <th>Mã code</th>
+                        <th>Seri</th>
+                        <th>Nhà mạng</th>
+                        <th>Khai</th>
+                        <th>Thực</th>
+                        <th>Nhận</th>
+                        <th>Ngày</th>
+                        <th>Mã giao dịch</th>
+                    </tr>
+                    {% for h in his %}
+                        <tr>
+                            <td>
+                                <span {{ h.is_waiting|yesno:' class=is_waiting,' }} {{ h.is_success|yesno:' class=is_success,' }} {{ h.is_fail|yesno:' class=is_fail,' }}>{{ h.get_status }}</span>
+                            </td>
+                            <td>{{ h.code }}</td>
+                            <td>{{ h.serial }}</td>
+                            <td>{{ h.telco }}</td>
+                            <td>{{ h.declared_value }}</td>
+                            <td>{{ h.value }}</td>
+                            <td>{{ h.amount }}</td>
+                            <td>{{ h.get_date }}</td>
+                            <td>{{ h.request_id }}</td>
+                        </tr>
+                    {% empty %}
+                    {% endfor %}
+                </table>
+            </div>
+        
+        </div>
+        </div>
+    </div>
+</div>
+
+<div id="profile-edit-modal" class="modal">
+    <div class="modal-content shadow-lg">
+        <div class="modal-content-info">
+            <div class="row motel-row-header">
+                <div class="col-sm-8">
+                    <div class="modal-content-header my-3">Chỉnh sửa hồ sơ của bạn</div>
+                </div>
+                <div class="col-sm-4">
+                    <span class="close">&times;</span>
+                </div>
+            </div>
+            <div class="row motel-row-body pt-4 px-3">
+                <div class="col-sm-8 pr-4" id="motel-profile-form">
+                    <form id="editProForm" action="{% url 'save_profile' %}" method="post" novalidate>
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-sm-6 mb-3">
+                                <label for="last_name">Họ</label>
+                                <input id="last_name"  name="last_name"  type="text" placeholder="Họ">
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <label for="first_name">Tên</label>
+                                <input id="first_name" name="first_name" type="text" placeholder="Tên">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="user_address">Địa chỉ</label>
+                            <select name="address"  id="user_address">
+                                <option  selected disabled hidden style='display: none' value="">Tỉnh</option>
+                            </select>
+                        </div>
+    
+                        <div class="mt-4"><input type="button"  id='editProBtn' value="Lưu"></div>
+                        
+                    </form>
+                </div>
+                <div class="col-sm-4">
+                    <img src="{{MEDIA_URL}}/{{request.user.avatar}}" class="img-thumbnail mg-fluid rounded-circle" alt="Ảnh đại diện của bạn">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+  
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<script src="{% static 'motels/update_profile.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('.profile-horizontal-menu [data-section="in"]').className = 'active';
+        
+        convert(document.querySelector('#finance_now span').innerHTML, document.querySelector('#finance_now span'));
+        document.querySelectorAll('.finance_each').forEach(td => {
+            convert(td.innerHTML, td);
+        })
+    })
+
+    function convert(amount, item) {
+        let modun = parseInt(amount.length/3);
+        let len = amount.length;
+        let arr = new Array();
+        for (let i = modun; i >= 0; i--) {
+            arr[i] = ',' + amount.slice((len - (modun + 1-i)*3), (len-(modun-i)*3));
+            if (i === 0) {
+                arr[i] = amount.slice(0, len-modun*3);
+            }
+        } 
+        let str = arr.toString();
+        let str2 = str.replace(/,,/g,",");
+        if (str2[0] === ',') {
+            str2 = str2.slice(1, str2.length);
+            item.innerHTML = str2;
+        }
+        else {
+            item.innerHTML = str2;
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,97 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<style>
+    
+</style>
+<div id="content" class="flex">
+    <div class="content-wrap">
+        <div id="content-main">
+            <div class="module filtered" id="changelist">
+                <div id="toolbar">
+                    <form id="changelist-search" method="get" class="form-inline">
+                        <div><!-- DIV needed for valid HTML -->
+                            <label for="searchbar"><img src="/static/admin/img/search.svg" alt="Search"/></label>
+                            <input type="text" size="40" name="p" value="" id="searchbar" autofocus/>
+                            <input type="submit" value="Search"/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <table id="result_list">
+                <thead>
+                    <tr>
+                        <th scope="col"  class="sortable column-title">
+                            <div class="text"><a href="?o=0">Tiêu đề</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col"  class="sortable column-update_time">
+                            <div class="text"><a href="?o=1">Thời gian hủy</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col"  class="sortable column-getCategory">
+                            <div class="text"><a href="">Loại bài đăng</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col"  class="">
+                            <div class="text"><a href="">Người đăng</a></div>
+                            <div class="clear"></div>
+                        </th>
+                        <th scope="col"  class="">
+                            <div class="text"><a href="">Hủy bởi admin</a></div>
+                            <div class="clear"></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for h in hh %}
+                        <tr class="row1">
+                            <th class="field-title"><a href="/admin/motels/post/{{ h.post_id }}/change/">{{ h.title }}</a></th>
+                            <td class="field-update_time nowrap">{{ h.get_how_long }}</td>
+                            <td class="field-getCategory">
+                                {% if h.category == 0 %}
+                                    Tìm người ở ghép
+                                {% elif h.category == 1 %}
+                                    Cho thuê phòng trọ
+                                {% elif h.category == 2 %}
+                                    Cho thuê nhà nguyên căn
+                                {% elif h.category == 3 %}
+                                    Cho thuê nguyên căn chung cư
+                                {% endif %}
+                            </td>
+                            <td><a href="/admin/motels/user/{{ h.poster_id }}/change/">{{ h.email }}</a></td>
+                            <td>{{ h.updated_by_info }}</td>
+                        </tr>
+                    {% empty %}
+                        Không có tin nào đang bị hủy duyệt
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>  
+    </div>
+</div>
+{{ block.super }}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('children_quan_ly_tin').className = 'active has-children';
+        document.querySelector('#children_quan_ly_tin ul').style.visibility = 'hidden';
+        document.getElementById('sub-nav-quan-ly-tin').style.visibility =  'visible';
+        document.querySelector('#suit-sub-nav #sub-nav-quan-ly-tin #sub-nav-not-approved').className = 'active';
+        document.querySelector('.breadcrumbs').style.display = 'none';
+
+        document.querySelector('#approval-all').addEventListener('click', function() {
+            document.querySelectorAll('.approval-check-box').forEach(autoCheck);
+        }) 
+        function autoCheck(item) {
+            item.checked = document.querySelector('#approval-all').checked;
+        }
+      
+        
+        
+
+        
+    })
+</script>
+
+{% endblock %}

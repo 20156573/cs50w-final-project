@@ -10,20 +10,16 @@
         <link rel="stylesheet" href="{% static 'motels/styles.css' %}">
     </head>
     <body class="register-body">
-        <div class="base-menu px-5">
-            <a class="base-menu-left" href="{% url 'index' %}"><i class="fas fa-house-user"></i></a>
-            <p class="">Đăng ký</p>
-        </div>
+            
+
         <div class="register pb-5">
             <div class="container px-0">
                 <div class="row">
-                    <div class="col-md-8 pt-5">
-                        <i class="fas fa-house-user register-icon d-flex justify-content-center w-200 my-4"></i>
-                        <p class="brand d-flex justify-content-center">Tìm nhà trọ</p>
-                        <h1 class="d-flex justify-content-center">Tìm nhà trọ của bạn</h1>
+                    <div class="col-md-4 pt-5">
                     </div>
                     <div class="col-md-4 px-0 pt-5">
-                        <form class="px-4 py-5 shadow bg-white" action="{% url 'register' %}" method="POST" novalidate>
+                        <a href="{% url 'index' %}"><span>Rao nhà trọ</span></a>
+                        <form autocomplete="off" class="px-4 py-5 shadow" action="{% url 'register' %}" method="POST" novalidate>
                             <p class="form-head d-flex justify-content-center mb-5">Đăng ký tài khoản</p>
                             {% load crispy_forms_tags %}
                             {% csrf_token %}
@@ -40,12 +36,15 @@
                             {{ form.password1|as_crispy_field }}
                             {{ form.password2|as_crispy_field }}
         
-                            <input type="submit" class="btn my-4" value="Đăng ký"/>
-                            <div class="d-flex justify-content-center">Bạn đã có tài khoản? <a href="{% url 'login' %}">Đăng nhập tại đây.</a></div>   
-                        </form>
+                            <input type="submit" class="btn my-3" value="Đăng ký"/>
+                            <div class="d-flex justify-content-center">Bạn đã có tài khoản? <a href="{% url 'login' %}">Đăng nhập tại đây.</a></div>  
+                            </form>
+                    </div>
+                    <div class="col-md-4 pt-5">
                     </div>
                 </div>
             </div>
         </div>
     </body>
+    
 </html>

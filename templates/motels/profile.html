@@ -3,6 +3,10 @@
 {% load static %}
 
 {% block body %}
+<script type = "text/javascript"> 
+    if ("{{ profile.id }}")
+        var myJavaScriptVariable = "{{ profile.id }}"; 
+</script> 
 <div class="profile px-3">
     <div class="profile-grid-item pl-5 pt-4 pr-2 pb-3">
         <div class="box shadow-sm px-4 py-4">
@@ -18,11 +22,11 @@
             <div>
                 {% if user.is_authenticated and user.id == profile.id %}
                 <ul class="profile-vertical-menu">
-                    <li class="active"><a href="">Tin đăng của bạn</a></li>
-                    <li><a href="">Bản nháp</a></li>
+                    <li class="active"><a href="{% url 'profile' user.get_full_name_link %}">Tin đăng của bạn</a></li>
+                    
                     <li><a href="">Hoạt động</a></li>
                     <hr>
-                    <li><a href="">Ví của bạn</a></li>
+                    <li><a href="{% url 'your_finance' %}">Ví của bạn</a></li>
                     <hr>
                     <li><a href="{% url 'post_saved' user.get_full_name_link %}">Đã lưu</a></li>
                 </ul>
@@ -36,13 +40,13 @@
             <div>
                 <ul class="profile-horizontal-menu">
                     {% if user.is_authenticated and user.id == profile.id %}
-                        <li><a href="">Tất cả</a> </li>
+                        <li data-section="all">Tất cả</li>
                     {% endif %}
-                    <li class="active"><a href="">Đang đăng</a> </li>
+                        <li data-section="active">Đang đăng</li>
                     {% if user.is_authenticated and user.id == profile.id %}
-                        <li><a href="">Đang chờ duyệt</a></li>
-                        <li><a href="">Đã ẩn</a></li>
-                        <li><a href="">Đã bị khóa</a></li>
+                        <li data-section="waiting">Đang chờ duyệt</li>
+                        <li data-section="hidden">Đã ẩn</li>
+                        <li>Đã bị khóa</li>
                     {% endif %}
                 </ul>
             </div>
@@ -56,7 +60,8 @@
                 {% endif %}
             </div>
         </div>
-        <div class="box  shadow-sm px-4 pt-4 pb-4 mt-3">
+        <div class="index-all-post pt-4">
+        <div class="box  shadow-sm px-4 pb-4 mb-3">
             <!-- ĐANG ĐĂNG -->
             <!-- Bài đăng của người dùng đặt ở đây -->
             {% for post in posts %}
@@ -106,6 +111,7 @@
             {% empty %}
                 <small>Bạn chưa đăng tin nào/ Người dùng này hiện đang không cho thuê nhà trọ nào</small>
             {% endfor %}
+        </div>
         </div>
     </div>
 </div>
@@ -159,7 +165,7 @@
 
 <script src="{% static 'motels/profile.js' %}"></script>
 <script>
-     document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.fa-bookmark').forEach(changeColor);
     });
 

@@ -11,7 +11,7 @@
         <link rel="stylesheet" href="{% static 'motels/styles.css' %}">
     </head>
     <body class="base-body">
-        <div class="base-menu px-5">
+        <div class="base-menu px-5 mb-4">
             <a class="base-menu-left" href="{% url 'index' %}">Rao nhà trọ</a>
             <div class="search-container">
                 <form action="">
@@ -32,7 +32,7 @@
                         <a href="{% url 'logout' %}">Đăng xuất</a>
                     </div>
                 </div>
-                <a class="base-menu-right" href=""><i class="far fa-bell"></i></a>
+                <a class="base-menu-right" href="{% url 'your_finance' %}"><i class="far fa-money-bill-alt"></i> <span id="menu-finance">{{ request.user.get_finance }}</span>đ</a>
                 <a class="base-menu-right" href="{% url 'post_saved' user.get_full_name_link %}"><i class="far fa-bookmark"></i></a>
                 <a class="nav-link base-menu-right base-menu-add-post" href="{% url 'create_post_category' %}">Đăng tin</a>
             {% else %}
@@ -46,5 +46,31 @@
 
         {% block script %}
         {% endblock %}
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                convert(document.querySelector('#menu-finance').innerHTML, document.querySelector('#menu-finance'));
+
+            })
+            function convert(amount, item) {
+                let modun = parseInt(amount.length/3);
+                let len = amount.length;
+                let arr = new Array();
+                for (let i = modun; i >= 0; i--) {
+                    arr[i] = ',' + amount.slice((len - (modun + 1-i)*3), (len-(modun-i)*3));
+                    if (i === 0) {
+                        arr[i] = amount.slice(0, len-modun*3);
+                    }
+                } 
+                let str = arr.toString();
+                let str2 = str.replace(/,,/g,",");
+                if (str2[0] === ',') {
+                    str2 = str2.slice(1, str2.length);
+                    item.innerHTML = str2;
+                }
+                else {
+                    item.innerHTML = str2;
+                }
+            }
+        </script>
     </body>
 </html>

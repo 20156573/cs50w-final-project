@@ -1,0 +1,59 @@
+{% load i18n suit_menu suit_tags %}
+
+{% get_menu request as menu %}
+{% with suit_layout='layout'|suit_conf:request %}
+    <div id="suit-nav">
+        <ul>
+            {% if menu %}
+                {% for parent_item in menu %}
+                    {% if not parent_item.align_right or suit_layout == 'vertical' %}
+                        {% include 'suit/menu_item.html' %}
+                    {% endif %}
+                {% endfor %}
+
+                <li class="has-children" id="children_quan_ly_tin">
+                    <a href="/admin/motels/regularuserhistory/approval/">
+                        Quản lý tin
+                    </a>
+                    <ul>
+                        <li><a href="/admin/motels/regularuserhistory/approval/">Đang chờ duyệt</a></li>
+                        <li id="sub-nav-approved"><a href="/admin/motels/regularuserhistory/approved/">Đã duyệt</a></li>
+                        <li id="sub-nav-not-approved"><a href="/admin/motels/regularuserhistory/not_approved/">Đã hủy duyệt</a></li>
+                        <li><a href="/admin/motels/regularuserhistory/hidden/">Đang bị ẩn</a></li>
+                    </ul>
+                </li>
+
+            {% endif %}
+        </ul>
+        {% if menu.aligned_right_menu_items %}
+            <ul class="suit-nav-right">
+                {% for parent_item in menu.aligned_right_menu_items %}
+                    {% include 'suit/menu_item.html' %}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    {% if suit_layout == 'horizontal' and menu  %}
+        <div id="suit-sub-nav">
+            <ul>
+                {% for child_item in menu.active_parent_item.children %}
+                    <li{{ child_item.is_active|yesno:' class=active,' }}>
+                        <a href="{{ child_item.url }}"
+                                {{ child_item.target_blank|yesno:' target=_blank,' }}>{{ child_item.label }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+            <ul id="sub-nav-quan-ly-tin">
+                <li><a href="/admin/motels/regularuserhistory/approval/">Đang chờ duyệt</a></li>
+                <li id="sub-nav-approved"><a href="/admin/motels/regularuserhistory/approved/">Đã duyệt</a></li>
+                <li id="sub-nav-not-approved"><a href="/admin/motels/regularuserhistory/not_approved/">Đã hủy duyệt</a></li>
+                <li id="sub-nav-hidden"><a href="/admin/motels/regularuserhistory/hidden/">Đang bị ẩn</a></li>
+            </ul>
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    document.getElementById('sub-nav-quan-ly-tin').style.visibility =  'hidden';
+                })
+            </script>
+        </div>
+    {% endif %}
+{% endwith %}

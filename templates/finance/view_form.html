@@ -1,0 +1,175 @@
+{% extends 'motels/base.html' %}
+
+{% load static %}
+
+{% block body %}
+<div class=" px-3">
+    <div class="create_post pt-4 px-5 pb-3 profile-grid-item">
+        <div class="box shadow-sm px-4 py-4">
+            <div id="finance_now">Bạn đang có <span>{{ finance }}</span> đ</div>
+        </div>
+    </div>
+</div>
+<div class="finance px-3">
+    <div class="create_post pl-5 pt-2 pr-2 pb-3 profile-grid-item">
+        <div class="box shadow-sm px-4 py-4">
+            <div class='finance-form-button'>
+                <button>MUA MÃ THẺ</button>
+            </div>
+            
+            <form action="" method="POST"  autocomplete="off">
+                {% csrf_token %}
+                {% load crispy_forms_tags %}
+                <div class="mb-4">
+                    <p class="pb-4">CHỌN LOẠI NHÀ MẠNG</p>
+                    <div class="form-group">
+                        <div class="">
+                            {% for type in form.telco %}
+                                {{ type }}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <p class="pb-4">NHẬP THÔNG TIN THẺ CÀO</p>
+                    <div class="form-group row">
+                        <label for="" class="col-sm-3 col-form-label">{{ form.code.label_tag }}</label>
+                        <div class="col-sm-9 ">
+                            {{form.code}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="" class="col-sm-3 col-form-label">{{ form.serial.label_tag }}</label>
+                        <div class="col-sm-9 ">
+                            {{form.serial}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-3 pt-0">{{ form.declared_value.label_tag  }}</label>
+                        <div class="col-sm-9">
+                            {{form.declared_value}}
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                {{ form|as_crispy_errors }}
+                  
+               
+                <div class='finance-form-button'>
+                    <input type="submit" id="button_post" value="Nạp">
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class=" pl-1 pt-2 pr-5 pb-3 profile-grid-item">
+        <div class="box shadow-sm px-4 py-4">
+
+            <p class="create_post_head pb-4">Lịch sử nạp thẻ</p>
+            <table id="history">
+                <tr>
+                    <th>Trạng thái</th>
+                    <th>Mã code</th>
+                    <th>Seri</th>
+                    <th>Nhà mạng</th>
+                    <th>Khai</th>
+                    <th>Thực</th>
+                    <th>Nhận</th>
+                    <th>Ngày</th>
+                    <th>Mã giao dịch</th>
+                </tr>
+                {% for h in his %}
+                    <tr>
+                        <td>
+                            <span {{ h.is_waiting|yesno:' class=is_waiting,' }} {{ h.is_success|yesno:' class=is_success,' }} {{ h.is_fail|yesno:' class=is_fail,' }}>{{ h.get_status }}</span>
+                        </td>
+                        <td>{{ h.code }}</td>
+                        <td>{{ h.serial }}</td>
+                        <td>{{ h.telco }}</td>
+                        <td class="finance_vnd">{{ h.declared_value }}</td>
+                        <td class="finance_vnd">{{ h.value }}</td>
+                        <td class="finance_vnd">{{ h.amount }}</td>
+                        <td>{{ h.get_date }}</td>
+                        <td>{{ h.request_id }}</td>
+                    </tr>
+                {% empty %}
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+<!--  -->
+
+<!--  -->
+
+{% if messages %}
+<div class="message">
+    {% for message in messages %}
+    <p>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+    </p>
+    {% endfor %}
+</ul>
+{% endif %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('#id_declared_value option').forEach(item => {
+            if (item.index != 0) {
+                convert(item.innerHTML, item);
+            }
+        })
+    })
+
+    function convert(amount, item) {
+        let modun = parseInt(amount.length/3);
+        let len = amount.length;
+        let arr = new Array();
+        for (let i = modun; i >= 0; i--) {
+            arr[i] = ',' + amount.slice((len - (modun + 1-i)*3), (len-(modun-i)*3));
+            if (i === 0) {
+                arr[i] = amount.slice(0, len-modun*3);
+            }
+        } 
+        let str = arr.toString();
+        let str2 = str.replace(/,,/g,",");
+        if (str2[0] === ',') {
+            str2 = str2.slice(1, str2.length);
+            item.innerHTML = str2;
+        }
+        else {
+            item.innerHTML = str2;
+        }
+    }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        convert(document.querySelector('#finance_now span').innerHTML, document.querySelector('#finance_now span'));
+        document.querySelectorAll('.finance_vnd').forEach(td => {
+            convert(td.innerHTML, td);
+        })
+    })
+
+    function convert(amount, item) {
+        let modun = parseInt(amount.length/3);
+        let len = amount.length;
+        let arr = new Array();
+        for (let i = modun; i >= 0; i--) {
+            arr[i] = ',' + amount.slice((len - (modun + 1-i)*3), (len-(modun-i)*3));
+            if (i === 0) {
+                arr[i] = amount.slice(0, len-modun*3);
+            }
+        } 
+        let str = arr.toString();
+        let str2 = str.replace(/,,/g,",");
+        if (str2[0] === ',') {
+            str2 = str2.slice(1, str2.length);
+            item.innerHTML = str2;
+        }
+        else {
+            item.innerHTML = str2;
+        }
+    }
+</script>
+{% endblock %}

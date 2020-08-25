@@ -3,20 +3,39 @@
 {% load static %}
 
 {% block body %}
-    <ul>
-        <li>Tiêu đề: {{ post.title }}</li>
-        <li>Thời gian: {{ post.getUpdateTime }}</li>
-        <li>Phân loại: {{ post.getCategory }}</li>
-        <li>Diện tích: {{ post.area }}</li>
-        <li>Mô tả: {{ post.description }}</li>
-        <li>Cho {{ post.getGenderRenter }} thuê</li>
-        <li>Nội thất: {{ post.furniture }}</li>
-        <li>Giá: {{ post.rent }}</li>
-        {% if post.deposit %}
-            <li>Đặt cọc: {{ post.deposit }}</li>
-        {% endif %}
-        {% for image in post.image %}
-            {{ image.name }}
-        {% endfor %}
-    </ul>
+<div class="index px-5">
+    <div class="profile-grid-item index-all-post pl-5 pt-4 pr-2 pb-3">
+        <ul>
+            <li>Tiêu đề: {{ post.title }}</li>
+            <li>Thời gian: {{ post.getUpdateTime }}</li>
+            <li>Phân loại: {{ post.getCategory }}</li>
+            <li>Diện tích: {{ post.area }}</li>
+            <li>Mô tả: {{ post.description }}</li>
+            <li>Cho {{ post.getGenderRenter }} thuê</li>
+            <li>Nội thất: {{ post.furniture }}</li>
+            <li>Giá: {{ post.rent }}</li>
+            {% if post.deposit %}
+                <li>Đặt cọc: {{ post.deposit }}</li>
+            {% endif %}
+            {% for image in post.image %}
+                {{ image.name }}
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="profile-grid-item pl-1 pt-4 pr-5 pb-3">
+        <div class="px-4 pt-2 pb-4 ">
+            <div class="mb-4">
+                <a href="{% url 'profile' user.get_full_name_link %}"><img class="index-avatar" src="{{MEDIA_URL}}/{{request.user.avatar}}" alt="Ảnh đại diện"></a>
+                <a href="{% url 'profile' user.get_full_name_link %}"><span class="ml-3 index-full-name">{{ post.poster.get_full_name }}</span></a>
+            </div>
+            {% if user.is_authenticated and user.id == post.poster_id %}
+                {% if post.status == 2 or post.status == 7 %}
+                <button><a href="{% url 'view_form' %}">Đẩy tin</a></button>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+    
+
 {% endblock %}

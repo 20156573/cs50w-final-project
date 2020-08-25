@@ -283,22 +283,21 @@ option:checked {
 }
 // Cho trang đăng ký
 .register-body { 
-    .base-menu {
-        background-color: $white_color;
-        i {
-            color: $base_menu_bg;
-            font-size: 30px;
-        }
-        p {
-            color: $base_menu_color;
-            font-size: 20px;
-            margin-top: 23px;
-            margin-bottom: 0px;
-        }
-    }
+    background-color: $button_color_2;
     .register {
-        background-color: $base_menu_bg;
-
+        text-align: center;
+        a {
+            text-decoration: none;
+            span {  
+                @extend %base-menu-a;   
+                color: $button_color;
+                padding: 12px 16px;
+                font-family: fantasy;
+                font-size: 20px;
+            }
+            
+            
+        }
         .register-icon {
             color: $white_color;
             font-size: 150px;
@@ -309,16 +308,16 @@ option:checked {
             font-family: fantasy;
         }
         form {
+            margin-top: 60px;
+            background-color: $white_color;
             border-radius: 3%;
-            input {
-                border: 2px solid $border_input_color;
-            }
             
+            @extend %inputtext;
             @extend %inputsubmit;
 
             input[type=submit] {
                 width: 100%;
-                height: 50px;
+                height: 40px;
                 font-weight: bold;
             }
 
@@ -434,13 +433,13 @@ option:checked {
             
             border-bottom: solid 1px $button_color_hover;
             li {
+                cursor: pointer;
                 display: inline-block;
                 margin: none;
                 padding: 15px 20px 15px 20px;
                 border-bottom: solid 2.5px $white_color;
             }
             li:hover:not(.active) {
-                cursor: pointer;
                 border-bottom: solid 2.5px $opacity_color;
             }
             li>a {
@@ -850,7 +849,10 @@ option:checked {
         bottom	: 0;
     }
 }
-
+.create_post_head{
+        font-size: 19px;
+        font-weight: 500;
+    }
 // Cho trang index
 
 .index {
@@ -919,4 +921,108 @@ option:checked {
         animation-fill-mode: forwards;
         animation-play-state: paused;
     }
+}
+
+// finance
+
+#finance_now {
+    font-size: 20px;
+    color: $base_menu_bg;
+    
+}
+.finance-form-button {
+    text-align: center;
+    button {
+        margin-top: 20px;
+        margin-bottom: 30px;
+        height: 32px;
+        width: 150px;
+        border: none;
+        outline: none;
+    }
+}
+
+
+.finance {
+    color: $base_menu_color;
+    display: grid;
+    grid-template-columns: 400px auto;
+    padding: 0px;
+    button {
+        text-align: center;
+    }
+    position: relative;
+    
+}
+#history {
+    border-collapse: collapse;
+    width: 100%;
+
+    td, th {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    tr:nth-child(even){background-color: #f2f2f2;}
+    tr:hover {background-color: #ddd;}
+
+}
+
+.is_waiting, .is_success, .is_fail {
+    font-size: 12px;
+    color: $white_color;
+    padding: 3px;
+    border-radius: 3px;
+
+}
+
+.is_waiting {
+    background-color: #f0ad4e;
+}
+.is_success {
+    background-color: green;
+}
+
+.is_fail {
+    background-color: red;
+}
+
+@keyframes message {
+    0% {
+        opacity: 0;
+    }
+    5% {
+        opacity: 0.8;
+    }
+    80%  {
+        opacity: 0.8;
+    }
+    100%  {
+        opacity: 0;
+    }
+}
+
+h1 {
+    animation-name: grow;
+    animation-duration: 14s;
+    animation-fill-mode: forwards;
+}
+
+.message {
+    background-color: $opacity_color;
+    color: $button_color;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    opacity: 0.8;
+    position: fixed;
+    bottom: 23px;
+    right: 28px;
+    // width: 280px;
+    padding: auto;
+    p {
+        margin: 0px;
+    }
+    animation-name: message;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
 }

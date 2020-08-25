@@ -25,7 +25,7 @@
             <div class="mt-4 list_following">
                 {% for follow in list_following %}
                     <div class="mb-2" data-post_id = "{{ follow.post_id }}">
-                        <a href="{% url 'profile' follow.post.poster.get_full_name_link %}"><img class="profile-post-pre-avatar" src="{{MEDIA_URL}}/{{ follow.follower.avatar }}" alt="Ảnh đại diện"></a>
+                        <a href="{% url 'profile' follow.post.poster.get_full_name_link %}"><img class="profile-post-pre-avatar" src="{{MEDIA_URL}}/{{ follow.post.poster.avatar }}" alt="Ảnh đại diện"></a>
                         <a href="{% url 'view_own_post' follow.follower.get_full_name_link follow.post.get_title_link %}"><span>{{ follow.post.title }}</span></a>
                     </div>
                 {% endfor %}

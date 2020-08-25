@@ -56,6 +56,7 @@ function save(id, element) {
     .then(data => {
 
         if (data.is_active === true) {
+            console.log(data.avatar);
             element.className = 'fas fa-bookmark';
             let list = document.querySelector('.list_following');
             let title = document.createElement('div');

@@ -1,0 +1,58 @@
+[
+    {
+        "model": "finance.cardamount",
+        "pk": 1,
+        "fields": {
+            "amount": 10000
+        }
+    }, 
+    {
+        "model": "finance.cardamount",
+        "pk": 2,
+        "fields": {
+            "amount": 20000
+        }
+    },
+    {
+        "model": "finance.cardamount",
+        "pk": 3,
+        "fields": {
+            "amount": 30000
+        }
+    },
+    {
+        "model": "finance.cardamount",
+        "pk": 4,
+        "fields": {
+            "amount": 50000
+        }
+    },
+    {
+        "model": "finance.cardamount",
+        "pk": 5,
+        "fields": {
+            "amount": 100000
+        }
+    },
+    {
+        "model": "finance.cardamount",
+        "pk": 6,
+        "fields": {
+            "amount": 200000
+        }
+    },
+    {
+        "model": "finance.cardamount",
+        "pk": 7,
+        "fields": {
+            "amount": 300000
+        }
+    },
+    {
+        "model": "finance.cardamount",
+        "pk": 8,
+        "fields": {
+            "amount": 500000
+        }
+    }
+]

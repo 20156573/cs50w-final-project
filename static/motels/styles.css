@@ -46,7 +46,7 @@ option:checked {
   transition: 0.3s;
 }
 
-.modal .modal-content-info .motel-row-body input {
+.modal .modal-content-info .motel-row-body input, .register-body .register form input {
   outline: none;
   border-radius: 7px;
   height: 32px;
@@ -55,7 +55,7 @@ option:checked {
   cursor: auto;
   border: solid 1px #e9ebee;
 }
-.modal .modal-content-info .motel-row-body input:focus {
+.modal .modal-content-info .motel-row-body input:focus, .register-body .register form input:focus {
   outline: none;
   cursor: auto;
   border-color: #bdc3c7;
@@ -102,7 +102,7 @@ option:checked {
   overflow: hidden;
   background-color: white;
 }
-.base-menu .base-menu-right, .base-menu .base-menu-left {
+.base-menu .register-body .register a span, .register-body .register a .base-menu span, .base-menu .base-menu-right, .base-menu .base-menu-left {
   text-align: center;
   text-decoration: none;
 }
@@ -244,21 +244,20 @@ option:checked {
   transition: 0.3s;
 }
 
-.register-body .base-menu {
-  background-color: white;
-}
-.register-body .base-menu i {
-  color: #e63757;
-  font-size: 30px;
-}
-.register-body .base-menu p {
-  color: #4b4b4b;
-  font-size: 20px;
-  margin-top: 23px;
-  margin-bottom: 0px;
+.register-body {
+  background-color: #f5f6f7;
 }
 .register-body .register {
-  background-color: #e63757;
+  text-align: center;
+}
+.register-body .register a {
+  text-decoration: none;
+}
+.register-body .register a span {
+  color: #e63757;
+  padding: 12px 16px;
+  font-family: fantasy;
+  font-size: 20px;
 }
 .register-body .register .register-icon {
   color: white;
@@ -270,14 +269,13 @@ option:checked {
   font-family: fantasy;
 }
 .register-body .register form {
+  margin-top: 60px;
+  background-color: white;
   border-radius: 3%;
-}
-.register-body .register form input {
-  border: 2px solid #bdc3c7;
 }
 .register-body .register form input[type=submit] {
   width: 100%;
-  height: 50px;
+  height: 40px;
   font-weight: bold;
 }
 .register-body .register form .form-head {
@@ -384,13 +382,13 @@ option:checked {
   border-bottom: solid 1px #e9ebee;
 }
 .profile-grid-item .profile-horizontal-menu li {
+  cursor: pointer;
   display: inline-block;
   margin: none;
   padding: 15px 20px 15px 20px;
   border-bottom: solid 2.5px white;
 }
 .profile-grid-item .profile-horizontal-menu li:hover:not(.active) {
-  cursor: pointer;
   border-bottom: solid 2.5px #95aac9;
 }
 .profile-grid-item .profile-horizontal-menu li > a {
@@ -740,6 +738,11 @@ option:checked {
   bottom: 0;
 }
 
+.create_post_head {
+  font-size: 19px;
+  font-weight: 500;
+}
+
 .index {
   color: #4b4b4b;
   display: grid;
@@ -794,6 +797,107 @@ option:checked {
   animation-duration: 0.4s;
   animation-fill-mode: forwards;
   animation-play-state: paused;
+}
+
+#finance_now {
+  font-size: 20px;
+  color: #e63757;
+}
+
+.finance-form-button {
+  text-align: center;
+}
+.finance-form-button button {
+  margin-top: 20px;
+  margin-bottom: 30px;
+  height: 32px;
+  width: 150px;
+  border: none;
+  outline: none;
+}
+
+.finance {
+  color: #4b4b4b;
+  display: grid;
+  grid-template-columns: 400px auto;
+  padding: 0px;
+  position: relative;
+}
+.finance button {
+  text-align: center;
+}
+
+#history {
+  border-collapse: collapse;
+  width: 100%;
+}
+#history td, #history th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+#history tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+#history tr:hover {
+  background-color: #ddd;
+}
+
+.is_waiting, .is_success, .is_fail {
+  font-size: 12px;
+  color: white;
+  padding: 3px;
+  border-radius: 3px;
+}
+
+.is_waiting {
+  background-color: #f0ad4e;
+}
+
+.is_success {
+  background-color: green;
+}
+
+.is_fail {
+  background-color: red;
+}
+
+@keyframes message {
+  0% {
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+h1 {
+  animation-name: grow;
+  animation-duration: 14s;
+  animation-fill-mode: forwards;
+}
+
+.message {
+  background-color: #95aac9;
+  color: #e63757;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  position: fixed;
+  bottom: 23px;
+  right: 28px;
+  padding: auto;
+  animation-name: message;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+}
+.message p {
+  margin: 0px;
 }
 
 /*# sourceMappingURL=styles.css.map */

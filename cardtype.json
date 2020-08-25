@@ -1,0 +1,34 @@
+[
+    {
+        "model": "finance.cardtype",
+        "pk": 1,
+        "fields": {
+            "code": "VIETTEL",
+            "name": "Viettel"
+        }
+    }, 
+    {
+        "model": "finance.cardtype",
+        "pk": 2,
+        "fields": {
+            "code": "VINAPHONE",
+            "name": "Vinaphone"
+        }
+    },
+    {
+        "model": "finance.cardtype",
+        "pk": 3,
+        "fields": {
+            "code": "MOBIFONE",
+            "name": "Mobifone"
+        }
+    },
+    {
+        "model": "finance.cardtype",
+        "pk": 4,
+        "fields": {
+            "code": "VNMOBI",
+            "name": "Vietnammobi"
+        }
+    }
+]
