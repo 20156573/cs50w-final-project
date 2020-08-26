@@ -1,0 +1,74 @@
+body {
+  padding-top: 80px;
+  font-family: sans-serif;
+  background-color: #eaecee;
+}
+
+.login-header {
+  text-align: center;
+}
+.login-header p {
+  font-size: 30px;
+  font-weight: 500;
+}
+.login-header div {
+  color: #2d4857;
+  margin: 10px 0px 25px 0px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto 400px auto;
+  background-color: #eaecee;
+}
+
+.grid-item {
+  font-size: 14px;
+  text-align: center;
+}
+
+form {
+  padding: 25px 40px;
+  background-color: white;
+  box-shadow: 0 3px 6px rgba(182, 206, 212, 0.16), 0 3px 6px rgba(190, 212, 218, 0.23);
+}
+form input[type=text], form input[type=password] {
+  padding: 7px;
+  width: 100%;
+  margin: 0px 0px 16.8px;
+  outline: none;
+  border-radius: 7px;
+  border: 1px solid #e4eff5;
+  background-color: #eaecee;
+}
+form input[type=text]:focus, form input[type=password]:focus {
+  border-color: #0079bf;
+  background-color: white;
+}
+form input[type=submit] {
+  padding: 6px;
+  width: 100%;
+  margin: 0px 0px 16.8px;
+  font-size: 14px;
+  outline: none;
+  border-radius: 3px;
+  border: none;
+  background-color: #0079bf;
+  color: white;
+  opacity: 0.8;
+}
+form input[type=submit]:hover {
+  opacity: 1;
+}
+
+.bottom {
+  text-align: center;
+  font-size: 12px;
+  padding: 14px 26.25px;
+  background-color: #cfd3d4;
+}
+.bottom a {
+  text-decoration: none;
+}
+
+/*# sourceMappingURL=login_styles.css.map */

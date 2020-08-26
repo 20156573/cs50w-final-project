@@ -1,0 +1,201 @@
+body {
+  font-size: 13px;
+  font-family: sans-serif;
+  background-color: #fbfdff;
+}
+
+#admin-menu ul {
+  width: 100%;
+  position: fixed;
+  top: 0;
+  list-style-type: none;
+  margin: 0;
+  padding: 0px 20px 0px 20px;
+  overflow: hidden;
+  background-color: #373a3c;
+}
+#admin-menu li {
+  float: left;
+}
+#admin-menu li a {
+  display: block;
+  font-weight: 500;
+  text-align: center;
+  padding: 8px 10px;
+  text-decoration: none;
+}
+#admin-menu li a:not(#brand) {
+  margin-top: 5px;
+  color: #0b8cd6;
+}
+#admin-menu li a:not(#brand):hover {
+  color: white;
+}
+#admin-menu #brand {
+  color: white;
+  font-size: 20px;
+}
+#admin-menu #brand:hover {
+  color: gray;
+}
+
+#admin-menu-left ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 20%;
+  position: fixed;
+  top: 95px;
+  height: 100%;
+  overflow: auto;
+}
+#admin-menu-left li a {
+  margin-left: 50px;
+  display: block;
+  color: #000;
+  padding: 7px 16px;
+  margin-bottom: 4px;
+  text-decoration: none;
+  border-radius: 3px;
+}
+#admin-menu-left li button {
+  background-color: #fbfdff;
+  padding: 7px 16px;
+  border-radius: 3px;
+  border: none;
+  margin-left: 50px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+}
+#admin-menu-left li a.active, #admin-menu-left li button.active {
+  background-color: #cbe2f0;
+  color: #0b8cd6;
+}
+#admin-menu-left li a:hover:not(.active), #admin-menu-left li button:hover:not(.active) {
+  transition: 0.3s;
+  background-color: #c9cfd3;
+  color: #0b8cd6;
+}
+#admin-menu-left .dropdown-container {
+  display: none;
+}
+#admin-menu-left .dropdown-container a {
+  margin-left: 70px;
+  display: block;
+  color: #000;
+  padding: 5px 16px;
+  margin-bottom: 4px;
+  text-decoration: none;
+  border-radius: 3px;
+  display: block;
+}
+#admin-menu-left .dropdown-container a:hover {
+  transition: 0.3s;
+  color: #0b8cd6;
+}
+#admin-menu-left .dropdown-container a.active {
+  color: #0b8cd6;
+}
+
+.block-body {
+  margin-left: 22%;
+  margin-right: 50px;
+  margin-top: 100px;
+  padding: 1px 16px;
+}
+.block-body .grid-container {
+  display: grid;
+  grid-column-gap: 20px;
+  grid-template-columns: auto auto auto;
+  padding: 0px;
+}
+.block-body .grid-item {
+  background-color: #0b8cd6;
+  border-radius: 3px;
+  border: none;
+  color: white;
+  padding: 10px;
+  height: 100px;
+  font-size: 17px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.block-body .grid-item:hover {
+  transition: 0.3s;
+  background-color: #217fb6;
+}
+
+.index-tite {
+  font-weight: bold;
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+
+.filter-time {
+  background-color: #c9cfd3;
+  border: none;
+  outline: none;
+  padding: 5px;
+  border-radius: 3px;
+  margin-left: 5px;
+}
+
+#search input {
+  border-radius: 3px;
+  padding: 4px 16px;
+  border: 1px solid #c9cfd3;
+  outline: none;
+}
+#search input:focus {
+  transition: 0.3s;
+  border-color: #0b8cd6;
+}
+#search button {
+  border-radius: 3px;
+  color: white;
+  padding: 4px 16px;
+  border: 1px solid #5fa3ca;
+  cursor: pointer;
+  outline: none;
+  background-color: #5fa3ca;
+}
+#search button:hover {
+  transition: 0.3s;
+  border-color: #0b8cd6;
+  background-color: #0b8cd6;
+}
+
+#history {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border-collapse: collapse;
+  width: 100%;
+}
+#history thead th {
+  background-color: #53636e;
+  color: white;
+}
+#history thead th:hover {
+  cursor: pointer;
+  transition: 0.3s;
+  text-decoration: underline;
+}
+#history td, #history th {
+  padding: 8px;
+}
+#history td a, #history th a {
+  color: #53636e;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: none;
+}
+#history tr:nth-child(even) {
+  background-color: #f2f7fa;
+}
+#history tr:hover {
+  background-color: #d5dee4;
+}
+
+/*# sourceMappingURL=styles.css.map */

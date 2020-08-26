@@ -1,0 +1,218 @@
+// $color_brand: black;
+$color_brand: #0b8cd6;
+$color_menu2_active: #cbe2f0;
+$color_menu2_not_active: #c9cfd3;
+$color_bg : #fbfdff;
+$color_button: #5fa3ca;
+$color_table_head: #53636e;
+body {
+    font-size: 13px;
+    font-family: sans-serif;
+    background-color: $color_bg;
+}
+#admin-menu {
+    ul {
+        width: 100%;
+        position: fixed;
+        top: 0;
+        list-style-type: none;
+        margin: 0;
+        padding: 0px  20px 0px 20px ;
+        overflow: hidden;
+        background-color: #373a3c;
+    }
+    
+    li {
+        float: left;
+    }
+    
+    li a {
+        display: block;
+        font-weight: 500;
+        text-align: center;
+        padding: 8px 10px;
+        text-decoration: none;
+    }
+    li a:not(#brand) {
+        margin-top: 5px;
+        color: $color_brand;
+    }
+    li a:not(#brand):hover {
+        color: white;
+    }
+    #brand {
+        color: white;
+        font-size: 20px;
+    }
+    #brand:hover {
+        color: gray;
+    }
+}
+
+#admin-menu-left {
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        width: 20%;
+        position: fixed;
+        top: 95px;
+        height: 100%;
+        overflow: auto;
+    }
+      
+    li{
+        a{
+        margin-left: 50px;
+        display: block;
+        color: #000;
+        padding: 7px 16px;
+        margin-bottom: 4px;
+        text-decoration: none;
+        border-radius: 3px;
+        }
+        button {
+            background-color: $color_bg;
+            padding: 7px 16px;
+            border-radius: 3px;
+            border: none;
+            margin-left: 50px;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            outline: none;
+        }
+    }
+      
+    li a.active, li button.active {
+        background-color: $color_menu2_active;
+        color: $color_brand;
+    }
+    li a:hover:not(.active), li button:hover:not(.active) {
+        transition: 0.3s;
+        background-color: $color_menu2_not_active;
+        color: $color_brand;
+    }
+    .dropdown-container {
+        display: none;
+        a {
+            margin-left: 70px;
+            display: block;
+            color: #000;
+            padding: 5px 16px;
+            margin-bottom: 4px;
+            text-decoration: none;
+            border-radius: 3px;
+            display: block;
+        }
+        a:hover {
+            transition: 0.3s;
+            color: $color_brand;
+        }
+        a.active {
+            color: $color_brand;
+        }
+    }
+    
+}
+
+.block-body {
+    
+    margin-left:22%;
+    margin-right: 50px;
+    margin-top: 100px;
+    padding:1px 16px;
+
+    .grid-container {
+        display: grid;
+        grid-column-gap: 20px;
+        grid-template-columns: auto auto auto;
+        padding: 0px;
+    }
+    .grid-item {
+        background-color: $color_brand;
+        border-radius: 3px;
+        border: none;
+        color: white;
+        padding: 10px;
+        height: 100px;
+        font-size: 17px;
+        cursor: pointer;
+        font-weight: bold;
+        
+    }
+    .grid-item:hover {
+        transition: 0.3s;
+        background-color: #217fb6;
+    }
+}
+.index-tite {
+    font-weight: bold;
+    font-size: 17px;
+    margin-bottom: 8px;
+}
+
+.filter-time{
+    background-color: $color_menu2_not_active;
+    border: none;
+    outline: none;
+    padding: 5px;
+    border-radius: 3px;
+    margin-left: 5px;
+    
+}
+#search{
+    input {
+        border-radius: 3px;
+        padding: 4px 16px;
+        border: 1px solid $color_menu2_not_active;
+        outline: none;
+    }
+    input:focus {
+        transition: 0.3s;
+        border-color: $color_brand;
+    }
+    button {
+        border-radius: 3px;
+        color: white;
+        padding: 4px 16px;
+        border: 1px solid $color_button;
+        cursor: pointer;
+        outline: none;
+        background-color: $color_button;
+    }
+    button:hover{
+        transition: 0.3s;
+        border-color: $color_brand;
+        background-color: $color_brand;
+    }
+    
+}
+#history {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+    width: 100%;
+    thead th {
+        background-color: $color_table_head;
+        color: white;
+    }
+    thead th:hover{
+        cursor: pointer;
+        transition: 0.3s;
+        text-decoration: underline;
+    }
+    td, th {
+        padding: 8px;
+        a { 
+
+            color: $color_table_head;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    }
+    tr:nth-child(even){background-color: #f2f7fa;}
+    tr:hover {background-color: #d5dee4;}
+
+}

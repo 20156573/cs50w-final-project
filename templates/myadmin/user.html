@@ -1,0 +1,114 @@
+{% extends 'myadmin/base.html' %}
+
+{% load static %}
+
+{% block body %}
+<div class="block-body ">
+    <div class="d-flex justify-content-between">
+        <form  id="search" action="{% url 'admin_user' %}">
+            <input name="q" type="text">
+            <button>Tìm kiếm</button>
+        </form>
+        <form action="{% url 'admin_user' %}">
+            <label for="select_timestamp">Ngày tham gia</label>
+            <select class="filter-time" name="time" id="select_timestamp">
+                <option value="1">Hôm nay</option>
+                <option value="2">Tuần này</option>
+                <option value="3">Tháng này</option>
+                <option value="4">Năm nay</option>
+            </select>
+        </form>
+        <form action="{% url 'admin_user' %}">
+            <label for="select_is_admin">Là admin</label>
+            <select class="filter-time" name="is_admin" id="select_is_admin">
+                <option value="1">Tất cả</option>
+                <option value="2">Yes</option>
+                <option value="3">No</option>
+            </select>
+        </form>
+        <form action="{% url 'admin_user' %}">
+            <label for="select_is_superuser">Là super admin</label>
+            <select class="filter-time" name="is_superuser" id="select_is_superuser">
+                <option value="1">Tất cả</option>
+                <option value="2">Yes</option>
+                <option value="3">No</option>
+            </select>
+        </form>
+        
+    </div>
+    <div>   
+        <table id="history">
+            <thead>
+                <th>Email</th>
+                <th>Họ tên</th>
+                <th>Super admin</th>
+                <th>Admin</th>
+                <th>Active</th>
+                <th>Tổng số tin đã đăng</th>
+                <th>Tổng số tiền đã nạp</th>
+            </thead>
+            {% for u in users %}
+                <tr>
+                    <td><a href="">{{ u.email }}</a></td>
+                    <td>{{ u.get_full_name }}</td>
+                    <td>{{ u.is_superuser }}</td>
+                    <td>{{ u.is_admin }}</td>
+                    <td>{{ u.is_active }}</td>
+                    <td>{{ u.all_post }}</td>
+                    <td>
+                        <span  class="finance_now">
+                        {% if u.finance == None %}
+                            0
+                        {% else %}
+                            {{ u.finance }}
+                        {% endif %}
+                        </span>
+                        
+                    </td>
+                </tr>
+            {% empty %}
+            
+            {% endfor %}
+        </table>
+        <p>{{ count_user }} người dùng</p>
+    </div>
+</div>
+<script>
+    function convert(a, item) {
+        let amount = a.replace( /\s/g, '');
+        let modun = parseInt(amount.length/3);
+        let len = amount.length;
+        let arr = new Array();
+        for (let i = modun; i >= 0; i--) {
+            arr[i] = ',' + amount.slice((len - (modun + 1-i)*3), (len-(modun-i)*3));
+            if (i === 0) {
+                arr[i] = amount.slice(0, len-modun*3);
+            }
+        } 
+        let str = arr.toString();
+        let str2 = str.replace(/,,/g,",");
+        if (str2[0] === ',') {
+            str2 = str2.slice(1, str2.length);
+            item.innerHTML = str2;
+        }
+        else {
+            item.innerHTML = str2;
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('menu-left-user').className = 'active';
+        document.getElementById('menu-dropdown1').style.display = 'block';
+        document.querySelector('#menu-dropdown1>a').className = 'active';
+        document.querySelectorAll('.finance_now').forEach(td => {
+            convert(td.innerHTML, td);
+        })
+        
+        document.querySelectorAll('.filter-time').forEach(item => {
+            item.addEventListener('change', event => {
+                item.parentElement.submit();
+            })
+        })
+    }) 
+    
+</script>
+{% endblock %}
