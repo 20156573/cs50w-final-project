@@ -35,11 +35,15 @@ def view_form(request):
             url = "https://thesieure.com/chargingws/v2"
             partner_id = '7833818951'
             partner_key = 'f823c010fc2e43f442a82257bb5a023d'
+
             code = request.POST['code'].strip()
             serial = request.POST['serial'].strip()
             declared_value = int(request.POST['declared_value'])
             telco = int(request.POST['telco'])
 
+            if not code or not serial:
+                return HttpResponse('Code và serial không được bỏ trống')
+                
             try:
                 telco_value = CardType.objects.get(pk=request.POST['telco']).code 
             except IntegrityError: 
@@ -97,7 +101,7 @@ def view_form(request):
             return HttpResponseRedirect(reverse("view_form"))
     context = { 
         'form': form, 
-        'finance': finance['value__sum'],
+        'finance': finance['value__sum'] or 0,
         'his': his 
         }
     return render(request, 'finance/view_form.html', context)
@@ -136,9 +140,9 @@ def your_finance(request):
     
     u = request.user
     finance = CardHistory.objects.select_related('user').filter(user=u).filter(Q(status=1)|Q(status=2)).aggregate(Sum('value'))
-    his = CardHistory.objects.select_related('user').filter(user=u).filter(Q(status=1)|Q(status=2)).order_by('-id')
+    his = CardHistory.objects.select_related('user').filter(user=request.user).order_by('-id')
     context = {
         'his': his,
-        'finance': finance['value__sum']
+        'finance': finance['value__sum'] or 0
     }
     return render(request, 'finance/your_finance.html', context)

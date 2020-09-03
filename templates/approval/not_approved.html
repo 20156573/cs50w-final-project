@@ -23,23 +23,23 @@
                 <thead>
                     <tr>
                         <th scope="col"  class="sortable column-title">
-                            <div class="text"><a href="?o=0">Tiêu đề</a></div>
+                            <div class="text"><a href="?o=0">Title</a></div>
                             <div class="clear"></div>
                         </th>
                         <th scope="col"  class="sortable column-update_time">
-                            <div class="text"><a href="?o=1">Thời gian hủy</a></div>
+                            <div class="text"><a href="?o=1">Time</a></div>
                             <div class="clear"></div>
                         </th>
                         <th scope="col"  class="sortable column-getCategory">
-                            <div class="text"><a href="">Loại bài đăng</a></div>
+                            <div class="text"><a href="">Category</a></div>
                             <div class="clear"></div>
                         </th>
                         <th scope="col"  class="">
-                            <div class="text"><a href="">Người đăng</a></div>
+                            <div class="text"><a href="">Poster</a></div>
                             <div class="clear"></div>
                         </th>
                         <th scope="col"  class="">
-                            <div class="text"><a href="">Hủy bởi admin</a></div>
+                            <div class="text"><a href="">Rejected by </a></div>
                             <div class="clear"></div>
                         </th>
                     </tr>
@@ -64,7 +64,7 @@
                             <td>{{ h.updated_by_info }}</td>
                         </tr>
                     {% empty %}
-                        Không có tin nào đang bị hủy duyệt
+                    0 post
                     {% endfor %}
                 </tbody>
             </table>

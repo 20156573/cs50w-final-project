@@ -15,6 +15,8 @@ urlpatterns = [
     path('<str:user_name>/posts/<str:title>', views.view_own_post, name='view_own_post'),
     path('<str:user_name>/saved', views.post_saved, name='post_saved'),
     path('user/password_change/', views.user_change_password, name='user_change_password'),
+    path('user/edit/', views.user_edit, name='user_edit'),
+    path('<int:post_id>/change/', views.change_post, name='change_post'),
     # API route
     path('api/edit_profile', views.edit_profile, name="edit_profile"),
     path('api/save_profile', views.save_profile, name='save_profile'),

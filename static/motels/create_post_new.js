@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const category = document.querySelector('.create_post_category').value;
     // checkFrom();
     switch (category) {
-        case '0':
+        case '4':
             document.querySelector('.create_post_category_p').innerHTML = 'Tìm người ở ghép';
             document.querySelector('.classified-info').innerHTML = `<div class="row">
                 <label class="col-sm-4 label-radio" for="">* Bạn đang tìm</label>

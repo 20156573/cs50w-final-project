@@ -43,7 +43,6 @@ class UserManager(BaseUserManager):
             last_name=last_name
 
         )
-        user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
         return user
@@ -66,24 +65,24 @@ class Province(models.Model):
 class User(AbstractBaseUser, PermissionsMixin):
     
     email = models.EmailField(verbose_name='Email', max_length=255, unique=True)
-    first_name = models.CharField(verbose_name='Họ', max_length=30, null=True)
-    last_name = models.CharField(verbose_name='Tên', max_length=30, null=True)
+    first_name = models.CharField(verbose_name='First name', max_length=30, null=True)
+    last_name = models.CharField(verbose_name='Last name', max_length=30, null=True)
     address = models.ForeignKey(Province, on_delete=models.PROTECT, related_name='user_address', verbose_name='Địa chỉ', null=True, blank=True)
-    contact_number = models.CharField(verbose_name='Số điện thoại', max_length=12, blank=True, unique=True, null=True)
-    avatar = models.ImageField( verbose_name='Ảnh đại diện',upload_to='avatars/', blank=True, null=True, default='avatars/default.png')
-    date_joined = models.DateField(verbose_name='Ngày tham gia', auto_now_add=True)
+    contact_number = models.CharField(verbose_name='Phone number', max_length=12, blank=True, unique=True, null=True)
+    avatar = models.ImageField( verbose_name='Avatar',upload_to='avatars/', blank=True, null=True, default='avatars/default.png')
+    date_joined = models.DateField(verbose_name='Date join', auto_now_add=True)
     is_active = models.BooleanField(verbose_name='Active', default=True)
-    is_staff = models.BooleanField(verbose_name='Staff', default=False)
     is_superuser = models.BooleanField(verbose_name='Superuser', default=False) 
+    is_staff = models.BooleanField(default=False)
     
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
-    class Meta:
-        verbose_name = 'Người dùng'
-        verbose_name_plural = 'Người dùng'
+    # class Meta:
+    #     verbose_name = 'User'
+    #     verbose_name_plural = 'Người dùng'
 
     def get_finance(self):
         with connection.cursor() as cursor:
@@ -126,6 +125,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         
     # admin
 
+    def get_login(self):
+        return util.get_how_long(self, self.last_login)
 
     def full_name(self):
         return self.last_name  + ' ' + self.first_name
@@ -156,30 +157,51 @@ class Commune(models.Model):
     def __str__(self):
         return f"{self.name}, {self.district}"
 
-class RentersGenterChoice(models.IntegerChoices):
-    NU = 0, 'Chỉ nữ'
-    NAM = 1, 'Chỉ nam'
-    ALL = 2, 'Tất cả'
+# class RentersGenterChoice(models.IntegerChoices):
+#     NU = 0, 'Chỉ nữ'
+#     NAM = 1, 'Chỉ nam'
+#     ALL = 2, 'Tất cả'
 
-class CategoryChoice(models.IntegerChoices):
-    ROOMATE = 0, 'Tìm bạn ở ghép'
-    ROOM = 1, 'Cho thuê phòng trọ'
-    HOUSE = 2, 'Cho thuê nhà nguyên căn'
-    APARTMENT = 3, 'Cho thuê nguyên căn chung cư'
+# class CategoryChoice(models.IntegerChoices):
+#     ROOMATE = 0, 'Tìm bạn ở ghép'
+#     ROOM = 1, 'Cho thuê phòng trọ'
+#     HOUSE = 2, 'Cho thuê nhà nguyên căn'
+#     APARTMENT = 3, 'Cho thuê nguyên căn chung cư'
     
 class Post(models.Model):
+    NU = 0
+    NAM = 1
+    ALL = 2
 
-    title = models.CharField(verbose_name='Tiêu đề', max_length=110)
-    description = models.TextField(verbose_name='Mô tả', max_length=1000)
-    area = models.FloatField(verbose_name='Diện tích',  help_text='<span style="position:absolute;left:205px; top:17px ">m2</span>')
-    renters_gender = models.IntegerField(verbose_name='Ưu tiên', choices=RentersGenterChoice.choices,  help_text='<span style="position:absolute;left:112px; top:17px ">thuê</span>')
-    furniture = models.TextField(verbose_name='Nội thất', max_length=500, null=True, blank=True) #nội thất
+    RentersGenterChoice = [
+        (NU, 'Chỉ nữ'),
+        (NAM, 'Chỉ nam'),
+        (ALL, 'Tất cả'),
+    ]
 
-    rent = models.IntegerField(verbose_name='Giá thuê nhà/tháng',  help_text='<span style="position:absolute;left:205px; top:17px ">VND</span>') #giá thuê nhà một tháng
-    deposit = models.IntegerField(verbose_name='Đặt cọc', null=True, blank=True,  help_text='<span style="position:absolute;left:205px; top:17px ">VND</span>') #tiền đặt cọc
-    category = models.IntegerField(verbose_name='Loại bài đăng', choices=CategoryChoice.choices) 
-    update_time = models.DateTimeField(verbose_name='Thời gian cập nhật', auto_now_add=True)
-    status = models.IntegerField(verbose_name='Trạng thái', default=1)
+    ROOMATE = 0
+    ROOM = 1
+    HOUSE = 2
+    APARTMENT = 3
+
+    CategoryChoice = [
+        (ROOMATE, 'Tìm bạn ở ghép'),
+        (ROOM, 'Cho thuê phòng trọ'),
+        (HOUSE, 'Cho thuê nhà nguyên căn'),
+        (APARTMENT, 'Cho thuê nguyên căn chung cư')
+    ]
+
+    title = models.CharField(verbose_name='Title', max_length=110)
+    description = models.TextField(max_length=1000)
+    area = models.FloatField(help_text='<span style="position:absolute;left:205px; top:17px ">m2</span>')
+    renters_gender = models.IntegerField(verbose_name='Looking for', choices=RentersGenterChoice)
+    furniture = models.TextField(max_length=500, null=True, blank=True) #nội thất
+
+    rent = models.IntegerField(verbose_name='Ren/month',  help_text='<span style="position:absolute;left:205px; top:17px ">VND</span>') #giá thuê nhà một tháng
+    deposit = models.IntegerField(null=True, blank=True,  help_text='<span style="position:absolute;left:205px; top:17px ">VND</span>') #tiền đặt cọc
+    category = models.IntegerField(choices=CategoryChoice) 
+    update_time = models.DateTimeField(auto_now_add=True)
+    status = models.IntegerField(verbose_name='Status', default=1)
 
     # status 1: đang chờ duyệt
     # status 2: đã duyệt
@@ -190,12 +212,12 @@ class Post(models.Model):
     #tìm người thuê nguyên căn nhà 2
     #tìm người thuê nguyên chung cư 3
     
-    other_contact_info = models.CharField(verbose_name='Thông tin liên hệ khác', max_length=35, null=True, blank=True)
+    other_contact_info = models.CharField(verbose_name='Other contact info', max_length=35, null=True, blank=True)
     poster = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
 
-    class Meta:
-        verbose_name = 'Tin'
-        verbose_name_plural = 'Tin'
+    # class Meta:
+    #     verbose_name = 'Tin'
+    #     verbose_name_plural = 'Tin'
 
     def __str__(self):
         return ('User ' + str(self.poster.id) + ' - ' + self.poster.get_full_name()+ ' - ' + self.title).strip()
@@ -220,13 +242,13 @@ class Post(models.Model):
         
     def getCategory(self):
         category_c = {
-            0: 'Tìm người ở ghép',
+            4: 'Tìm người ở ghép',
             1: 'Cho thuê phòng trọ',
             2: 'Cho thuê nhà nguyên căn',
             3: 'Cho thuê nguyên căn chung cư'
         }
         return category_c[self.category]
-    getCategory.short_description = 'Loại bài đăng'
+    getCategory.short_description = 'Category'
 
 
     def getGenderRenter(self):
@@ -236,15 +258,20 @@ class Post(models.Model):
             2: 'Nam và nữ thuê'
         }
         return gender[self.renters_gender]
-
+    
 
     def getUpdateTime(self):
         return util.get_how_long(self, self.update_time)
 
     def get_title_link(self):
         s = util.no_accent_vietnamese(self.title).replace(' ', '-').lower() + '.' + str(self.id) 
+        s = s.replace("/", "---")
         return s
 
+    def get_active(self):
+        if self.status == 2 or  self.status == 7:
+            return True
+        return False
 class PostAddress(models.Model):
     post = models.OneToOneField(Post, on_delete=models.CASCADE, primary_key=True)
     commune = models.ForeignKey(Commune, on_delete=models.CASCADE, related_name='address')
@@ -255,61 +282,82 @@ class PostAddress(models.Model):
 
 class Apartment(models.Model):
     post = models.OneToOneField(Post, on_delete=models.CASCADE, primary_key=True)
-    number_of_bedrooms = models.IntegerField(verbose_name='Số phòng ngủ')
-    number_of_toilets = models.IntegerField(verbose_name='Số phòng vệ sinh')
+    number_of_bedrooms = models.IntegerField(verbose_name='Number of bedrooms')
+    number_of_toilets = models.IntegerField(verbose_name='Number of toilets')
 
     class Meta:
-        verbose_name = 'Loại tin: cho căn chung cư'
-        verbose_name_plural = 'Loại tin: cho thuê căn chung cư'
+        verbose_name = 'Category: Apartment'
+        # verbose_name_plural = 'Loại tin: cho thuê căn chung cư'
 
     def __str__(self):
-        return "Thông tin chi tiết"
+        return ""
 
 class House(models.Model):
     post = models.OneToOneField(Post, on_delete=models.CASCADE, primary_key=True)
-    number_of_bedrooms = models.IntegerField(verbose_name='Số phòng ngủ')
-    number_of_toilets = models.IntegerField(verbose_name='Số phòng vệ sinh')
-    total_floor = models.IntegerField(verbose_name='Tổng số tầng')
+    number_of_bedrooms = models.IntegerField(verbose_name='Number of bedrooms')
+    number_of_toilets = models.IntegerField(verbose_name='Number of toilets')
+    total_floor = models.IntegerField(verbose_name='Total floor')
 
     class Meta:
-        verbose_name = 'Loại tin: cho thuê nhà nguyên căn'
-        verbose_name_plural = 'Loại tin: cho thuê nhà nguyên căn'
+        verbose_name = 'Category: House'
+        # verbose_name_plural = 'Loại tin: cho thuê nhà nguyên căn'
 
     def __str__(self):
-        return "Thông tin chi tiết" 
+        return "" 
 
 class Room(models.Model):
     post = models.OneToOneField(Post, on_delete=models.CASCADE, primary_key=True)
-    max_rent = models.IntegerField(verbose_name='Giá thuê dao động tới', null=True, blank=True,  help_text='<span style="position:absolute;left:205px; top:17px ">VND</span>')
-    number_of_rooms = models.IntegerField(verbose_name='Bạn còn', null=True, blank=True,  help_text='<span style="position:absolute;left:205px; top:17px ">phòng</span>') #Số phòng trọ còn trống để cho thuê
+    max_rent = models.IntegerField(verbose_name='Max rent', null=True, blank=True,  help_text='<span style="position:absolute;left:205px; top:17px ">VND</span>')
+    number_of_rooms = models.IntegerField(verbose_name='Number of Rooms', null=True, blank=True,  help_text='<span style="position:absolute;left:205px; top:17px ">room</span>') #Số phòng trọ còn trống để cho thuê
     
     class Meta:
-        verbose_name = 'Loại tin: cho thuê pòng trọ'
-        verbose_name_plural = 'Loại tin: cho thuê phòng trọ'
+        verbose_name = 'Category: Room'
 
     def __str__(self):
-        return "Thông tin chi tiết"
+        return ""
 
 class Roommate(models.Model):
     post = models.OneToOneField(Post, on_delete=models.CASCADE, primary_key=True)
-    number_of_roommate = models.IntegerField(verbose_name='Bạn tìm', help_text='<span style="position:absolute;left:205px; top:17px ">người</span>')
+    number_of_roommate = models.IntegerField(verbose_name='Looking for', help_text='<span style="position:absolute;left:205px; top:17px ">people</span>')
 
     class Meta:
-        verbose_name = 'Loại tin: tìm bạn ở ghép'
-        verbose_name_plural = 'Loại tin: tìm bạn ở ghép'
+        verbose_name = 'Category: Roommate'
         
     def __str__(self):
         return "Thông tin chi tiết"
     
-class PostStatus(models.Model):
-    status = models.CharField(verbose_name='Status', max_length=400)
 
-    def __str__(self):
-        return f"{self.status}"
+# class PostStatusChoice(models.IntegerChoices):
+#     CHODUYET = 1, 'Tin của bạn đang chờ duyệt'
+#     DUYET = 2, 'Tin của bạn đã được duyệt thành công'
+#     KHONGDUYET = 3, 'Tin của bạn không được duyệt'
+#     HUYDYCDUYET = 4, 'Bạn đã hủy yêu cầu duyệt tin'
+#     ADMINAN = 5, 'Tin của bạn đã bị khóa'
+#     BANAN = 6, 'Bạn đã ẩn tin của mình'
+#     BOAN = 7, 'Tin đã bỏ ẩn'
 
 class RegularUserHistory(models.Model):
+
+    CHODUYET = 1
+    DUYET = 2
+    KHONGDUYET = 3
+    HUYDYCDUYET = 4
+    ADMINAN = 5
+    BANAN = 6
+    BOAN = 7
+
+    PostStatusChoice = [
+        (CHODUYET , 'Tin của bạn đang chờ duyệt'),
+        (DUYET , 'Tin của bạn đã được duyệt thành công'),
+        (KHONGDUYET , 'Tin của bạn không được duyệt'),
+        (HUYDYCDUYET , 'Bạn đã hủy yêu cầu duyệt tin'),
+        (ADMINAN , 'Tin của bạn đã bị khóa'),
+        (BANAN , 'Bạn đã ẩn tin của mình'),
+        (BOAN , 'Tin đã bỏ ẩn')
+    ]
+
     created_at = models.DateTimeField(default=timezone.now)
-    status = models.ForeignKey(PostStatus, related_name='message', on_delete=models.PROTECT)
+    status = models.IntegerField(verbose_name='Trạng thái', choices=PostStatusChoice)
     post = models.ForeignKey(Post, related_name='history', on_delete=models.CASCADE)
     updated_by = models.ForeignKey(User, related_name='who', on_delete=models.PROTECT)
     class Meta:
@@ -318,7 +366,21 @@ class RegularUserHistory(models.Model):
 
     def __str__(self):
         return f"{self.created_at}, {self.status}, {self.post}, {self.updated_by}"
-        
+    def get_status(self):
+        if self.status == 1:
+            return 'Tin của bạn đang chờ duyệt' 
+        if self.status ==2:
+            return 'Tin của bạn đã được duyệt thành công'
+        if self.status == 3:
+            return 'Tin của bạn không được duyệt'
+        if self.status == 4:
+            return 'Bạn đã hủy yêu cầu duyệt tin'
+        if self.status == 5:
+            return 'Tin của bạn đã bị khóa'
+        if self.status == 6:
+            return 'Bạn đã ẩn tin của mình'
+        if self.status == 7:
+            return 'Tin đã bỏ ẩn'
     def get_weekday(self):
         return lambda x: "Thứ hai" if x == 0 else "Thứ ba" if x == 1 else "Thứ tư"\
         if x == 2 else "Thứ năm" if x == 3 else "Thứ sáu" if x == 4 else "Thứ bảy"\
@@ -341,6 +403,13 @@ class RegularUserHistory(models.Model):
 
     def get_how_long(self):
         return util.get_how_long(self, self.created_at)
+    
+    def get_day_left(self):
+        now = timezone.now()
+        before = self.created_at
+        delta = now - before
+        return 30 - delta.days
+        
 
     def get_hourandminute(self):
         hour = self.created_at.hour
@@ -352,12 +421,6 @@ class RegularUserHistory(models.Model):
 class Feedback(models.Model):
     action_flag = models.IntegerField(default=3)
     feedback = models.CharField(max_length=100)
-
-class OtherFeedback(models.Model):
-    action_flag = models.IntegerField(default=3)
-    feedback = models.CharField(max_length=150)
-    created_at = models.DateTimeField(auto_now_add=True)
-    post = models.ForeignKey(Post, on_delete=models.PROTECT)
 
 class UserFeedback(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)

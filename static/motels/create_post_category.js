@@ -85,7 +85,7 @@ function changeColor(item, index, arr) {
             post_type = '';
         }
         switch (post_type) {
-            case '0':
+            case '4':
                 document.querySelector('p span').innerHTML = 'Tìm người ở ghép';
                 break;
             case '1':
@@ -102,7 +102,6 @@ function changeColor(item, index, arr) {
                 break;
             }
         type.value = post_type;
-        console.log(`type: ${type.value}`);
         checkFrom();
 })}
 

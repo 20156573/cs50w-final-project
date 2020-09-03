@@ -165,12 +165,18 @@
                     <div class="col-sm-5">Mr/Mrs: {{ user.get_full_name }}</div>
                     <div class="col-sm-7">Sdt: {{ user.get_contact_number }}</div>
                 </div>
+                <div class="row other_contact_info px-4 py-4">
+                    <div class="col-sm-5">Liên hệ khác: </div>
+                    <div class="col-sm-7">
+                        <input name='other_contact' style="width: 100%" type="text" placeholder="VD: Anh Đức: 0123456789">
+                    </div>
+                    
+                </div>
             </div>
         </div>
         <div id="create_post_list_button" class="px-5 pt-2  pb-2 mx-3 create_post_body mt-4 mb-4">
             <div class="d-flex">
-                <div class="mr-auto p-2"><input id="button_delete" class="justify-content-start profile-edit-Btn px-4" type="button" value="Xoá"></div>
-                <div class="p-2"><input id="button_save" class="profile-edit-Btn px-4" type="button" value="Lưu & ẩn"></div>
+                <div class="mr-auto p-2 pt-3"><a style="text-decoration: none;" id="button_delete" class="justify-content-start profile-edit-Btn px-4" href="http://127.0.0.1:8000/create_post/category">Xóa</a></div>
                 <div class="p-2"><input id="button_post" class="profile-edit-Btn" type="submit" value="Đăng"></div>
             </div>
         </div>

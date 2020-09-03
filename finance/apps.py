@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class FinanceConfig(AppConfig):
     name = 'finance'
-    verbose_name = "Tài chính"
+    # verbose_name = "Tài chính"

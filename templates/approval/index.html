@@ -36,12 +36,12 @@
             <ul class="object-tools" style="float: right; top: 0px; margin-bottom: 17px; margin-top: 0px;">
                 <li>
                     <button href="" id="addlink">
-                        Duyệt tin
+                        Approve
                     </button>
                 </li>
                 <li>
                     <button href="" id="deny">
-                        Hủy
+                        Deny
                     </button>
                 </li>
             </ul>
@@ -61,25 +61,25 @@
                 <thead>
                     <tr>
                         <th scope="col"  class="sortable column-title">
-                            <div class="text"><a href="?o=0">Tiêu đề</a></div>
+                            <div class="text"><a href="?o=0">Title</a></div>
                             <div class="clear"></div>
                         </th>
                         <th scope="col"  class="sortable column-update_time">
-                            <div class="text"><a href="?o=1">Thời gian yêu cầu</a></div>
+                            <div class="text"><a href="?o=1">Time</a></div>
                             <div class="clear"></div>
                         </th>
                         <th scope="col"  class="sortable column-getCategory">
-                            <div class="text"><a href="">Loại bài đăng</a></div>
+                            <div class="text"><a href="">Category</a></div>
                             <div class="clear"></div>
                         </th>
                         <th scope="col"  class="">
-                            <div class="text"><a href="">Người đăng</a></div>
+                            <div class="text"><a href="">Poster</a></div>
                             <div class="clear"></div>
                         </th>
                         <th scope="col"  class="">
                             <div class="text">
                                 <input type="checkbox" id="approval-all">
-                                <label for="approval-all">Hành động</label>
+                                <label for="approval-all">Action</label>
                             </div>
                             <div class="clear"></div>
                         </th>
@@ -105,7 +105,7 @@
                             <td><input type="checkbox" class="approval-check-box" id="approval-post-{{ h.post_id }}" name="approval" value="{{ h.post_id }}"></td>
                         </tr>
                     {% empty %}
-                        Hiện không có yêu cầu duyệt
+                        0 post
                     {% endfor %}
                 </tbody>
             </table>

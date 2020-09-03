@@ -1,0 +1,93 @@
+{% extends 'motels/base.html' %}
+
+{% load static %}
+
+{% block body %}
+<div class="px-5">
+<div class="profile px-5 mx-5">
+    <div class="profile-grid-item pl-5 pt-4 pr-2 pb-3">
+        <div class="box shadow-sm py-4 px-0">
+            <ul class="user_edit_ul">
+                <li class="change_active" id="change_email"><a href="{% url 'user_edit' %}">Sửa thông tin cá nhân</a></li>
+                <li id="change_password"><a href="{% url 'user_change_password' %}">Đổi mật khẩu</a></li>
+            </ul>
+        </div>
+        
+    </div>
+
+    <div class="profile-grid-item pl-1 pt-4 pr-5 pb-3">
+        <div class="box shadow-sm px-4 py-4">
+            <form enctype="multipart/form-data" class="user_edit-form" autocomplete="off" action="{% url 'user_edit' %}" method="POST">
+                {% csrf_token %}
+                {% load crispy_forms_tags %}
+                {{ form|as_crispy_errors }}
+                <div class=" row">
+                    <label class="col-sm-3"><img src="{{user.avatar.url}}" alt=""></label>
+                    <div class="col-sm-6" >
+                        <p>{{ request.user.get_full_name }}</p>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                
+                <div class=" row">
+                    <label class="col-sm-3">Email</label>
+                    <div id="email" class="col-sm-6">
+                        {{form.email}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class=" row">
+                    <label for="" class="col-sm-3">Họ</label>
+                    <div class="col-sm-6">
+                        {{form.first_name}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class=" row">
+                    <label for="" class="col-sm-3">Tên</label>
+                    <div class="col-sm-6">
+                        {{form.last_name}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class=" row">
+                    <label for="" class="col-sm-3">Địa chỉ</label>
+                    <div class="col-sm-6">
+                        {{form.address}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class=" row">
+                    <label for="" class="col-sm-3">Số điện thoại liên hệ</label>
+                    <div class="col-sm-6">
+                        {{form.contact_number}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class=" row">
+                    <label for="" class="col-sm-3">Ảnh đại diện</label>
+                    <div class="col-sm-6">
+                        {{form.avatar}}
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+                <div class="submit-form"><button>Lưu</button></div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+{% if messages %}
+<div class="message">
+    {% for message in messages %}
+    <p>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+    </p>
+    {% endfor %}
+</ul>
+{% endif %}
+
+
+{% endblock %}

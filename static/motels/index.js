@@ -17,12 +17,76 @@ let csrftoken = getCookie('csrftoken');
 var base_menu_color = 'rgb(75,75,75)';
 var border_input_color = 'rgb(189,195,199)';
 
+let counter = 0;
+const quantity = 3;
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
-    load();
+    var q = document.querySelector('.search-container input').value;
+
+    var cg = document.getElementById('select_category').value;
+        
+    var lt = document.getElementById('select_location').value;
+
+    var gd = document.getElementById('select_gender').value;
+
+    var mn = document.getElementById('select_money').value;
+    load(q, cg, lt, gd, mn);
+    
+    document.querySelectorAll('.filter-time').forEach(item => {
+        item.addEventListener('change', event => {
+            q = document.querySelector('.search-container input').value;
+            counter = 0;
+            getParam();
+        })
+    })
+    document.querySelector('.search-container input').addEventListener('change', event => {
+        q = event.target.value;
+        counter = 0;
+        getParam();
+    })
+    document.querySelector('.search-container button').addEventListener('click', () => {
+        q = document.querySelector('.search-container input').value;
+        counter = 0;
+        getParam();
+    })
+
+    window.onscroll = () => {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+            cg = document.getElementById('select_category').value;
+        
+            lt = document.getElementById('select_location').value;
+
+            gd = document.getElementById('select_gender').value;
+
+            mn = document.getElementById('select_money').value;
+            load(q, cg, lt, gd, mn);
+        }
+    };
+    function getParam() {
+        cg = document.getElementById('select_category').value;
+        
+        lt = document.getElementById('select_location').value;
+
+        gd = document.getElementById('select_gender').value;
+
+        mn = document.getElementById('select_money').value;
+        document.querySelector(".index-all-post").innerHTML = '';
+        load(q, cg, lt, gd, mn);
+    }
 });
 
-function load(){
-    fetch(`api/get_index`)
+function load(q, cg, lt, gd, mn){
+    const start = counter;
+    const end = start + quantity - 1;
+    counter = end + 1;
+
+    console.log('one');
+    console.log(start);
+    console.log(end);
+
+    fetch(`api/get_index?start=${start}&end=${end}&q=${q}&cg=${cg}&lt=${lt}&gd=${gd}&mn=${mn}`)
     .then(response => response.json())
     .then(data => {
         data.forEach(add_post);
@@ -113,7 +177,6 @@ function add_post(x) {
 
     if(x.poster_id != myJavaScriptVariable || myJavaScriptVariable === '') {
         let bookmark = document.createElement('i');
-        console.log(x.is_active);
         if (x.is_active === true) {
             bookmark.className = 'fas fa-bookmark';
         }

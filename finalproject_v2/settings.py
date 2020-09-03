@@ -26,7 +26,7 @@ SECRET_KEY = '5(10a$yget_o=(m)6z0o7m2lck%7t4)m$=v1j_ix^6bqt5zg4i'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+# ALLOWED_HOSTS = ['*']
 
 # Application definition
 

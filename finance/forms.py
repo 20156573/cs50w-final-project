@@ -25,6 +25,7 @@ class RechargeForm(forms.ModelForm):
                     raise forms.ValidationError("Thẻ này đã được yêu cầu và đang chờ được xử lý")
                 if his.status == 1 or  his.status == 2 or  his.status == 3:
                     raise forms.ValidationError("Thẻ này đã được sử dụng, vui lòng chọn thẻ khác")
+        # raise forms.ValidationError("Vui lòng nhập đủ tất cả các trường")
 
             
 

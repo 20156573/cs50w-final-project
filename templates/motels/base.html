@@ -14,10 +14,8 @@
         <div class="base-menu px-5 mb-4">
             <a class="base-menu-left" href="{% url 'index' %}">Rao nhà trọ</a>
             <div class="search-container">
-                <form action="">
-                    <input type="text" placeholder="Tìm kiếm..." name="search" autocomplete="off">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
+                <input type="text" placeholder="Tìm kiếm..." name="q" autocomplete="off">
+                <button type="text"><i class="fa fa-search"></i></button>
             </div>
             {% if user.is_authenticated %}
                 <div class="ava-dropdown">
@@ -25,7 +23,7 @@
                         <img class="profile-post-pre-avatar" src="{{MEDIA_URL}}/{{request.user.avatar}}" alt="Ảnh đại diện">
                     </div>
                     <div class="ava-dropdown-content">
-                        <a href="">Tài khoản của bạn</a>
+                        <a href="{% url 'user_edit' %}">Tài khoản của bạn</a>
                         <a href="{% url 'profile' user.get_full_name_link %}">Tin đăng của bạn</a>
                         <a href="{% url 'post_saved' user.get_full_name_link %}">Tin đăng đã lưu</a>
                         <hr class="my-2">
@@ -46,6 +44,7 @@
 
         {% block script %}
         {% endblock %}
+        
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 convert(document.querySelector('#menu-finance').innerHTML, document.querySelector('#menu-finance'));
@@ -72,5 +71,10 @@
                 }
             }
         </script>
+        <!-- <div class="d-flex base-bottom justify-content-between">
+            <p><a href="">Hỗ trợ</a></p>
+            <p>Copyright © 2019 DangThiThuy</p>
+            <p>Raonhatro</p>
+        </div> -->
     </body>
 </html>

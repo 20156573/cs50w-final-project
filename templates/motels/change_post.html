@@ -1,0 +1,191 @@
+{% extends 'motels/base.html' %}
+
+{% load static %}
+
+{% block body %}
+<div class="create_post pl-5 pt-4 pr-5 pb-3">
+    <form action="{% url 'create_post_new_action' %}"  enctype="multipart/form-data"  method="post">
+        {% csrf_token %}
+        <div class="create_post_body shadow-sm px-5 pt-4 pb-5 mx-3"> 
+            <div class="mb-4 mt-4">
+                <p class="create_post_head">Thông tin cơ bản</p>
+            </div>
+            <hr class="mb-5">
+            <!-- Tiêu đề -->
+            <div class="row">
+                <label for="create_post_title" class="col-md-2">* Tiêu đề</label>
+                <div class="col-md-10 pr-0">
+                    <input id="create_post_title" required name='title' type="text" value="{{ post.title }}" placeholder="Tiêu đề">
+                    <button class="form-suffix" disabled></button>
+                </div>
+            </div>
+            <!-- Lựa chọn loại tin đăng -->
+
+            <div class="row mt-4">
+                <label class="col-md-2">* Bạn đang</label>
+                <div class="col-md-10 pr-0">
+                    <input class="create_post_category" name='category' type="hidden" value="{{ post.category }}">
+                    <p class="my-0 create_post_category_p"></p>
+                </div>
+                <div class="col-md-2"></div>
+                <div class="col-md-10 pr-0">
+                    <div class="classified-info mt-4 px-4 py-4">
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- Diện tích -->
+            <div class="row mt-4">
+                <label class="col-md-2">* Diện tích</label>
+                <div class="col-md-10 pr-0 ">
+                    <input id="create_post_area" value="{{ post.area }}" required name="area" type="number">
+                    <button class="form-suffix" disabled>m2</button>
+                </div>
+            </div>
+
+            <!-- Địa chỉ -->
+            <div class="row mt-4">
+                <label class="col-md-2">* Địa chỉ</label>
+                <div class="col-md-2">
+                    <select name="province" required id="province">
+                        <option  selected disabled hidden style='display: none' value="">Tỉnh</option>
+                        {% for province in provinces %}
+                            <option value="{{ province.id }}">{{ province }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 ">
+                    <select name="district" required id="district">
+                        <option selected disabled hidden style='display: none' value="">Quận, huyện</option>
+                    </select>
+                </div>
+                <div class="col-md-2 ">
+                    <select name="commune" required id="commune">
+                        <option selected disabled hidden style='display: none' value="">Phường, xã</option>
+                    </select>
+                </div>
+                <div class="col-md-4 pr-0">
+                    <input type="text" required class='detailed_address' name="detailed_address" placeholder="Đường, số nhà">
+                </div>
+                <div class="col-md-2 mt-4"></div>
+                <div class="col-md-10 mt-4 address">xx</div>
+            </div>
+
+            <!-- Giới tính người thuê -->
+            <div class="row mt-4">
+                <label class="col-md-2">* Bạn cho</label>
+                <div class="col-md-10 pr-0">
+                    <div class="mb-3">
+                        <input type="radio" id="all-gender" checked name="renters_gender" value="2">
+                        <label class="label-radio" for="all-gender">Tất cả thuê</label>
+                    </div>
+                    <div class="mb-3">
+                        <input type="radio" id="male" name="renters_gender" value="1">
+                        <label class="label-radio" for="male">Chỉ nam thuê</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="female" name="renters_gender" value="0">
+                        <label class="label-radio" for="female">Chỉ nữ thuê</label>
+                    </div>
+                </div>
+            </div>
+            <!-- Nội thất -->
+            <div class="row mt-4">
+                <label class="col-md-2">Nội thất</label>
+                <div class="col-md-10 pr-0 ">
+                    <textarea name="furniture"  rows="6"></textarea>
+                </div>
+            </div>
+
+            <!-- Mô tả -->
+            <div class="row mt-4">
+                <label class="col-md-2">* Mô tả bài đăng</label>
+                <div class="col-md-10 pr-0 ">
+                    <textarea name="description" required id="post_description" rows="9"></textarea>
+                </div>
+            </div>
+                
+        </div>
+        <!-- Thông tin thuê nhà -->
+        <div class="create_post_body shadow-sm px-5 pt-4 pb-5 mx-3 mt-4"> 
+            <div class="mb-4 mt-4">
+                <p class="create_post_head">Thông tin thuê nhà</p>
+            </div>
+            <hr class="mb-5">
+            <!-- Tiền nhà -->
+            
+            <div class="row">
+                <label class="col-md-2">* Tiền nhà/tháng</label>
+                <div class="col-md-4">
+                    <input class="create_post_rent" required name="rent" type="number" placeholder="VD: 2.000.000">
+                </div>
+                <div class="col-md-6 p-0 create_post_max_rent">
+                    
+                </div>
+            </div>
+
+            <!-- Tiền cọc -->
+            <div class="row mt-4">
+                <label class="col-md-2">Tiền cọc</label>
+                <div class="col-md-10">
+                    <input type="number" name="deposit" placeholder="VD: 6.000.000">
+                </div>
+            </div>
+        </div>
+
+        <!-- Quản lý hình ảnh -->
+
+        <div class="create_post_body shadow-sm px-5 pt-4 pb-5 mx-3 mt-4"> 
+            <div class="mb-4 mt-4">
+                <p class="create_post_head">Quản lý hình ảnh</p>
+            </div>
+            <hr class="mb-5">
+            <div class="row">
+                <label class="col-md-2">Hình ảnh nhà</label>
+                <div class="col-md-10 pl-0 post-image">
+                    <div class="img_view float-right col-md-10">    
+                    </div>
+                    <input id="post-image-input" required name="image" class="mt-4" multiple="multiple" accept="image/x-png,image/jpeg" type="file">
+                    <small hidden></small>
+                </div>
+            </div>
+            
+        </div>
+        <!-- Thông tin liên hệ -->
+        
+        <div class="create_post_body shadow-sm px-5 pt-4 pb-5 mx-3 mt-4"> 
+            <div class="mb-4 mt-4">
+                <p class="create_post_head">Thông tin liên hệ</p>
+            </div>
+            <hr class="mb-5">
+            <div class="row">
+                <div class="row other_contact_info px-4 py-4">
+                    <!-- thong tin lien he cua user -->
+                    <div class="col-sm-5">Mr/Mrs: {{ request.user.get_full_name }}</div>
+                    <div class="col-sm-7">Sdt: {{ request.user.get_contact_number }}</div>
+                </div>
+                <div class="row other_contact_info px-4 py-4">
+                    <div class="col-sm-5">Liên hệ khác: </div>
+                    <div class="col-sm-7">
+                        {% if post.other_contact_info %}
+                        <input name='other_contact' value="{{ post.other_contact_info }}" style="width: 100%" type="text" placeholder="VD: Anh Đức: 0123456789">
+                        {% else %} 
+                        <input name='other_contact' style="width: 100%" type="text" placeholder="VD: Anh Đức: 0123456789">
+                        {% endif %}
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <div id="create_post_list_button" class="px-5 pt-2  pb-2 mx-3 create_post_body mt-4 mb-4">
+            <div class="d-flex">
+                <div class="mr-auto p-2 pt-3"><a style="text-decoration: none;" id="button_delete" class="justify-content-start profile-edit-Btn px-4" href="http://127.0.0.1:8000/create_post/category">Xóa</a></div>
+                <div class="p-2"><input id="button_post" class="profile-edit-Btn" type="submit" value="Đăng"></div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="{% static 'motels/create_post_new.js' %}"></script>
+{% endblock %}

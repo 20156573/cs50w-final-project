@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CardHistory
+from .models import CardHistory, Vip, Discount, PostedAds
 from django.contrib.admin import SimpleListFilter
 from django.utils.translation import gettext_lazy as _
 # Register your models here.
@@ -25,13 +25,13 @@ class HisStatusListFilter(SimpleListFilter):
 
 class CardHistoryAdmin(admin.ModelAdmin):
     model = CardHistory
-
+    search_fields = ('code', 'serial', 'request_id')
     list_display = ('request_id', 'value', 'amount', 'telco', 'user', 'get_date', 'message')
     list_filter = ('timestamp', HisStatusListFilter, 'telco')  
     fieldsets = (
-        ('Loại thẻ', {'fields': ('telco', ('code', 'serial'))}),
-        ('Giá trị thẻ', {'fields': ('value', 'amount')}),
-        ('Trạng thái', {'fields': ('message',)}),
+        ('', {'fields': ('telco', ('code', 'serial'))}),
+        ('Finance', {'fields': ('value', 'amount')}),
+        ('Status', {'fields': ('message',)}),
     )
     readonly_fields = ('telco', 'code', 'serial', 'message', 'value', 'amount')
     def has_add_permission(self, request):
@@ -54,6 +54,21 @@ class CardHistoryAdmin(admin.ModelAdmin):
         extra_context['show_save'] = False
         return super(CardHistoryAdmin, self).change_view(request, object_id, extra_context=extra_context)
     
+# class DiscountInline(admin.StackedInline):
+#     model = Discount.vip.through
+#     extra = 1
 
+class VipAdmin(admin.ModelAdmin):
+    # inlines = [DiscountInline]
+    extra = 1
+
+# class DiscountAdmin(admin.ModelAdmin):
+#     filter_horizontal = ("vip",)
+
+# class DiscountAdmin(admin.ModelAdmin):
+    
 
 admin.site.register(CardHistory, CardHistoryAdmin)
+# admin.site.register(PostedAds, PostedAdsAdmin)
+admin.site.register(Vip)
+# admin.site.register(Discount, DiscountAdmin)

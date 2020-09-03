@@ -24,7 +24,7 @@
                 <ul class="profile-vertical-menu">
                     <li class="active"><a href="{% url 'profile' user.get_full_name_link %}">Tin đăng của bạn</a></li>
                     
-                    <li><a href="">Hoạt động</a></li>
+                    
                     <hr>
                     <li><a href="{% url 'your_finance' %}">Ví của bạn</a></li>
                     <hr>
@@ -51,25 +51,17 @@
                 </ul>
             </div>
             <div class="d-flex">
-                <div class="search2">
-                    <input type="text" placeholder="Tìm kiếm" name="search" autocomplete="off">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </div>
                 {% if user.is_authenticated and user.id == profile.id %}
                     <a class="nav-link ml-auto" id="link-button-create_post" href="{% url 'create_post_category' %}">Đăng tin</a>
                 {% endif %}
             </div>
         </div>
         <div class="index-all-post pt-4">
-        <div class="box  shadow-sm px-4 pb-4 mb-3">
             <!-- ĐANG ĐĂNG -->
             <!-- Bài đăng của người dùng đặt ở đây -->
             {% for post in posts %}
             
-            {% if not forloop.first %}
-                <hr class="mt-4">
-            {% endif %}
-            <div class="profile-post-pre">
+            <div class="profile-post-pre box py-0 mb-4 shadow-sm p-4 ">
                 <!-- Phải về link chủ bài đăng, không phải chính mình -->
                 <div class="d-flex bd-highlight">
                     <a class="pre-post-link-ava bd-highlight" href="{% url 'profile' post.poster.get_full_name_link %}">
@@ -111,7 +103,6 @@
             {% empty %}
                 <small>Bạn chưa đăng tin nào/ Người dùng này hiện đang không cho thuê nhà trọ nào</small>
             {% endfor %}
-        </div>
         </div>
     </div>
 </div>
@@ -162,7 +153,16 @@
 </div>
 
 {% endif %}
-
+{% if messages %}
+<ul class="message">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+        {{ message }}
+    </li>
+    {% endfor %}
+</ul>
+{% endif %}
 <script src="{% static 'motels/profile.js' %}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {

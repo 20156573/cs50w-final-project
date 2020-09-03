@@ -55,6 +55,7 @@ class UpdateProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('last_name', 'first_name', 'address')
+            
 class SetPasswordFormChild(SetPasswordForm):
     error_messages = {
         'password_mismatch': _('Mật khẩu mới nhập lại không khớp.'),
@@ -106,4 +107,9 @@ class MyChangeFormPasswordChild(SetPasswordFormChild, PasswordChangeForm):
         strip=False,
         widget=forms.PasswordInput(attrs={'autocomplete': 'current-password', 'autofocus': True}),
     )
+    
 
+class RUserChangeForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('email', 'first_name', 'last_name', 'address', 'avatar')

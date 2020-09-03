@@ -15,7 +15,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from .models import User, Post, PostAddress, House, Room, Roommate, Apartment, Image, PostStatus, RegularUserHistory
+from .models import User, Post, PostAddress, House, Room, Roommate, Apartment, Image, RegularUserHistory
 from django.urls import path
 from django.shortcuts import HttpResponse, HttpResponseRedirect, redirect
 from django.template.response import TemplateResponse
@@ -24,7 +24,7 @@ from django.template.response import TemplateResponse
 
 class CategoryListFilter(SimpleListFilter):
     
-    title = _('Loại bài đăng')
+    title = _('Category')
     parameter_name = 'cate'
     def lookups(self, request, model_admin):
         
@@ -135,7 +135,7 @@ class UserChangeForm(forms.ModelForm):
     
     class Meta:
         model = User
-        fields = ('email', 'password', 'first_name', 'last_name', 'is_active', 'is_staff', 'is_superuser')
+        fields = ('email', 'password', 'first_name', 'last_name', 'is_active')
 
     def clean_password(self):
         return self.initial["password"]
@@ -146,31 +146,34 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserCreationForm
 
     # inlines = [PostInline]
-   
+    
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         qs = qs.annotate(number_post=Count('posts')).order_by('-number_post')
         return qs
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
     def number_post(self, obj):
         return obj.posts.count()
 
-    def has_delete_permission(self, request, obj=None):
-        if request.user.is_superuser == True:
-            return True
+    # def has_delete_permission(self, request, obj=None):
+    #     if request.user.is_superuser == True:
+    #         return True
             
-        return False
+        # return False
     def image_tag(self, obj):
         return format_html('<img src="{}" width="40px" height="40px" style="border-radius: 50%; object-fit:cover;"/>'.format(obj.avatar.url))
 
-    list_display = ('email', 'full_name', 'is_superuser', 'is_staff', 'is_active', 'image_tag', 'number_post')
-    list_filter = ('is_staff', 'is_superuser', 'is_active')
-    readonly_fields=('date_joined', 'image_tag',)
+    list_display = ('email', 'full_name',  'is_active', 'is_superuser', 'image_tag', 'number_post')
+    list_filter = ('is_superuser', 'is_active')
+    readonly_fields=('date_joined', 'image_tag', 'is_superuser')
     fieldsets = (
         (None, {'fields': ('email', 'password', 'image_tag')}),
-        ('Thông tin cá nhân', {'fields': (('first_name', 'last_name', 'address'),'avatar', )}),
-        ('Quyền', {'fields': ('is_superuser', 'is_staff','is_active')}),
-        ('Mốc thời gian', {'fields': ('last_login', 'date_joined')})
+        ('Profile', {'fields': (('first_name', 'last_name', 'address'),'avatar', )}),
+        ('Permission', {'fields': ('is_superuser','is_active')}),
+        ('Time', {'fields': ('last_login', 'date_joined')})
     )
     add_fieldsets = (
         (None, {
@@ -181,19 +184,18 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('email', 'first_name', 'last_name',)
     number_post.admin_order_field = 'number_post'
-    number_post.short_description = 'Số tin đã đăng'
-    image_tag.short_description = 'Ảnh đại diện'
+    number_post.short_description = 'Number of posts'
+    image_tag.short_description = 'Avatar'
 
 class PostAdmin(admin.ModelAdmin):
-    # exclude = ('title', ) Không show một trường nào đó ra
 
     inlines = (RoomateInline, ImageInline, RoomInline, ImageInline, ApartmentInline, ImageInline, HouseInline, ImageInline)
 
     def has_add_permission(self, request):
         return False
 
-    def has_delete_permission(self, request, obj=None):
-        return False
+    # def has_delete_permission(self, request, obj=None):
+    #     return False
 
     def image_tag(self, obj):
         return format_html('<p>{}</p>'.format(PostAddress.objects.select_related('post').filter(post=obj).first()))
@@ -204,15 +206,15 @@ class PostAdmin(admin.ModelAdmin):
 
     model = Post
     fieldsets = (
-        ('Thông tin cơ bản', {'fields': ('title', 'category', 'description', 'area', 'renters_gender', 'furniture', 'image_tag')}),
-        ('Thông tin liên hệ', {'fields': ('poster', 'other_contact_info')}),
-        ('Thông tin thuê nhà', {'fields': ('rent', 'deposit')}),
+        ('Basic information', {'fields': ('title', 'category', 'description', 'area', 'renters_gender', 'furniture', 'image_tag')}),
+        ('Contact information', {'fields': ('poster', 'other_contact_info')}),
+        ('Transaction information', {'fields': ('rent', 'deposit')}),
     )
     search_fields = ('title', 'id')
     readonly_fields = ('category', 'image_tag',)
     list_display = ('title', 'update_time', 'getCategory', 'category') #Các trường hiển thị nhanh
     list_filter = ('update_time', CategoryListFilter, 'category')  
-    image_tag.short_description = 'Ảnh đại diện'
+    image_tag.short_description = 'Address'
 
 class RegularUserHistoryAdmin(admin.ModelAdmin):
     def has_module_permission(self, request):
@@ -285,7 +287,7 @@ class RegularUserHistoryAdmin(admin.ModelAdmin):
         p = request.GET.get('p', '')
 
         hh = RegularUserHistory.objects.raw("select * from (select distinct on (his.post_id) his.post_id, p.poster_id, his.updated_by_id \
-            ,a.is_superuser, a.is_staff, concat(a.first_name,' ', a.last_name,' > ', a.email) as updated_by_info,\
+            ,a.is_superuser, concat(a.first_name,' ', a.last_name,' > ', a.email) as updated_by_info,\
             his.created_at, his.id, p.title, u.email, p.category from \
             motels_regularuserhistory as his join motels_post as p on p.id = his.post_id and (p.status = 6 or p.status = 5) join motels_user as u on\
             u.id = p.poster_id join motels_user as a on a.id = his.updated_by_id where (UPPER(p.title)  \
@@ -311,55 +313,39 @@ class RegularUserHistoryAdmin(admin.ModelAdmin):
             if action == '#deny':
                 for c in checked:
                     p = Post.objects.get(pk=int(c))
-                    try:
-                        status = PostStatus.objects.get(pk=3)
-                        h = RegularUserHistory(status=status, post=p, updated_by=request.user)
-                        p.status = 3
-                        p.update_time=timezone.now()
-                        p.save()
-                        h.save()
-                    except IntegrityError as e:
-                        print(e)
+                    h = RegularUserHistory(status=3, post=p, updated_by=request.user)
+                    p.status = 3
+                    p.update_time=timezone.now()
+                    p.save()
+                    h.save()
                 return HttpResponseRedirect('../approval/')
             if action == '#addlink':
                 for c in checked:
                     p = Post.objects.get(pk=int(c))
-                    try:
-                        status = PostStatus.objects.get(pk=2)
-                        h = RegularUserHistory(status=status, post=p, updated_by=request.user)
-                        p.status = 2
-                        p.update_time=timezone.now()
-                        p.save()
-                        h.save()
-                    except IntegrityError as e:
-                        print(e)
+                    h = RegularUserHistory(status=2, post=p, updated_by=request.user)
+                    p.status = 2
+                    p.update_time=timezone.now()
+                    p.save()
+                    h.save()
                 return HttpResponseRedirect('../approval/')
             if action == '#hidden':
                 for c in checked:
                     p = Post.objects.get(pk=int(c))
-                    try:
-                        status = PostStatus.objects.get(pk=5)
-                        h = RegularUserHistory(status=status, post=p, updated_by=request.user)
-                        p.status = 5
-                        p.update_time=timezone.now()
-                        p.save()
-                        h.save()
-                    except IntegrityError as e:
-                        print(e)
+                    h = RegularUserHistory(status=5, post=p, updated_by=request.user)
+                    p.status = 5
+                    p.update_time=timezone.now()
+                    p.save()
+                    h.save()
                 return HttpResponseRedirect('../approved/')
 
             if action == '#shown':
                 for c in checked:
                     p = Post.objects.get(pk=int(c))
-                    try:
-                        status = PostStatus.objects.get(pk=7)
-                        h = RegularUserHistory(status=status, post=p, updated_by=request.user)
-                        p.status = 7
-                        p.update_time=timezone.now()
-                        p.save()
-                        h.save()
-                    except IntegrityError as e:
-                        print(e)
+                    h = RegularUserHistory(status=status, post=p, updated_by=request.user)
+                    p.status = 7
+                    p.update_time=timezone.now()
+                    p.save()
+                    h.save()
                 return HttpResponseRedirect('../hidden/')
 
                 

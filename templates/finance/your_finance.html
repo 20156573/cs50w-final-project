@@ -21,7 +21,7 @@
                 <ul class="profile-vertical-menu">
                     <li><a href="{% url 'profile' user.get_full_name_link %}">Tin đăng của bạn</a></li>
                     
-                    <li><a href="">Hoạt động</a></li>
+         
                     <hr>
                     <li class="active"><a href="{% url 'your_finance' %}">Ví của bạn</a></li>
                     <hr>
@@ -49,6 +49,7 @@
         <div class="box  shadow-sm px-4 pb-4 mb-3">
             <!-- ĐANG ĐĂNG -->
             <!-- Bài đăng của người dùng đặt ở đây -->
+            {% if his %}
             <div class="container pt-4">
                 <table id="history">
                     <tr>
@@ -80,6 +81,9 @@
                     {% endfor %}
                 </table>
             </div>
+            {% else %}
+            Bạn chưa có giao dịch nào
+            {%  endif %}
         
         </div>
         </div>

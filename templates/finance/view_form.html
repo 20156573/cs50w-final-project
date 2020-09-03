@@ -67,6 +67,7 @@
         <div class="box shadow-sm px-4 py-4">
 
             <p class="create_post_head pb-4">Lịch sử nạp thẻ</p>
+            {% if his %}
             <table id="history">
                 <tr>
                     <th>Trạng thái</th>
@@ -87,7 +88,7 @@
                         <td>{{ h.code }}</td>
                         <td>{{ h.serial }}</td>
                         <td>{{ h.telco }}</td>
-                        <td class="finance_vnd">{{ h.declared_value }}</td>
+                        <td class="finance_vnd">{{ h.declared_value }}</td> 
                         <td class="finance_vnd">{{ h.value }}</td>
                         <td class="finance_vnd">{{ h.amount }}</td>
                         <td>{{ h.get_date }}</td>
@@ -96,6 +97,9 @@
                 {% empty %}
                 {% endfor %}
             </table>
+            {% else %}
+            Bạn chưa có giao dịch nào
+            {%  endif %}
         </div>
     </div>
 </div>

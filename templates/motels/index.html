@@ -7,7 +7,51 @@
     if ("{{ user.id }}")
         var myJavaScriptVariable = "{{ user.id }}"; 
 </script> 
+<div class='index px-5'>
+
+    <div class=" pl-5 pt-4 pr-2 pb-3">
+        <form class="d-flex justify-content-between" id="search" action="">
+            <div>
+                <label for="select_timestamp">Loại bài đăng</label>
+                <select class="filter-time" name="cg" id="select_category">
+                    <option value="">Tất cả</option>
+                    <option value="1">Cho thuê nhà trọ</option>
+                    <option value="2">Cho thuê nhà nguyên căn</option>
+                    <option value="3">Cho thuê chung cư</option>
+                    <option value="0">Tìm bạn ở ghép</option>
+                </select>
+            </div>
+            <div>
+                <label for="select_location">Địa điểm</label>
+                <select class="filter-time" name="lt" id="select_location">
+                    <option value="">Tất cả</option>
+                    <option value="01">Hà Nội</option>
+                    <option value="79">Hồ Chí Minh</option>
+                </select>
+            </div>
+            <div>
+                <label for="select_gender">Tìm nhà cho</label>
+                <select class="filter-time" name="gd" id="select_gender">
+                    <option value="">Tất cả</option>
+                    <option value="0">Nữ</option>
+                    <option value="1">Nam</option>
+                </select>
+            </div>
+            <div>
+                <label for="select_money">Giá</label>
+                <select class="filter-time" name="mn" id="select_money">
+                    <option value="">Tất cả</option>
+                    <option value="asc">Từ thấp đến cao</option>
+                    <option value="desc">Từ cao đến thấp</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="pl-1 pt-4 pr-5 pb-3"></div>
+
+</div>
 <div class="index px-5">
+    
     <div class="profile-grid-item index-all-post pl-5 pt-4 pr-2 pb-3">
         
     </div>

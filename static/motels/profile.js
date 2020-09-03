@@ -75,10 +75,8 @@ function showSection(section) {
     fetch(`/${myJavaScriptVariable}/post/${section}/`)
     .then(response => response.json())
     .then(data => {
-        console.log(data);
         document.querySelector('.index-all-post').innerHTML = '';
         data.forEach(add_post);
-        // document.querySelectorAll('.fa-bookmark').forEach(changeColor);
     });
 }
 
@@ -94,6 +92,7 @@ function add_post(x) {
         <a class="pre-post-link-pro post-pre-full-name mx-1 align-self-center bd-highlight " href="../${x.user_link}"> ${x.full_name}</a>
         <a class="update-time bd-highlight align-self-center" href="../${x.user_link}/posts/${x.post_link}"> &#8226; <span>${x.category}</span> &#8226; ${x.update_time}</a>
         <span class="ml-1  bd-highlight align-self-center far_save_button"></span>
+
     </div>
     <div class="row mt-3">
         <div class="col-md-2">
@@ -123,7 +122,9 @@ function add_post(x) {
         bookmark.dataset.post_id = `${x.post_id}`;
         document.querySelector(`[data-post_id='${x.post_id}'] .far_save_button`).appendChild(bookmark);
     }
+    if(x.poster_id == myJavaScriptVariable && myJavaScriptVariable != '') {
 
+    }
     if(x.poster_id == myJavaScriptVariable && myJavaScriptVariable != '') {
         let bookmark = document.createElement('span');
         if (x.status == 1) {
@@ -135,7 +136,6 @@ function add_post(x) {
         else if (x.status == 3)  {
             bookmark.innerText = 'Không được duyệt';
         }
-
         bookmark.dataset.post_id = `${x.post_id}`;
         document.querySelector(`[data-post_id='${x.post_id}'] .far_save_button`).appendChild(bookmark);
     }
@@ -162,14 +162,12 @@ document.addEventListener('DOMContentLoaded', () => {
         getForm();
         document.querySelector('#editProBtn').onclick = () => {
             const data = new FormData(document.querySelector('#editProForm'));
-            console.log(data);
             saveForm(data);
         }
     }
     document.querySelector('.profile-horizontal-menu [data-section="active"]').className = 'active';
     document.querySelectorAll('.profile-horizontal-menu li').forEach(li => {
         li.onclick = function() {
-            console.log(1);
             const section = this.dataset.section;
             document.querySelectorAll('.profile-horizontal-menu li').forEach(item => {
                 item.className = ''
@@ -177,6 +175,12 @@ document.addEventListener('DOMContentLoaded', () => {
             li.className = 'active';
             showSection(section);
         }
+    })
+    document.querySelectorAll('.hide-post-button').forEach(button => {
+        button.addEventListener('click', event => {
+
+            event.target.parentElement.parentElement.parentElement.style.display = 'none';
+        })
     })
     
 })   
